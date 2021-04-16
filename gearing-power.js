@@ -67,8 +67,8 @@ var gSpeedByCadence = [];
 var gCadenceBySpeed = [];
 
 var gConfig = {
-  chainrings:    { value: "1,12",               order: 1,  choices: CHAINRINGS },
-  cluster:       { value: "6,8",                order: 2,  choices: CLUSTERS },
+  chainrings:    { value: "1,5,4",              order: 1,  choices: CHAINRINGS },
+  cluster:       { value: "6,2,4",              order: 2,  choices: CLUSTERS },
   tireSize:      { value: 60,                   order: 3,  choices: TIRE_SIZES },
   tireCircMm:    { value: 2096,                            formatter: formatLengthMm },
   capacityFront: { value: 0,                               formatter: formatCogTeeth }, // Calculated
@@ -961,13 +961,13 @@ function calcCfg () {
   gConfig.fitnessRatio.value = gConfig.powerFtp.value / convertLbToKg(gConfig.weightRider.value);
 
   // Chainrings, in ascending order of number of cogs
-  let [chainringGroup, chainringIndex] = gConfig.chainrings.value.split(",").map(Number);
-  gCogsChainring = Array.from(CHAINRINGS_INFO[chainringGroup].infos[chainringIndex].sprockets);
+  let [chainringGroup, chainringBrand, chainringIndex] = gConfig.chainrings.value.split(",").map(Number);
+  gCogsChainring = Array.from(CHAINRINGS_INFO[chainringGroup].infos[chainringBrand].models[chainringIndex].sprockets);
   gCogsChainring.sort((a, b) => a - b);
 
   // Cluster sprockets, in descending order of number of cogs
-  let [clusterGroup, clusterIndex] = gConfig.cluster.value.split(",").map(Number);
-  gCogsCluster = Array.from(CLUSTERS_INFO[clusterGroup].infos[clusterIndex].sprockets);
+  let [clusterGroup, clusterBrand, clusterIndex] = gConfig.cluster.value.split(",").map(Number);
+  gCogsCluster = Array.from(CLUSTERS_INFO[clusterGroup].infos[clusterBrand].models[clusterIndex].sprockets);
   gCogsCluster.sort((a, b) => b - a);
 
   gConfig.capacityFront.value = gCogsChainring[gCogsChainring.length - 1] - gCogsChainring[0];
@@ -1034,9 +1034,12 @@ function buildDropdownList (choices, order, value) {
       let optgroup = select.appendChild(document.createElement("optgroup"));
       optgroup.label = groupName;
       for (let j = 0; j < subchoices.length; ++j) {
-        let option = optgroup.appendChild(document.createElement("option"));
-        option.value = [i, j];
-        option.appendChild(document.createTextNode(subchoices[j]));
+        let [groupName2, subchoices2] = subchoices[j];
+        for (let k = 0; k < subchoices2.length; ++k) {
+          let option = optgroup.appendChild(document.createElement("option"));
+          option.value = [i, j, k];
+          option.appendChild(document.createTextNode(groupName2 + " " + subchoices2[k]));
+        }
       }
     }
   } else {
