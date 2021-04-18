@@ -1,24 +1,4 @@
-* {
-  font-family: sans-serif;
-  font-size: 10pt;
-
-  /* Disable font boosting on mobile browsers (mostly iOS) */
-  text-size-adjust: none;
-  -webkit-text-size-adjust: none;
-}
-
-hr {
-  border: 0.5px solid black;
-}
-
-table {
-  border-collapse: collapse;
-}
-
-th, td, div.td-pop-over {
-  border: 1px solid black;
-  padding: 5px;
-}
+@import "common.css";
 
 table.gearing, table.power {
   text-align: center;
@@ -30,27 +10,9 @@ table.gearing td:first-child, table.power td:first-child {
   width: 1.5em;
 }
 
-span.label {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  white-space: nowrap;
-}
-
 span.emoji {
   font-size: 100%;
   text-shadow: 1pt 1pt 0pt black;
-}
-
-td.invisible {
-  border: none;
-}
-
-td.empty {
-  border: none;
-}
-
-td.data {
-  border: none;
 }
 
 td.index, td.power, td.force  {
@@ -64,17 +26,6 @@ td.power, td.force {
 
 td.heading-ratio, td.heading-speed-at-cadence, td.heading-cadence-at-speed, td.heading-torque-at-cadence {
   position: relative; /* For use with div.dog-ear and div.td-pop-over */
-}
-
-div.td-pop-over {
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  z-index: 1;
-  box-shadow: 5px 5px 5px dimgray;
 }
 
 table.config {
@@ -92,105 +43,38 @@ div.config {
   flex-flow: row wrap;
 }
 
-td.editable {
-  /* Nothing */
-}
+.heading-ratio             { background-color: var(--fill-red);    color: white; }
+.heading-speed-at-cadence  { background-color: var(--fill-orange); color: white; }
+.heading-cadence-at-speed  { background-color: var(--fill-green);  color: white; }
+.heading-torque-at-cadence { background-color: var(--fill-blue);   color: white; }
+.heading-index             { background-color: var(--fill-purple); color: white; }
 
-td.editable input[type="number"] {
-  margin: 0px;
-  width: 4em;
-}
-
-td.editable select {
-  margin: 0px;
-}
-
-td.editable span {
-  display: inline-block;
-  white-space: nowrap;
-}
-
-div.dog-ear {
-  width: 0;
-  height: 0;
-  border-top: 8px solid red;
-  border-left: 8px solid transparent;
-  position: absolute;
-  top: 0px;
-  right: 0px;
-}
-
-.heading, table.config th  { background-color: lightgray; color: black; }
-.heading-ratio             { background-color: #a61c00;   color: white; } /* dark red */
-.heading-speed-at-cadence  { background-color: #f1c232;   color: white; } /* orange */
-.heading-cadence-at-speed  { background-color: #6aa84f;   color: white; } /* green */
-.heading-torque-at-cadence { background-color: #3d85c6;   color: white; } /* blue */
-.heading-index             { background-color: #a64d79;   color: white; } /* purple */
-
-.index-odd  { background-color: #741b47; color: white; } /* dark purple */
-.index-even { background-color: #a64d79; color: white; } /* purple */
+.index-odd  { background-color: var(--fill-purple-darker); color: white; }
+.index-even { background-color: var(--fill-purple);        color: white; }
 
 .ratio-selected   { color: black; }
 .ratio-unselected { color: darkgray; }
 
-.grad-pos-low    { background-color: #e67c73; } /* red */
-.grad-pos-middle { background-color: #ffd666; } /* yellow */
-.grad-pos-high   { background-color: #57bb8a; } /* green */
+.grad-pos-low    { background-color: var(--grad1-red);    }
+.grad-pos-middle { background-color: var(--grad1-yellow); }
+.grad-pos-high   { background-color: var(--grad1-green);  }
 
-.grad-neg-low    { background-color: #57bb8a; } /* green */
-.grad-neg-middle { background-color: #ffd666; } /* yellow */
-.grad-neg-high   { background-color: #e67c73; } /* red */
-.grad-neg-dead   { background-color: #9e332a; } /* cinnamon */
+.grad-neg-low    { background-color: var(--grad1-green);    }
+.grad-neg-middle { background-color: var(--grad1-yellow);   }
+.grad-neg-high   { background-color: var(--grad1-red);      }
+.grad-neg-dead   { background-color: var(--grad1-cinnamon); }
 
-.grad-burst-low  { background-color: #e73675; } /* ruby */
-.grad-burst-high { background-color: #bf0051; } /* crimson */
-.grad-burst-dead { background-color: #990000; } /* blood */
+.grad-burst-low  { background-color: var(--grad2-ruby);    }
+.grad-burst-high { background-color: var(--grad2-crimson); }
+.grad-burst-dead { background-color: var(--grad2-blood);   }
 
-.grad-cadence-low  { background-color: #ead1dc; } /* light lavender */
-.grad-cadence-high { background-color: #d5a6bd; } /* dark lavender */
+.grad-cadence-low  { background-color: var(--fill-lavender);        }
+.grad-cadence-high { background-color: var(--fill-lavender-darker); }
 
 /* From 56% to 150% of FTP (inclusive) */
-.grad-ftp-zone2  { background-color: #c9daf8; color: black;  } /* light blue */
-.grad-ftp-zone3  { background-color: #92b6f1; color: white;  } /* lighter medium blue */
-.grad-ftp-zone4  { background-color: #80aaee; color: yellow; } /* medium blue */
-.grad-ftp-zone5  { background-color: #6e9eec; color: black;  } /* darker medium blue */
-.grad-ftp-high   { background-color: #4a86e8; color: black;  } /* dark blue */
+.grad-ftp-zone2  { background-color: var(--grad3-blue1); color: black;  }
+.grad-ftp-zone3  { background-color: var(--grad3-blue2); color: white;  }
+.grad-ftp-zone4  { background-color: var(--grad3-blue3); color: yellow; }
+.grad-ftp-zone5  { background-color: var(--grad3-blue4); color: black;  }
+.grad-ftp-high   { background-color: var(--grad3-blue5); color: black;  }
 
-/* Define the label/data border classes last to give them priority */
-
-td.label-single,
-td.label-top, td.label-middle, td.label-bottom,
-td.label-left, td.label-center, td.label-right {
-  border: 1px solid black;
-}
-
-td.data-single,
-td.data-top, td.data-middle, td.data-bottom {
-  border: 0.5px solid black;
-}
-
-td.label-top, td.data-top {
-  border-bottom: none;
-}
-
-td.label-middle, td.data-middle {
-  border-top: none;
-  border-bottom: none;
-}
-
-td.label-bottom, td.data-bottom {
-  border-top: none;
-}
-
-td.label-left {
-  border-right: none;
-}
-
-td.label-center {
-  border-left: none;
-  border-right: none;
-}
-
-td.label-right {
-  border-left: none;
-}

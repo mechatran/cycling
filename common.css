@@ -1,0 +1,162 @@
+* {
+  font-family: sans-serif;
+  font-size: 10pt;
+
+  /* Disable font boosting on mobile browsers (mostly iOS) */
+  text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+
+  --fill-red: #a61c00;
+  --fill-orange: #f1c232;
+  --fill-green: #6aa84f;
+  --fill-blue: #3d85c6;
+  --fill-purple: #a64d79;
+  --fill-purple-darker: #741b47;
+  --fill-lavender: #ead1dc;
+  --fill-lavender-darker: #d5a6bd;
+
+  --grad1-green: #57bb8a;
+  --grad1-yellow: #ffd666;
+  --grad1-red: #e67c73;
+  --grad1-cinnamon: #9e332a;
+
+  --grad2-ruby: #e73675;
+  --grad2-crimson: #bf0051;
+  --grad2-blood: #990000;
+
+  --grad3-blue1: #c9daf8;
+  --grad3-blue2: #92b6f1;
+  --grad3-blue3: #80aaee;
+  --grad3-blue4: #6e9eec;
+  --grad3-blue5: #4a86e8;
+}
+
+hr {
+  border: 0.5px solid black;
+}
+
+/*****************************************************************************
+ * Table definitions
+ */
+
+table {
+  border-collapse: collapse;
+}
+
+th, td, div.td-pop-over {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+td.invisible {
+  border: none;
+}
+
+td.empty {
+  border: none;
+}
+
+td.data {
+  border: none;
+}
+
+td.editable {
+  /* Nothing */
+}
+
+td.editable input[type="number"] {
+  margin: 0px;
+  width: 4em;
+}
+
+td.editable select {
+  margin: 0px;
+}
+
+td.editable span {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/*****************************************************************************
+ * Table decorations
+ */
+
+div.td-pop-over {
+  /* Parent node must have position: relative */
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  box-shadow: 5px 5px 5px dimgray;
+}
+
+div.dog-ear {
+  /* Parent node must have position: relative */
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid red;
+  border-left: 8px solid transparent;
+}
+
+/*****************************************************************************
+ * Table label cells
+ */
+
+span.vertical {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}
+
+.heading, table th {
+  background-color: lightgray;
+  color: black;
+}
+
+/*****************************************************************************
+ * Define the label/data border classes last to give them priority
+ */
+
+td.label-single,
+td.label-top, td.label-middle, td.label-bottom,
+td.label-left, td.label-center, td.label-right {
+  border: 1px solid black;
+}
+
+td.data-single,
+td.data-top, td.data-middle, td.data-bottom {
+  border: 0.5px solid black;
+}
+
+td.label-top, td.data-top {
+  border-bottom: none;
+}
+
+td.label-middle, td.data-middle {
+  border-top: none;
+  border-bottom: none;
+}
+
+td.label-bottom, td.data-bottom {
+  border-top: none;
+}
+
+td.label-left {
+  border-right: none;
+}
+
+td.label-center {
+  border-left: none;
+  border-right: none;
+}
+
+td.label-right {
+  border-left: none;
+}
