@@ -10,6 +10,7 @@
   --fill-orange: #f1c232;
   --fill-green: #6aa84f;
   --fill-blue: #3d85c6;
+  --fill-tangerine: #FF8C00;
   --fill-purple: #a64d79;
   --fill-purple-darker: #741b47;
   --fill-lavender: #ead1dc;
@@ -87,11 +88,17 @@ div.td-pop-over {
   position: absolute;
   top: -1px;
   left: -1px;
-  white-space: nowrap;
+  /*white-space: nowrap;*/
+  text-align: left;
+  width: 20em;
   display: flex;
   align-items: center;
   z-index: 1;
   box-shadow: 5px 5px 5px dimgray;
+}
+
+div.td-pop-over ul {
+  padding-left: 2em;
 }
 
 div.dog-ear {

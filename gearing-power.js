@@ -7,9 +7,10 @@ var gStock = {
   tdEmpty: document.createElement("td"),
   tdData: document.createElement("td"),
   tdHeadingRatio: document.createElement("td"),
-  tdHeadingSpeedAtCadence: document.createElement("td"),
+  tdHeadingSpeedFromCadence: document.createElement("td"),
   tdHeadingCadenceAtSpeed: document.createElement("td"),
-  tdHeadingTorqueAtCadence: document.createElement("td"),
+  tdHeadingTorqueFromCadence: document.createElement("td"),
+  tdHeadingSpeedFromGrade: document.createElement("td"),
   tdHeading: document.createElement("td"),
   tdHeadingIndex: document.createElement("td"),
   trInvisible: document.createElement("tr"),
@@ -17,9 +18,10 @@ var gStock = {
   divPlain: document.createElement("div"),
   divDogEar: document.createElement("div"),
   divTdPopoverRatio: document.createElement("div"),
-  divTdPopoverSpeedAtCadence: document.createElement("div"),
+  divTdPopoverSpeedFromCadence: document.createElement("div"),
   divTdPopoverCadenceAtSpeed: document.createElement("div"),
-  divTdPopoverTorqueAtCadence: document.createElement("div"),
+  divTdPopoverTorqueFromCadence: document.createElement("div"),
+  divTdPopoverSpeedFromGrade: document.createElement("div"),
 };
 gStock.tableGearing.className = "gearing";
 gStock.tablePower.className = "power";
@@ -27,9 +29,10 @@ gStock.tdInvisible.className = "invisible";
 gStock.tdEmpty.className = "empty";
 gStock.tdData.className = "data";
 gStock.tdHeadingRatio.className = "heading-ratio";
-gStock.tdHeadingSpeedAtCadence.className = "heading-speed-at-cadence";
-gStock.tdHeadingCadenceAtSpeed.className = "heading-cadence-at-speed";
-gStock.tdHeadingTorqueAtCadence.className = "heading-torque-at-cadence";
+gStock.tdHeadingSpeedFromCadence.className = "heading-speed-from-cadence";
+gStock.tdHeadingCadenceAtSpeed.className = "heading-cadence-from-speed";
+gStock.tdHeadingTorqueFromCadence.className = "heading-torque-from-cadence";
+gStock.tdHeadingSpeedFromGrade.className = "heading-speed-from-grade";
 gStock.tdHeading.className = "heading";
 gStock.tdHeadingIndex.className = "heading-index";
 gStock.trInvisible.appendChild(gStock.tdInvisible.cloneNode());
@@ -37,12 +40,14 @@ gStock.spanEmoji.className = "emoji";
 gStock.divDogEar.className = "dog-ear";
 gStock.divTdPopoverRatio.classList.add("td-pop-over");
 gStock.divTdPopoverRatio.classList.add("heading-ratio");
-gStock.divTdPopoverSpeedAtCadence.classList.add("td-pop-over");
-gStock.divTdPopoverSpeedAtCadence.classList.add("heading-speed-at-cadence");
+gStock.divTdPopoverSpeedFromCadence.classList.add("td-pop-over");
+gStock.divTdPopoverSpeedFromCadence.classList.add("heading-speed-from-cadence");
 gStock.divTdPopoverCadenceAtSpeed.classList.add("td-pop-over");
-gStock.divTdPopoverCadenceAtSpeed.classList.add("heading-cadence-at-speed");
-gStock.divTdPopoverTorqueAtCadence.classList.add("td-pop-over");
-gStock.divTdPopoverTorqueAtCadence.classList.add("heading-torque-at-cadence");
+gStock.divTdPopoverCadenceAtSpeed.classList.add("heading-cadence-from-speed");
+gStock.divTdPopoverTorqueFromCadence.classList.add("td-pop-over");
+gStock.divTdPopoverTorqueFromCadence.classList.add("heading-torque-from-cadence");
+gStock.divTdPopoverSpeedFromGrade.classList.add("td-pop-over");
+gStock.divTdPopoverSpeedFromGrade.classList.add("heading-speed-from-grade");
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -60,11 +65,16 @@ var gWheelTorqueByChainring = [];
 
 var gRatioSchmoo = [];
 var gCadenceSchmoo = [];
+var gGradeSchmoo = [];
 var gSpeedSchmoo = [];
 var gLegForceByCadence = [];
 var gLegPowerByCadence = [];
 var gSpeedByCadence = [];
 var gCadenceBySpeed = [];
+var gCadenceByGrade = [];
+var gSpeedByGrade = [];
+var gLegForceByGrade = [];
+var gLegPowerByGrade = [];
 
 var gConfig = {
   chainrings:    { value: "1,5,4",              order: 1,  choices: CHAINRINGS },
@@ -75,7 +85,7 @@ var gConfig = {
   capacityRear:  { value: 0,                               formatter: formatCogTeeth }, // Calculated
   capacityTotal: { value: 0,                               formatter: formatCogTeeth }, // Calculated
   speedUnits:    { value: "MPH" },
-  speedMph:      { value: 15,                   order: 13, formatter: formatSpeed },
+  speedMph:      { value: 15,                   order: 12, formatter: formatSpeed },
   weightRider:   { value: 150,                  order: 5,  formatter: formatWeightLb },
   weightBike:    { value: 20,                   order: 6,  formatter: formatWeightLb },
   weightKit:     { value: 2,                    order: 7,  formatter: formatWeightLb },
@@ -84,9 +94,12 @@ var gConfig = {
   position:      { value: 1,                    order: 9,  choices: ["Tops", "Hoods", "Drops"] },
   gradePercent:  { value: 6,         step: 0.5, order: 10, formatter: formatPercent },
   cadenceRpm:    { value: 90,                   order: 11, formatter: formatCadence },
-  stepRpm:       { value: 10,                   order: 12, formatter: formatCadence },
+  toleranceRpm:  { value: 15,                   order: 14, formatter: formatCadence },
+  stepRpm:       { value: 10,                   order: 13, formatter: formatCadence },
+  cadenceRpmMin: { value: 50,                   order: 15, formatter: formatCadence },
+  cadenceRpmMax: { value: 110,                  order: 16, formatter: formatCadence },
   crankLength:   { value: 170,                  order: 4,  formatter: formatLengthMm },
-  powerFtp:      { value: 200,                  order: 14, formatter: formatPower },
+  powerFtp:      { value: 200,                  order: 17, formatter: formatPower },
   powerZ2:       { value: 0,                               formatter: formatPower }, // Calculated
   powerZ3:       { value: 0,                               formatter: formatPower }, // Calculated
   powerZ4:       { value: 0,                               formatter: formatPower }, // Calculated
@@ -125,6 +138,10 @@ var gSwitches = {
   speedByCadence_force:  { value: true,  label: "Force"     },
   speedByCadence_power:  { value: true,  label: "Power"     },
   cadenceBySpeed_table:  { value: false, label: "Show"      },
+  speedByGrade_table:    { value: true,  label: "Show"      },
+  speedByGrade_cadence:  { value: true,  label: "Cadence"   },
+  speedByGrade_force:    { value: true,  label: "Force"     },
+  speedByGrade_power:    { value: true,  label: "Power"     },
   powerStripe:           { value: true,  label: "Power"     },
   burstStripe:           { value: true,  label: "Burst"     },
   cadenceStripe:         { value: true,  label: "Cadence"   },
@@ -281,7 +298,7 @@ function calcGearIndexByChainring (ratioByChainring) {
   return gearIndexByChainring;
 }
 
-function calcPowerFromSpeed (speeds) {
+function calcPowerFromSpeed (speeds, grades=undefined) {
   var powerByChainring = [];
   for (let i = 0; i < speeds.length; ++i) {
     powerByChainring[i] = [];
@@ -289,7 +306,7 @@ function calcPowerFromSpeed (speeds) {
       powerByChainring[i][j] =
         calcLegPowerFromRider(
           speeds[i][j],
-          gConfig.gradePercent.value,
+          grades ? grades[i] : gConfig.gradePercent.value,
           gConfig.weightTotal.value,
           gConfig.position.choices[gConfig.position.value]);
     }
@@ -385,7 +402,19 @@ function calcSpeedSchmoo () {
   return speeds;
 }
 
+function calcGradeSchmoo () {
+  var grades = [];
+  for (let i = 0; i < 12; i += 2) {
+    grades.push(i);
+  }
+  for (let i = 12; i <= 20; i += 4) {
+    grades.push(i);
+  }
+  return grades;
+}
+
 function calcForceByCadence (cadences, powerByCadence) {
+  var isCadenceGrid = (cadences instanceof Array) && (cadences[0] instanceof Array);
   var forceByCadence = [];
   for (let i = 0; i < cadences.length; ++i) {
     forceByCadence[i] = [];
@@ -393,7 +422,7 @@ function calcForceByCadence (cadences, powerByCadence) {
       forceByCadence[i][j] =
         calcLegForceFromPower(
           powerByCadence[i][j],
-          cadences[i],
+          isCadenceGrid ? cadences[i][j] : cadences[i],
           gConfig.crankLength.value);
     }
   }
@@ -401,13 +430,14 @@ function calcForceByCadence (cadences, powerByCadence) {
 }
 
 function calcSpeedByCadence (cadences, ratios) {
+  var isCadenceGrid = (cadences instanceof Array) && (cadences[0] instanceof Array);
   var speedByCadence = [];
   for (let i = 0; i < cadences.length; ++i) {
     speedByCadence[i] = [];
     for (let j = 0; j < ratios.length; ++j) {
       speedByCadence[i][j] =
         calcSpeed(
-          cadences[i],
+          isCadenceGrid ? cadences[i][j] : cadences[i],
           ratios[j],
           gConfig.tireCircMm.value);
     }
@@ -415,19 +445,39 @@ function calcSpeedByCadence (cadences, ratios) {
   return speedByCadence;
 }
 
-function calcCadenceBySpeed (speeds, ratios) {
+function calcCadenceBySpeed (speeds, ratios, min=0, max=0) {
   var cadenceBySpeed = [];
   for (let i = 0; i < speeds.length; ++i) {
     cadenceBySpeed[i] = [];
     for (let j = 0; j < ratios.length; ++j) {
-      cadenceBySpeed[i][j] =
+      let cadence =
         calcCadence(
           speeds[i],
           ratios[j],
           gConfig.tireCircMm.value);
+      if (min) {
+        cadence = Math.max(cadence, min);
+      }
+      if (max) {
+        cadence = Math.min(cadence, max);
+      }
+      cadenceBySpeed[i][j] = cadence;
     }
   }
   return cadenceBySpeed;
+}
+
+function calcSpeedByGradeSchmoo (grades) {
+  var speedbyGrade = [];
+  for (let i = 0; i < grades.length; ++i) {
+    speedbyGrade[i] =
+      calcSpeedFromRider(
+        gConfig.powerFtp.value,
+        grades[i],
+        gConfig.weightTotal.value,
+        gConfig.position.choices[gConfig.position.value]);
+  }
+  return speedbyGrade;
 }
 
 function calcTables () {
@@ -457,6 +507,14 @@ function calcTables () {
   gSpeedSchmoo = calcSpeedSchmoo();
 
   gCadenceBySpeed = calcCadenceBySpeed(gSpeedSchmoo, gRatioSchmoo);
+
+  gGradeSchmoo = calcGradeSchmoo();
+
+  let speedByGradeSchmoo = calcSpeedByGradeSchmoo(gGradeSchmoo);
+  gCadenceByGrade = calcCadenceBySpeed(speedByGradeSchmoo, gRatioSchmoo, gConfig.cadenceRpmMin.value, gConfig.cadenceRpmMax.value); // TOOD: gConfig
+  gSpeedByGrade = calcSpeedByCadence(gCadenceByGrade, gRatioSchmoo);
+  gLegPowerByGrade = calcPowerFromSpeed(gSpeedByGrade, gGradeSchmoo);
+  gLegForceByGrade = calcForceByCadence(gCadenceByGrade, gLegPowerByGrade);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -517,10 +575,13 @@ function colorGridsByCadence (cellGrids, dataGrid) {
       [120, "grad-neg-high"],
       [200, "grad-neg-dead"],
     ]);
+}
+
+function colorGridsByCadenceZone (cellGrids, dataGrid) {
   if (gSwitches.cadenceStripe.value) {
     colorGradient(cellGrids, dataGrid, false, [
-        [gConfig.cadenceRpm.value - 15., "grad-cadence-low"],
-        [gConfig.cadenceRpm.value + 15, "grad-cadence-high"],
+        [gConfig.cadenceRpm.value - gConfig.toleranceRpm.value, "grad-cadence-low"],
+        [gConfig.cadenceRpm.value + gConfig.toleranceRpm.value, "grad-cadence-high"],
       ]);
   }
 }
@@ -545,6 +606,14 @@ function colorGridsByPowerZone (cellGrids, dataGrid) {
         [gPowerZone[5], "grad-ftp-zone5"],
         [gPowerZone[7], "grad-ftp-high"],
       ]);
+  }
+}
+
+function formatCadenceCells (cells) {
+  for (let i = 0; i < cells.length; ++i) {
+    for (let j = 0; j < cells[i].length; ++j) {
+      cells[i][j].classList.add("cadence");
+    }
   }
 }
 
@@ -624,6 +693,8 @@ function addEmoji (node, kind) {
     code = "&#x2696;&#xFE0F;";
   } else if (kind == "wrench") {
     code = "&#x1F527;";
+  } else if (kind == "mountain") {
+    code = "&#x26F0;&#xFE0F;";
   }
   var span = node.appendChild(gStock.spanEmoji.cloneNode());
   span.innerHTML = code;
@@ -692,9 +763,16 @@ function buildGearingTable () {
     addEmoji(tdMajor, "gear");
     div = gStock.divTdPopoverRatio.cloneNode();
     div.innerHTML =
-      "Index<br>" +
-      "Gear Inches<br>" +
-      "Ratio";
+      "<div>" +
+      "<h2>Exploring</h2>" +
+      "What are the unique gear combinations?" +
+      "<h2>Available rows</h2>" +
+      "<ul>" +
+      "<li>Index" +
+      "<li>Gear Inches" +
+      "<li>Ratio (Front &divide; Rear)" +
+      "</ul>" +
+      "</div>";
     addPopover(tdMajor, div);
 
     let [grids, formatters, indexes] = buildGridsAndFormatters([
@@ -725,15 +803,24 @@ function buildGearingTable () {
   if (gSwitches.speedAtCadence_table.value) {
     table.appendChild(gStock.trInvisible.cloneNode(true));
 
-    tdMajor = gStock.tdHeadingSpeedAtCadence.cloneNode();
-    addEmoji(tdMajor,  "bike");
-    div = gStock.divTdPopoverSpeedAtCadence.cloneNode();
+    tdMajor = gStock.tdHeadingSpeedFromCadence.cloneNode();
+    addEmoji(tdMajor, "bike");
+    div = gStock.divTdPopoverSpeedFromCadence.cloneNode();
     div.innerHTML =
-      "Leg Force (lbf)<br>" +
-      "Leg Power (Watt)<br>" +
-      "Speed (MPH)<br>" +
-      "@<br>" +
-     gConfig.cadenceRpm.value + " RPM";
+      "<div>" +
+      "<h2>Exploring</h2>" +
+      "How fast can I ride at my preferred cadence?" +
+      "<h2>Available rows</h2>" +
+      "<ul>" +
+      "<li>Leg Force (lbf)" +
+      "<li>Leg Power (Watt)" +
+      "<li>Speed (MPH)" +
+      "</ul>" +
+      "<h2>Fixed at</h2>" +
+      "<ul>" +
+      "<li>" + gConfig.cadenceRpm.value + " RPM" +
+      "</ul>" +
+      "<div>";
     addPopover(tdMajor, div);
 
     tdMinor = cloneNodeArray(tdMinor)
@@ -766,9 +853,18 @@ function buildGearingTable () {
     addEmoji(tdMajor, "circle");
     div = gStock.divTdPopoverCadenceAtSpeed.cloneNode();
     div.innerHTML =
-      "Cadence (RPM)<br>" +
-      "@<br>" +
-      gConfig.speedMph.value + " MPH";
+      "<div>" +
+      "<h2>Exploring</h2>" +
+      "How fast do I have to pedal at my preferred cruising speed?" +
+      "<h2>Available rows</h2>" +
+      "<ul>" +
+      "<li>Cadence (RPM)" +
+      "</ul>" +
+      "<h2>Fixed at</h2>" +
+      "<ul>" +
+      "<li>" + gConfig.speedMph.value + " MPH" +
+      "</ul>" +
+      "<div>";
     addPopover(tdMajor, div);
 
     tdMinor = cloneNodeArray(tdMinor)
@@ -779,6 +875,7 @@ function buildGearingTable () {
     cells = addInterleavedRows(table, tdMajor, tdMinor, gCogsCluster.length, grids, formatters);
 
     colorGridsByCadence(cells, gCadenceByChainring);
+    colorGridsByCadenceZone(cells, gCadenceByChainring);
     formatCellGridGroups(cells);
   }
 
@@ -787,14 +884,23 @@ function buildGearingTable () {
   if (gSwitches.torqueAtCadence_table.value) {
     table.appendChild(gStock.trInvisible.cloneNode(true));
 
-    tdMajor = gStock.tdHeadingTorqueAtCadence.cloneNode();
+    tdMajor = gStock.tdHeadingTorqueFromCadence.cloneNode();
     addEmoji(tdMajor, "wrench");
-    div = gStock.divTdPopoverTorqueAtCadence.cloneNode();
+    div = gStock.divTdPopoverTorqueFromCadence.cloneNode();
     div.innerHTML =
-      "Leg Force (lbf)<br>" +
-      "Wheel Torque (lb-ft)<br>" +
-      "@<br>" +
-      gConfig.cadenceRpm.value + " RPM";
+      "<div>" +
+      "<h2>Exploring</h2>" +
+      "How much of my torque is delivered to the ground?" +
+      "<h2>Available rows</h2>" +
+      "<ul>" +
+      "<li>Leg Force (lbf)" +
+      "<li>Wheel Torque (lb-ft)" +
+      "</ul>" +
+      "<h2>Fixed at</h2>" +
+      "<ul>" +
+      "<li>" + gConfig.cadenceRpm.value + " RPM" +
+      "</ul>" +
+      "</div>";
     addPopover(tdMajor, div);
 
     tdMinor = cloneNodeArray(tdMinor)
@@ -867,15 +973,24 @@ function buildPowerTable () {
   if (gSwitches.speedByCadence_table.value) {
     table.appendChild(gStock.trInvisible.cloneNode(true));
 
-    tdMajor = gStock.tdHeadingSpeedAtCadence.cloneNode();
-    addEmoji(tdMajor,  "bike");
-    div = gStock.divTdPopoverSpeedAtCadence.cloneNode();
+    tdMajor = gStock.tdHeadingSpeedFromCadence.cloneNode();
+    addEmoji(tdMajor, "bike");
+    div = gStock.divTdPopoverSpeedFromCadence.cloneNode();
     div.innerHTML =
-      "Leg Force (lbf)<br>" +
-      "Leg Power (Watt)<br>" +
-      "Speed (MPH)<br>" +
-      "&times;<br>" +
-      "Cadence (RPM)";
+      "<div>" +
+      "<h2>Exploring</h2>" +
+      "How fast can I ride over my range of preferred cadences?" +
+      "<h2>Available rows</h2>" +
+      "<ul>" +
+      "<li>Leg Force (lbf)" +
+      "<li>Leg Power (Watt)" +
+      "<li>Speed (MPH)" +
+      "</ul>" +
+      "<h2>Swept over</h2>" +
+      "<ul>" +
+      "<li>Cadence (RPM)" +
+      "</ul>" +
+      "</div>";
     addPopover(tdMajor, div);
 
     tdMinor = [];
@@ -914,9 +1029,18 @@ function buildPowerTable () {
     addEmoji(tdMajor, "circle");
     div = gStock.divTdPopoverCadenceAtSpeed.cloneNode();
     div.innerHTML =
-      "Cadence (RPM)<br>" +
-      "&times;<br>" +
-      "Speed (MPH)";
+      "<div>" +
+      "<h2>Exploring</h2>" +
+      "How fast do I have to pedal over my range of my preferred speeds?" +
+      "<h2>Available rows</h2>" +
+      "<ul>" +
+      "<li>Cadence (RPM)" +
+      "</ul>" +
+      "<h2>Swept over</h2>" +
+      "<ul>" +
+      "<li>Speed (MPH)" +
+      "</ul>" +
+      "</div>";
     addPopover(tdMajor, div);
 
     tdMinor = [];
@@ -932,6 +1056,68 @@ function buildPowerTable () {
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, numGears, grids, formatters)
     colorGridsByCadence(cells, gCadenceBySpeed);
+    colorGridsByCadenceZone(cells, gCadenceBySpeed);
+    formatCellGridGroups(cells);
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+
+  if (gSwitches.speedByGrade_table.value) {
+    table.appendChild(gStock.trInvisible.cloneNode(true));
+
+    tdMajor = gStock.tdHeadingSpeedFromGrade.cloneNode();
+    addEmoji(tdMajor, "mountain");
+    div = gStock.divTdPopoverSpeedFromGrade.cloneNode();
+    div.innerHTML =
+      "<div>" +
+      "<h2>Exploring</h2>" +
+      "<p>How fast can I ride on long stretches of road with steady " +
+      "grades while sustaining high power at feasible cadences?" +
+      "<p>(In other words, how much of the gear range can I use for " +
+      "long steady road segments?)" +
+      "<h2>Available rows</h2>" +
+      "<ul>" +
+      "<li>Cadence (" + gConfig.cadenceRpmMin.value + " &ndash; " + gConfig.cadenceRpmMax.value + " RPM)" +
+      "<li>Leg Force (lbf)" +
+      "<li>Leg Power (Watt)" +
+      "<li>Speed (MPH)" +
+      "</ul>" +
+      "<h2>Swept over</h2>" +
+      "<ul>" +
+      "<li>Grade (%)" +
+      "</ul>" +
+      "</div>";
+    addPopover(tdMajor, div);
+
+    tdMinor = [];
+    for (let i = 0; i < gGradeSchmoo.length; ++i) {
+      let td = gStock.tdHeading.cloneNode();
+      td.appendChild(document.createTextNode(formatPercent(gGradeSchmoo[i])));
+      tdMinor.push(td);
+    }
+    formatLabelCellsVertical(tdMinor);
+
+    let [grids, formatters, indexes] = buildGridsAndFormatters([
+      [gSwitches.speedByGrade_cadence.value, gCadenceByGrade, formatCadence, false],
+      [gSwitches.speedByGrade_force.value, gLegForceByGrade, formatForce, false],
+      [gSwitches.speedByGrade_power.value, gLegPowerByGrade, formatPower, false],
+      [true, gSpeedByGrade, formatSpeed, true]]);
+    let [cadence, force, power] = indexes;
+
+    cells = addInterleavedRows(table, tdMajor, tdMinor, numGears, grids, formatters);
+
+    colorGridsBySpeed(cells, gSpeedByGrade);
+    colorGridsByPowerZone(cells, gLegPowerByGrade);
+    colorGridsByCadenceZone(cells, gCadenceByGrade, false);
+    if (cadence >= 0) {
+      formatCadenceCells(cells[cadence]);
+    }
+    if (force >= 0) {
+      formatForceCells(cells[force]);
+    }
+    if (power >= 0) {
+      formatPowerCells(cells[power]);
+    }
     formatCellGridGroups(cells);
   }
 
@@ -1148,14 +1334,32 @@ function pushCfg () {
     formatPower(gPowerBurst.low) + " &rarr; " +
     formatPower(gPowerBurst.high) + "] &mdash; " +
     formatPower(gPowerBurst.dead);
+
+  td = document.getElementById("stepRpm-range");
+  purgeChildren(td);
+  td.innerHTML =
+    formatCadence(Math.min(...gCadenceSchmoo)) +
+    " &rarr; " +
+    formatCadence(gConfig.cadenceRpm.value) +
+    " &rarr; " +
+    formatCadence(Math.max(...gCadenceSchmoo));
+
+  td = document.getElementById("toleranceRpm-range");
+  purgeChildren(td);
+  td.innerHTML =
+    formatCadence(gConfig.cadenceRpm.value - gConfig.toleranceRpm.value) +
+    " &larr; " +
+    formatCadence(gConfig.cadenceRpm.value) +
+    " &rarr; " +
+    formatCadence(gConfig.cadenceRpm.value + gConfig.toleranceRpm.value);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 function refresh () {
   calcCfg();
-  pushCfg();
   calcTables();
+  pushCfg();
   buildGearingTable();
   buildPowerTable();
 }

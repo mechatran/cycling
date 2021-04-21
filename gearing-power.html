@@ -28,14 +28,14 @@
             <span id="gearing_ratios"></span>
           </td>
 
-          <td class="heading-speed-at-cadence">Speed @ Cadence</td>
+          <td class="heading-speed-from-cadence">Speed @ Cadence</td>
           <td class="editable">
             <span id="speedAtCadence_table"></span>
             <span id="speedAtCadence_force"></span>
             <span id="speedAtCadence_power"></span>
           </td>
 
-          <td class="heading-speed-at-cadence">Speed &times; Cadence</td>
+          <td class="heading-speed-from-cadence">Speed &times; Cadence</td>
           <td class="editable">
             <span id="speedByCadence_table"></span>
             <span id="speedByCadence_force"></span>
@@ -49,18 +49,18 @@
             <span id="secondaryUnits"></span>
           </td>
 
-          <td class="heading-cadence-at-speed">Cadence @ Speed</td>
+          <td class="heading-cadence-from-speed">Cadence @ Speed</td>
           <td class="editable">
             <span id="cadenceAtSpeed_table"></span>
           </td>
 
-          <td class="heading-cadence-at-speed">Cadence &times; Speed</td>
+          <td class="heading-cadence-from-speed">Cadence &times; Speed</td>
           <td class="editable">
             <span id="cadenceBySpeed_table"></span>
           </td>
         </tr>
         <tr>
-          <td class="heading">Color</td>
+          <td class="heading">Color / Streaks</td>
           <td class="editable">
             <span id="blending"></span>
             <span id="powerStripe"></span>
@@ -68,10 +68,18 @@
             <span id="cadenceStripe"></span>
           </td>
 
-          <td class="heading-torque-at-cadence">Wheel Torque @ Cadence</td>
+          <td class="heading-torque-from-cadence">Wheel Torque @ Cadence</td>
           <td class="editable">
             <span id="torqueAtCadence_table"></span>
             <span id="torqueAtCadence_force"></span>
+          </td>
+
+          <td class="heading-speed-from-grade">Speed &times; Grade</td>
+          <td class="editable">
+            <span id="speedByGrade_table"></span>
+            <span id="speedByGrade_cadence"></span>
+            <span id="speedByGrade_force"></span>
+            <span id="speedByGrade_power"></span>
           </td>
         </tr>
       </table>
@@ -84,80 +92,44 @@
 
       <table class="config">
         <tr>
-          <th colspan=4>Bicycle</th>
+          <th colspan=4>Transmission</th>
         </tr>
         <tr>
           <td class="heading-ratio">Chainrings</td>
           <td id="chainrings" class="editable"></td>
 
-          <td class="heading-ratio">Front &Delta;</td>
+          <td class="heading">Front &Delta;</td>
           <td id="capacityFront"></td>
         </tr>
         <tr>
           <td class="heading-ratio">Cluster</td>
           <td id="cluster" class="editable"></td>
 
-          <td class="heading-ratio">Rear &Delta;</td>
+          <td class="heading">Rear &Delta;</td>
           <td id="capacityRear"></td>
         </tr>
         <tr>
-          <td class="heading-speed-at-cadence">Tire / Circ</td>
-          <td id="tireSize" class="editable"></td>
+          <td class="invisible" colspan=2></td>
 
-          <td class="heading-ratio">Capacity</td>
+          <td class="heading">Capacity</td>
           <td id="capacityTotal"></td>
         </tr>
         <tr>
-          <td class="heading-speed-at-cadence">Circumference</td>
+          <td class="invisible"></td>
+        </tr>
+        <tr>
+          <th colspan=4>Wheels / Tires / Cranks</th>
+        </tr>
+        <tr>
+          <td class="heading-speed-from-cadence">Tire</td>
+          <td id="tireSize" class="editable"></td>
+
+          <td class="heading">Circumference</td>
           <td id="tireCircMm"></td>
         </tr>
         <tr>
-          <td class="heading-torque-at-cadence">Crank Arm</td>
+          <td class="heading-torque-from-cadence">Crank Arm</td>
           <td id="crankLength" class="editable"></td>
-      </table>
-
-      <table class="config middle">
-        <tr>
-          <th colspan=4>Conditions</th>
-        </tr>
-        <tr>
-          <td class="heading-speed-at-cadence">Rider</td>
-          <td id="weightRider" class="editable"></td>
-
-          <td class="heading-speed-at-cadence">Position</td>
-          <td id="position" class="editable"></td>
-        </tr>
-        <tr>
-          <td class="heading-speed-at-cadence">Bike</td>
-          <td id="weightBike" class="editable"></td>
-
-          <td class="heading-speed-at-cadence">Grade</td>
-          <td id="gradePercent" class="editable"></td>
-        </tr>
-        <tr>
-          <td class="heading-speed-at-cadence">Kit</td>
-          <td id="weightKit" class="editable"></td>
-
-          <td class="heading-speed-at-cadence">Cadence</td>
-          <td id="cadenceRpm" class="editable"></td>
-        </tr>
-        <tr>
-          <td class="heading-speed-at-cadence">Gear</td>
-          <td id="weightGear" class="editable"></td>
-
-          <td class="heading-speed-at-cadence">Step</td>
-          <td id="stepRpm" class="editable"></td>
-        </tr>
-        <tr>
-          <td class="heading-speed-at-cadence">Total</td>
-          <td id="weightTotal"></td>
-
-          <td class="heading-cadence-at-speed">Speed</td>
-          <td id="speedMph" class="editable"></td>
-        </tr>
-        <tr>
-          <td class="invisible"></td>
-          <td class="invisible"></td>
 
           <td class="heading">Units</td>
           <td id="speedUnits"></td>
@@ -166,13 +138,75 @@
 
       <table class="config middle">
         <tr>
+          <th colspan=4>Profile</th>
+        </tr>
+        <tr>
+          <td class="heading-speed-from-cadence">Rider</td>
+          <td id="weightRider" class="editable"></td>
+
+          <td class="heading-speed-from-cadence">Position</td>
+          <td id="position" class="editable"></td>
+        </tr>
+        <tr>
+          <td class="heading-speed-from-cadence">Bike</td>
+          <td id="weightBike" class="editable"></td>
+
+          <td class="heading-speed-from-cadence">Grade</td>
+          <td id="gradePercent" class="editable"></td>
+        </tr>
+        <tr>
+          <td class="heading-speed-from-cadence">Kit</td>
+          <td id="weightKit" class="editable"></td>
+
+          <td class="heading-speed-from-cadence">Cadence</td>
+          <td id="cadenceRpm" class="editable"></td>
+        </tr>
+        <tr>
+          <td class="heading-speed-from-cadence">Gear</td>
+          <td id="weightGear" class="editable"></td>
+
+          <td class="heading-cadence-from-speed">Speed</td>
+          <td id="speedMph" class="editable"></td>
+        </tr>
+        <tr>
+          <td class="heading-speed-from-cadence">Total</td>
+          <td id="weightTotal"></td>
+
+        </tr>
+        <tr>
+          <td class="invisible"></td>
+        </tr>
+        <tr>
+          <th colspan=4>Sweeps / Ranges</th>
+        </tr>
+        <tr>
+          <td class="heading-speed-from-cadence">Step</td>
+          <td id="stepRpm" class="editable"></td>
+          <td id="stepRpm-range" colspan=2></td>
+        </tr>
+        <tr>
+          <td class="heading-cadence">Tolerance</td>
+          <td id="toleranceRpm" class="editable"></td>
+          <td id="toleranceRpm-range" colspan=2></td>
+        </tr>
+        <tr>
+          <td class="heading-speed-from-grade">Min</td>
+          <td id="cadenceRpmMin" class="editable"></td>
+
+          <td class="heading-speed-from-grade">Max</td>
+          <td id="cadenceRpmMax" class="editable"></td>
+        </tr>
+      </table>
+
+      <table class="config middle">
+        <tr>
           <th colspan=4>Performance</th>
         </tr>
         <tr>
-          <td class="grad-ftp-zone4">FTP</td>
+          <td class="heading-ftp">FTP</td>
           <td id="powerFtp" class="editable"></td>
 
-          <td class="grad-ftp-zone4">Fitness</td>
+          <td class="heading-ftp">Fitness</td>
           <td id="fitnessRatio"></td>
         </tr>
         <tr>

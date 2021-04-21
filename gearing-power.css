@@ -15,26 +15,35 @@ span.emoji {
   text-shadow: 1pt 1pt 0pt black;
 }
 
-td.index, td.power, td.force  {
+td.index, td.cadence, td.power, td.force  {
   font-size: 80%;
   padding: 2px;
 }
 
-td.power, td.force {
+td.cadence, td.power, td.force {
   text-decoration: underline;
 }
 
-td.heading-ratio, td.heading-speed-at-cadence, td.heading-cadence-at-speed, td.heading-torque-at-cadence {
+td.heading-ratio,
+td.heading-speed-from-cadence,
+td.heading-cadence-from-speed,
+td.heading-torque-from-cadence,
+td.heading-speed-from-grade {
   position: relative; /* For use with div.dog-ear and div.td-pop-over */
 }
 
 table.config {
   display: inline;
-  margin-right: 5px;
+  margin-right: 5pt;
+  margin-bottom: 10pt;
 }
 
 table.config td {
   height: 24pt; /* Large enough to fit all the editable widgets */
+}
+
+table.config td.invisible {
+  height: auto;
 }
 
 div.config {
@@ -43,11 +52,14 @@ div.config {
   flex-flow: row wrap;
 }
 
-.heading-ratio             { background-color: var(--fill-red);    color: white; }
-.heading-speed-at-cadence  { background-color: var(--fill-orange); color: white; }
-.heading-cadence-at-speed  { background-color: var(--fill-green);  color: white; }
-.heading-torque-at-cadence { background-color: var(--fill-blue);   color: white; }
-.heading-index             { background-color: var(--fill-purple); color: white; }
+.heading-ratio               { background-color: var(--fill-red);              color: white;  }
+.heading-speed-from-cadence  { background-color: var(--fill-orange);           color: white;  }
+.heading-cadence-from-speed  { background-color: var(--fill-green);            color: white;  }
+.heading-torque-from-cadence { background-color: var(--fill-blue);             color: white;  }
+.heading-speed-from-grade    { background-color: var(--fill-tangerine);        color: white;  }
+.heading-index               { background-color: var(--fill-purple);           color: white;  }
+.heading-ftp                 { background-color: var(--grad3-blue3);           color: yellow; }
+.heading-cadence             { background-color: var(--fill-lavender-darker);  color: white;  }
 
 .index-odd  { background-color: var(--fill-purple-darker); color: white; }
 .index-even { background-color: var(--fill-purple);        color: white; }
