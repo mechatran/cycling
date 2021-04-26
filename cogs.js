@@ -134,7 +134,7 @@ var CHAINRINGS_INFO = [
         ],
       },
       {
-        brand: "Shimano",
+        brand: "Shimano (Road)",
         models: [
           { model: "Claris",               sprockets: [50, 34] },
           { model: "Tiagra",               sprockets: [50, 34] },
@@ -145,14 +145,19 @@ var CHAINRINGS_INFO = [
           { model: "Ultegra",              sprockets: [53, 39] },
           { model: "Dura-Ace",             sprockets: [50, 34] },
           { model: "GRX-810",              sprockets: [48, 31] },
+          { model: "(DIY) Ultegra",        sprockets: [46, 34] },
+          { model: "(DIY) Ultegra",        sprockets: [50, 36] },
+        ],
+      },
+      {
+        brand: "Shimano (MTB)",
+        models: [
           { model: "SLX M7000",            sprockets: [34, 24] },
           { model: "SLX M7000",            sprockets: [36, 26] },
           { model: "SLX M7000",            sprockets: [38, 28] },
           { model: "Deore XT M8000",       sprockets: [34, 24] },
           { model: "Deore XT M8000",       sprockets: [36, 26] },
           { model: "Deore XT M8000",       sprockets: [38, 28] },
-          { model: "(DIY) Ultegra",        sprockets: [46, 34] },
-          { model: "(DIY) Ultegra",        sprockets: [50, 36] },
           { model: "(DIY) Deore XT M8000", sprockets: [34, 22] },
           { model: "(DIY) Deore XT M8000", sprockets: [34, 26] },
         ],
@@ -169,10 +174,15 @@ var CHAINRINGS_INFO = [
     group: 3,
     infos: [
       {
-        brand: "Shimano",
+        brand: "Shimano (Road)",
         models: [
           { model: "Claris",         sprockets: [50, 39, 30] },
           { model: "Tiagra",         sprockets: [50, 39, 30] },
+        ]
+      },
+      {
+        brand: "Shimano (MTB)",
+        models: [
           { model: "Acera FC-M361",  sprockets: [42, 32, 22] },
           { model: "Deore XT M8000", sprockets: [40, 30, 22] },
         ]
