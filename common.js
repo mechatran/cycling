@@ -310,23 +310,28 @@ function colorGradient (cellGrids, dataGrid, spillOver, limitsAndClassNames) {
 //////////////////////////////////////////////////////////////////////////////
 
 function __formatCellsOutsideBorder (cells, classSingle, classStart, classMiddle, classEnd) {
-  if (cells.length == 1) {
-    cells[0].classList.add(classSingle);
-  } else {
-    for (let i = 0; i < cells.length; ++i) {
-      if (i == 0) {
-        cells[i].classList.add(classStart);
-      } else if (i == cells.length - 1) {
-        cells[i].classList.add(classEnd);
-      } else {
-        cells[i].classList.add(classMiddle);
+  if (cells instanceof Array) {
+    if (cells.length == 1) {
+      cells[0].classList.add(classSingle);
+    } else {
+      for (let i = 0; i < cells.length; ++i) {
+        if (i == 0) {
+          cells[i].classList.add(classStart);
+        } else if (i == cells.length - 1) {
+          cells[i].classList.add(classEnd);
+        } else {
+          cells[i].classList.add(classMiddle);
+        }
       }
     }
+  } else {
+    cells.classList.add(classSingle);
   }
+  return cells;
 }
 
 function formatLabelCellsVertical (cells) {
-  __formatCellsOutsideBorder(cells,
+  return __formatCellsOutsideBorder(cells,
     "label-single",
     "label-top",
     "label-middle",
@@ -334,26 +339,34 @@ function formatLabelCellsVertical (cells) {
 }
 
 function formatLabelCellsHorizontal (cells) {
-  __formatCellsOutsideBorder(cells,
+  return __formatCellsOutsideBorder(cells,
     "label-single",
     "label-left",
     "label-center",
     "label-right");
 }
 
-function formatDataCells (cells) {
-  __formatCellsOutsideBorder(cells,
+function formatDataCellsVertical (cells) {
+  return __formatCellsOutsideBorder(cells,
     "data-single",
     "data-top",
     "data-middle",
     "data-bottom");
 }
 
+function formatDataCellsHorizontal (cells) {
+  return __formatCellsOutsideBorder(cells,
+    "data-single",
+    "data-left",
+    "data-center",
+    "data-right");
+}
+
 function formatCellGridGroups (dataGrids) {
   var combined = squishDown(dataGrids);
   for (let i = 0; i < combined.length; ++i) {
     for (let j = 0; j < combined[i].length; ++j) {
-      formatDataCells(combined[i][j]);
+      formatDataCellsVertical(combined[i][j]);
     }
   }
 }
@@ -365,7 +378,7 @@ function formatCellGridsGroupsConditionally (dataGrids, predicateGrid) {
       if (predicateGrid.hasOwnProperty(i) &&
         predicateGrid[i].hasOwnProperty(j))
       {
-        formatDataCells(combined[i][j]);
+        formatDataCellsVertical(combined[i][j]);
       }
     }
   }

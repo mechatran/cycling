@@ -138,7 +138,8 @@ td.label-left, td.label-center, td.label-right {
 }
 
 td.data-single,
-td.data-top, td.data-middle, td.data-bottom {
+td.data-top, td.data-middle, td.data-bottom,
+td.data-left, td.data-center, td.data-right {
   border: 0.5px solid black;
 }
 
@@ -155,15 +156,15 @@ td.label-bottom, td.data-bottom {
   border-top: none;
 }
 
-td.label-left {
+td.label-left, td.data-left {
   border-right: none;
 }
 
-td.label-center {
+td.label-center, td.data-center {
   border-left: none;
   border-right: none;
 }
 
-td.label-right {
+td.label-right, td.data-right {
   border-left: none;
 }

@@ -61,6 +61,8 @@ div.config {
 .heading-ftp                 { background-color: var(--grad3-blue3);           color: yellow; }
 .heading-cadence             { background-color: var(--fill-lavender-darker);  color: white;  }
 
+.heading-ratio a { color: white; }
+
 .index-odd  { background-color: var(--fill-purple-darker); color: white; }
 .index-even { background-color: var(--fill-purple);        color: white; }
 
