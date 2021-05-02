@@ -1,53 +1,87 @@
 var gStock = {
   tableChainrings: document.createElement("table"),
   trPlain: document.createElement("tr"),
-  trInvisible: document.createElement("tr"),
+  trSpacer: document.createElement("tr"),
   tdPlain: document.createElement("td"),
-  tdEmpty: document.createElement("td"),
   tdData: document.createElement("td"),
   tdHeading: document.createElement("td"),
   tdHeadingRatio: document.createElement("td"),
-  tdInvisible: document.createElement("td"),
+  tdSpacer: document.createElement("td"),
 }
 gStock.tableChainrings.className = "chainrings";
-gStock.tdEmpty.className = "empty";
 gStock.tdData.className = "data";
 gStock.tdHeading.className = "heading";
 gStock.tdHeadingRatio.className = "heading-ratio";
-gStock.tdInvisible.className = "invisible";
-gStock.trInvisible.appendChild(gStock.tdInvisible.cloneNode());
+gStock.tdSpacer.className = "spacer";
+gStock.trSpacer.appendChild(gStock.tdSpacer.cloneNode());
 
 var gChainrings = new Map();
 
-function calcChainrings () {
-  for (let group of CHAINRINGS_INFO) {
+function calcChainrings (cogsDatabase) {
+  for (let group of cogsDatabase) {
     for (let info of group.infos) {
-      for (let model of info.models) {
-        let min = Math.min(...model.sprockets);
-        let max = Math.max(...model.sprockets);
-        let data = [max - min];
-        gChainrings.set(model.sprockets, data.concat(model.sprockets));
-      }
+      let min = Math.min(...info.sprockets);
+      let max = Math.max(...info.sprockets);
+      let data = [max - min];
+      gChainrings.set(info.sprockets, data);
     }
   }
 }
 
 function buildTdDataCell (text) {
   var td = gStock.tdData.cloneNode();
-  formatDataCellsHorizontal(td);
   if (text) {
     td.appendChild(document.createTextNode(text));
   }
   return td;
 }
 
-function buildCellsGrid (node, buildDataCell, resolvers, depth=0) {
-  var rowsCells = [];
+function __mergeVertical (rows, width, column=0, rowStart=0, rowMax=rows.length) {
+  if (column >= width) {
+    return;
+  }
+
+  let start = rowStart;
+  while (start < rowMax) {
+    let end = start + 1;
+    while ((end < rowMax) &&
+      rows[start][column] &&
+      rows[end][column] &&
+      rows[start][column].isEqualNode(rows[end][column]))
+    {
+      ++end;
+    }
+    if (rows[start][column]) {
+      let height = rows[start][column].getAttribute("rowspan");
+      height = height ? parseInt(height) : 1;
+      rows[start][column].setAttribute("rowspan", height + (end - start - 1));
+      for (let i = start + 1; i < end; ++i) {
+        rows[i][column] = undefined;
+      }
+    }
+    __mergeVertical(rows, width, column + 1, start, end);
+    start = end;
+  }
+}
+
+// TODO: Update addInterleavedRows() to use __buildEvenCellGrid()?
+function __buildEvenCellGrid (node, buildDataCell, resolvers, depth) {
+  var rowsHeadings = [];
   var rowsData = [];
+  var dataGrid = [];
 
   var [headings, children] = resolvers[depth](node);
-  if (!(headings instanceof Array)) {
+  var widthHeadings;
+  if (headings instanceof Array) {
+    if (headings[0] instanceof Array) {
+      // Allow trailing headings to be ignored (i.e. empty cells for spacing)
+      [headings, widthHeadings] = headings;
+    } else {
+      widthHeadings = headings.length;
+    }
+  } else {
     headings = [headings];
+    widthHeadings = 1;
   }
 
   if (depth == resolvers.length - 1) {
@@ -63,51 +97,201 @@ function buildCellsGrid (node, buildDataCell, resolvers, depth=0) {
       row.push(td);
     }
 
+    rowsHeadings = [headings];
     rowsData = [row];
-    rowsCells = [headings.concat(row)];
+    dataGrid = [children];
   } else {
+    let widthHeadingsChildren;
     for (let child of children) {
-      var [rowsCellsChild, rowsDataChild] = buildCellsGrid(child, buildDataCell, resolvers, depth + 1);
-      rowsCells = rowsCells.concat(rowsCellsChild);
-      rowsData = rowsData.concat(rowsDataChild);
+      let [rowsHeadingsChild, widthHeadingsChild, rowsDataChild, dataGridChild] =
+        __buildEvenCellGrid(child, buildDataCell, resolvers, depth + 1);
+      widthHeadingsChildren = widthHeadingsChild;
+      rowsHeadings.push(...rowsHeadingsChild);
+      rowsData.push(...rowsDataChild);
+      dataGrid.push(...dataGridChild);
     }
+    __mergeVertical(rowsHeadings, widthHeadingsChildren);
 
     for (let heading of headings) {
-      if (heading) {
-        if (heading instanceof HTMLElement) {
-          // TODO: There's probably a better way of attaching the leaf count to this element
-          heading.setAttribute("rowspan", rowsCells.length);
-        }
-        rowsCells[0].unshift(heading);
+      if (heading instanceof HTMLElement) {
+        // TODO: For HTML, we can increase the cell height directly.  For
+        //       others (e.g. CSV), perhaps change this to invoke a callback
+        //       function to do this?
+        heading.setAttribute("rowspan", rowsHeadings.length);
+      }
+    }
+    rowsHeadings[0].unshift(...headings);
+    for (let i = 1; i < rowsHeadings.length; ++i) {
+      for (let heading of headings) {
+        rowsHeadings[i].unshift(undefined);
       }
     }
   }
 
-  return [rowsCells, rowsData];
+  return [rowsHeadings, widthHeadings, rowsData, dataGrid];
 }
 
-function buildChainringsTable () {
+function __correlateUnevenRowCells (grid, row) {
+  var cells = [];
+  for (let j = 0; j < grid[row].length; ++j) {
+    let cell;
+    for (let i = row; i >= 0; --i)  {
+      if (grid[i][j]) {
+        cell = grid[i][j];
+        break;
+      }
+    }
+    if (cell && !cell.classList.contains("empty")) {
+      cells.push(cell);
+    }
+  }
+  return cells;
+}
+
+function handleHoverEnter (eventInfo, cohortNodes, relatedNodes, equalNodes) {
+  for (let node of cohortNodes) {
+    node.classList.add("hover");
+  }
+  for (let node of relatedNodes) {
+    node.classList.add("hover-related");
+  }
+  for (let node of equalNodes) {
+    node.classList.add("hover-equal");
+  }
+  eventInfo.stopPropagation();
+}
+
+function handleHoverLeave (eventInfo, cohortNodes, relatedNodes, equalNodes) {
+  for (let node of cohortNodes) {
+    node.classList.remove("hover");
+  }
+  for (let node of relatedNodes) {
+    node.classList.remove("hover-related");
+  }
+  for (let node of equalNodes) {
+    node.classList.remove("hover-equal");
+  }
+  eventInfo.stopPropagation();
+}
+
+function buildHover (node, cohortNodes, relatedNodes, equalNodes) {
+  node.addEventListener("mouseover", (x) => handleHoverEnter(x, cohortNodes, relatedNodes, equalNodes));
+  node.addEventListener("mouseout", (x) => handleHoverLeave(x, cohortNodes, relatedNodes, equalNodes));
+}
+
+function buildUnevenCellGrid (root, buildDataCell, resolvers) {
+  var [rowsHeadings, widthHeadings, rowsData, dataGrid] =
+    __buildEvenCellGrid(root, buildDataCell, resolvers, 0);
+
+  // DIY tr:hover for uneven cell grids
+  var rowsCohort = [];
+  for (let i = 0; i < rowsHeadings.length; ++i) {
+    rowsCohort.push(__correlateUnevenRowCells(rowsHeadings, i));
+  }
+
+  // Find related data rows indexes
+  var rowsRelated = [];
+  for (let i = 0; i < rowsCohort.length; ++i) {
+    let last = rowsCohort[i].length - 1;
+
+    let start;
+    for (start = i - 1; start >= 0; --start) {
+      if (!(rowsCohort[start][last] === rowsCohort[i][last])) {
+        break;
+      }
+    }
+    ++start;
+
+    let end;
+    for (end = i + 1; end < rowsCohort.length; ++end) {
+      if (!(rowsCohort[end][last] === rowsCohort[i][last])) {
+        break;
+      }
+    }
+    --end;
+
+    rowsRelated[i] = [];
+    for (let k = start; k <= end; ++k) {
+      if (k != i) {
+        rowsRelated[i].push(k);
+      }
+    }
+  }
+
+  // Find data rows with the same values
+  var rowsEqual = [];
+  for (let i = 0; i < rowsData.length; ++i) {
+    let reference = dataGrid[i].join();
+    rowsEqual[i] = [];
+    for (let k = 0; k < rowsData.length; ++k) {
+      if (i != k) {
+        if (reference == dataGrid[k].join()) {
+          rowsEqual[i].push(k);
+        }
+      }
+    }
+  }
+
+  // Remove empty grid positions
+  for (let i = 0; i < rowsHeadings.length; ++i) {
+    let j = 0;
+    while (j < rowsHeadings[i].length) {
+      if (rowsHeadings[i][j] == undefined) {
+        rowsHeadings[i].splice(j, 1);
+      } else {
+        ++j;
+      }
+    }
+  }
+
+  return [rowsHeadings, rowsData, rowsCohort, rowsRelated, rowsEqual];
+}
+
+function applyCellGridMergedHorizontal (grid, qualifier, formatter) {
+  for (let i = 0; i < grid.length; ++i) {
+    let j = 0;
+    while (j < grid[i].length) {
+      if (qualifier(grid[i][j])) {
+        let cells = [grid[i][j]];
+        for (++j; j < grid[i].length; ++j) {
+          if (qualifier(grid[i][j]) && grid[i][j].childNodes.length == 0) {
+            cells.push(grid[i][j]);
+          } else {
+            break;
+          }
+        }
+        formatter(cells);
+      } else {
+        ++j;
+      }
+    }
+  }
+}
+
+function buildChainringsTable (cogsDatabase, formatCogsGroup) {
   var table;
 
   table = gStock.tableChainrings.cloneNode();
 
   //////////////////////////////////////////////////////////////////////////////
 
-  for (let i = 0; i < CHAINRINGS_INFO.length; ++i) {
-    if (i > 0) {
-      table.appendChild(gStock.trInvisible.cloneNode(true))
+  for (let groupIndex = 0; groupIndex < cogsDatabase.length; ++groupIndex) {
+    if (groupIndex > 0) {
+      table.appendChild(gStock.trSpacer.cloneNode(true));
     }
 
     let trMinor = table.appendChild(gStock.trPlain.cloneNode());
     trMinor.appendChild(gStock.tdHeading.cloneNode()).appendChild(document.createTextNode("Group"));
     trMinor.appendChild(gStock.tdHeading.cloneNode()).appendChild(document.createTextNode("Manufacturer"));
     trMinor.appendChild(gStock.tdHeading.cloneNode()).appendChild(document.createTextNode("Model"));
-    trMinor.appendChild(gStock.tdEmpty.cloneNode());
-    if (i > 0) {
+    if (groupIndex > 0) {
+      // TODO: range (e.g. 11-28T)
+      trMinor.appendChild(gStock.tdSpacer.cloneNode());
       trMinor.appendChild(gStock.tdHeadingRatio.cloneNode()).innerHTML = "&Delta;";
-      trMinor.appendChild(gStock.tdEmpty.cloneNode());
+      // TODO: grams, url, note
     }
-    for (let j = CHAINRINGS_INFO[i].group; j > 0; --j) {
+    trMinor.appendChild(gStock.tdSpacer.cloneNode());
+    for (let j = cogsDatabase[groupIndex].group; j > 0; --j) {
       let td = gStock.tdPlain.cloneNode();
       if (j % 2 == 0) {
         td.classList.add("index-even");
@@ -117,52 +301,66 @@ function buildChainringsTable () {
       trMinor.appendChild(td).appendChild(document.createTextNode(j));
     }
 
-    table.appendChild(gStock.trInvisible.cloneNode(true))
+    table.appendChild(gStock.trSpacer.cloneNode(true));
 
     let buildTdData = (j, x) => buildTdDataCell(formatCogTeeth(x));
-    let buildTdHeadingGroup = (x) => buildTdDataCell(formatChainringsGroup(x));
-    let buildTdHeadingBrand = (x) => buildTdDataCell(x);
+    let buildTdHeadingGroup = (x) => buildTdDataCell(formatCogsGroup(x));
     let buildTdHeadingModel = (x) =>
-      (i > 0) ?
         [
+          buildTdDataCell(formatCogInfoBrand(x.brand)),
           buildTdDataCell(x.model),
-          gStock.tdEmpty.cloneNode(),
-          buildTdDataCell(formatCogTeeth(gChainrings.get(x.sprockets)[0])),
-          gStock.tdEmpty.cloneNode(),
-        ] :
-        [
-          buildTdDataCell(x.model),
-          gStock.tdEmpty.cloneNode(),
         ];
-    let [rowsCells, rowsData] =
-      buildCellsGrid(
-        CHAINRINGS_INFO,
+    let [rowsHeadings, rowsData, rowsCohort, rowsRelated, rowsEqual] =
+      buildUnevenCellGrid(
+        cogsDatabase,
         buildTdData,
         [
-          (x) => [undefined,                    [x[i]]],
+          (x) => [undefined,                    [x[groupIndex]]],
           (x) => [buildTdHeadingGroup(x.group), x.infos],
-          (x) => [buildTdHeadingBrand(x.brand), x.models],
-          (x) => [buildTdHeadingModel(x),       x.sprockets]
+          (x) => [buildTdHeadingModel(x),       [gChainrings.get(x.sprockets), x.sprockets].flat()],
         ]);
-    for (let row of rowsData) {
-      formatDataCellsHorizontal(row);
+
+    rowsData.forEach((x) => formatDataCellsHorizontal(x[0]));
+    rowsData.forEach((x) => formatDataCellsHorizontal(x.slice(1)));
+    applyCellGridMergedHorizontal(
+      rowsHeadings,
+      (x) => x.classList.contains("data"),
+      formatDataCellsHorizontal);
+    for (let i = 0; i < rowsData.length; ++i) {
+      let related = rowsRelated[i].map((x) => rowsData[x]).flat();
+      let equal = rowsEqual[i].map((x) => rowsData[x]).flat();
+      for (let cell of rowsData[i]) {
+        buildHover(cell, rowsCohort[i].concat(rowsData[i]), related, equal);
+      }
     }
-    for (let row of rowsCells) {
+
+    for (let i = 0; i < rowsData.length; ++i) {
       let tr = table.appendChild(gStock.trPlain.cloneNode());
-      for (let column of row) {
-        tr.appendChild(column);
+      rowsHeadings[i].forEach((x) => tr.appendChild(x));
+      for (let j = 0; j < rowsData[i].length; ++j) {
+        if (j == 0) {
+          if (groupIndex > 0) {
+            tr.appendChild(gStock.tdSpacer.cloneNode());
+            tr.appendChild(rowsData[i][j]);
+          }
+          tr.appendChild(gStock.tdSpacer.cloneNode());
+        } else {
+          tr.appendChild(rowsData[i][j]);
+        }
       }
     }
   }
 
   //////////////////////////////////////////////////////////////////////////////
 
-  var chainringsDiv = document.getElementById("chainrings-div")
+  var chainringsDiv = document.getElementById("chainrings-div");
   purgeChildren(chainringsDiv);
   chainringsDiv.appendChild(table);
 }
 
-function build() {
-  calcChainrings();
-  buildChainringsTable();
+function buildChainrings() {
+  let cogs = CHAINRINGS_INFO;
+  let formatter = formatChainringsGroup;
+  calcChainrings(cogs);
+  buildChainringsTable(cogs, formatter);
 }

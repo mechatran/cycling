@@ -3,7 +3,7 @@ var gStock = {
   tablePower: document.createElement("table"),
   trPlain: document.createElement("tr"),
   tdPlain: document.createElement("td"),
-  tdInvisible: document.createElement("td"),
+  tdSpacer: document.createElement("td"),
   tdEmpty: document.createElement("td"),
   tdData: document.createElement("td"),
   tdHeadingRatio: document.createElement("td"),
@@ -13,7 +13,7 @@ var gStock = {
   tdHeadingSpeedFromGrade: document.createElement("td"),
   tdHeading: document.createElement("td"),
   tdHeadingIndex: document.createElement("td"),
-  trInvisible: document.createElement("tr"),
+  trSpacer: document.createElement("tr"),
   spanEmoji: document.createElement("span"),
   divPlain: document.createElement("div"),
   divDogEar: document.createElement("div"),
@@ -25,7 +25,7 @@ var gStock = {
 };
 gStock.tableGearing.className = "gearing";
 gStock.tablePower.className = "power";
-gStock.tdInvisible.className = "invisible";
+gStock.tdSpacer.className = "spacer";
 gStock.tdEmpty.className = "empty";
 gStock.tdData.className = "data";
 gStock.tdHeadingRatio.className = "heading-ratio";
@@ -35,7 +35,7 @@ gStock.tdHeadingTorqueFromCadence.className = "heading-torque-from-cadence";
 gStock.tdHeadingSpeedFromGrade.className = "heading-speed-from-grade";
 gStock.tdHeading.className = "heading";
 gStock.tdHeadingIndex.className = "heading-index";
-gStock.trInvisible.appendChild(gStock.tdInvisible.cloneNode());
+gStock.trSpacer.appendChild(gStock.tdSpacer.cloneNode());
 gStock.spanEmoji.className = "emoji";
 gStock.divDogEar.className = "dog-ear";
 gStock.divTdPopoverRatio.classList.add("td-pop-over");
@@ -77,8 +77,8 @@ var gLegForceByGrade = [];
 var gLegPowerByGrade = [];
 
 var gConfig = {
-  chainrings:    { value: "1,5,4",              order: 1,  choices: CHAINRINGS },
-  cluster:       { value: "6,2,4",              order: 2,  choices: CLUSTERS },
+  chainrings:    { value: "1,12",               order: 1,  choices: CHAINRINGS },
+  cluster:       { value: "6,8",                order: 2,  choices: CLUSTERS },
   tireSize:      { value: 60,                   order: 3,  choices: TIRE_SIZES },
   tireCircMm:    { value: 2096,                            formatter: formatLengthMm },
   capacityFront: { value: 0,                               formatter: formatCogTeeth }, // Calculated
@@ -734,8 +734,8 @@ function buildGearingTable () {
   //////////////////////////////////////////////////////////////////////////////
 
   trHeading = table.appendChild(gStock.trPlain.cloneNode());
-  trHeading.appendChild(gStock.tdInvisible.cloneNode());
-  trHeading.appendChild(gStock.tdInvisible.cloneNode());
+  trHeading.appendChild(gStock.tdSpacer.cloneNode());
+  trHeading.appendChild(gStock.tdSpacer.cloneNode());
 
   tdMinor = [];
   for (let i = 0; gCogsCluster[i]; ++i) {
@@ -757,7 +757,7 @@ function buildGearingTable () {
   formatLabelCellsVertical(tdMinor);
 
   if (gSwitches.gearing_table.value) {
-    table.appendChild(gStock.trInvisible.cloneNode(true));
+    table.appendChild(gStock.trSpacer.cloneNode(true));
 
     tdMajor = gStock.tdHeadingRatio.cloneNode();
     addEmoji(tdMajor, "gear");
@@ -801,7 +801,7 @@ function buildGearingTable () {
   //////////////////////////////////////////////////////////////////////////////
 
   if (gSwitches.speedAtCadence_table.value) {
-    table.appendChild(gStock.trInvisible.cloneNode(true));
+    table.appendChild(gStock.trSpacer.cloneNode(true));
 
     tdMajor = gStock.tdHeadingSpeedFromCadence.cloneNode();
     addEmoji(tdMajor, "bike");
@@ -847,7 +847,7 @@ function buildGearingTable () {
   //////////////////////////////////////////////////////////////////////////////
 
   if (gSwitches.cadenceAtSpeed_table.value) {
-    table.appendChild(gStock.trInvisible.cloneNode(true));
+    table.appendChild(gStock.trSpacer.cloneNode(true));
 
     tdMajor = gStock.tdHeadingCadenceAtSpeed.cloneNode();
     addEmoji(tdMajor, "circle");
@@ -882,7 +882,7 @@ function buildGearingTable () {
   //////////////////////////////////////////////////////////////////////////////
 
   if (gSwitches.torqueAtCadence_table.value) {
-    table.appendChild(gStock.trInvisible.cloneNode(true));
+    table.appendChild(gStock.trSpacer.cloneNode(true));
 
     tdMajor = gStock.tdHeadingTorqueFromCadence.cloneNode();
     addEmoji(tdMajor, "wrench");
@@ -940,7 +940,7 @@ function buildPowerTable () {
 
   //////////////////////////////////////////////////////////////////////////////
 
-  tdMajor = gStock.tdInvisible.cloneNode();
+  tdMajor = gStock.tdSpacer.cloneNode();
 
   tdMinor = gStock.tdHeadingIndex.cloneNode();
   tdMinor.appendChild(document.createTextNode("Index"));
@@ -956,7 +956,7 @@ function buildPowerTable () {
 
   //////////////////////////////////////////////////////////////////////////////
 
-  tdMajor = gStock.tdInvisible.cloneNode();
+  tdMajor = gStock.tdSpacer.cloneNode();
 
   tdMinor = gStock.tdHeadingRatio.cloneNode();
   tdMinor.appendChild(document.createTextNode("Ratio"));
@@ -971,7 +971,7 @@ function buildPowerTable () {
   //////////////////////////////////////////////////////////////////////////////
 
   if (gSwitches.speedByCadence_table.value) {
-    table.appendChild(gStock.trInvisible.cloneNode(true));
+    table.appendChild(gStock.trSpacer.cloneNode(true));
 
     tdMajor = gStock.tdHeadingSpeedFromCadence.cloneNode();
     addEmoji(tdMajor, "bike");
@@ -1023,7 +1023,7 @@ function buildPowerTable () {
   //////////////////////////////////////////////////////////////////////////////
 
   if (gSwitches.cadenceBySpeed_table.value) {
-    table.appendChild(gStock.trInvisible.cloneNode(true));
+    table.appendChild(gStock.trSpacer.cloneNode(true));
 
     tdMajor = gStock.tdHeadingCadenceAtSpeed.cloneNode();
     addEmoji(tdMajor, "circle");
@@ -1063,7 +1063,7 @@ function buildPowerTable () {
   //////////////////////////////////////////////////////////////////////////////
 
   if (gSwitches.speedByGrade_table.value) {
-    table.appendChild(gStock.trInvisible.cloneNode(true));
+    table.appendChild(gStock.trSpacer.cloneNode(true));
 
     tdMajor = gStock.tdHeadingSpeedFromGrade.cloneNode();
     addEmoji(tdMajor, "mountain");
@@ -1147,13 +1147,13 @@ function calcCfg () {
   gConfig.fitnessRatio.value = gConfig.powerFtp.value / convertLbToKg(gConfig.weightRider.value);
 
   // Chainrings, in ascending order of number of cogs
-  let [chainringGroup, chainringBrand, chainringIndex] = gConfig.chainrings.value.split(",").map(Number);
-  gCogsChainring = Array.from(CHAINRINGS_INFO[chainringGroup].infos[chainringBrand].models[chainringIndex].sprockets);
+  let [chainringGroup, chainringIndex] = gConfig.chainrings.value.split(",").map(Number);
+  gCogsChainring = Array.from(CHAINRINGS_INFO[chainringGroup].infos[chainringIndex].sprockets);
   gCogsChainring.sort((a, b) => a - b);
 
   // Cluster sprockets, in descending order of number of cogs
-  let [clusterGroup, clusterBrand, clusterIndex] = gConfig.cluster.value.split(",").map(Number);
-  gCogsCluster = Array.from(CLUSTERS_INFO[clusterGroup].infos[clusterBrand].models[clusterIndex].sprockets);
+  let [clusterGroup, clusterIndex] = gConfig.cluster.value.split(",").map(Number);
+  gCogsCluster = Array.from(CLUSTERS_INFO[clusterGroup].infos[clusterIndex].sprockets);
   gCogsCluster.sort((a, b) => b - a);
 
   gConfig.capacityFront.value = gCogsChainring[gCogsChainring.length - 1] - gCogsChainring[0];
@@ -1220,12 +1220,9 @@ function buildDropdownList (choices, order, value) {
       let optgroup = select.appendChild(document.createElement("optgroup"));
       optgroup.label = groupName;
       for (let j = 0; j < subchoices.length; ++j) {
-        let [groupName2, subchoices2] = subchoices[j];
-        for (let k = 0; k < subchoices2.length; ++k) {
-          let option = optgroup.appendChild(document.createElement("option"));
-          option.value = [i, j, k];
-          option.appendChild(document.createTextNode(groupName2 + " " + subchoices2[k]));
-        }
+        let option = optgroup.appendChild(document.createElement("option"));
+        option.value = [i, j];
+        option.appendChild(document.createTextNode(subchoices[j]));
       }
     }
   } else {

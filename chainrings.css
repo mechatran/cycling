@@ -4,8 +4,26 @@ table {
   text-align: center;
 }
 
+td.heading:nth-child(1) { width: 6em; }
+td.heading:nth-child(2) { width: 10em; }
+td.heading:nth-child(3) { width: 11em; }
+
 td.data {
-  min-width: 5em;
+  width: 3em;
+}
+
+td.hover {
+  background-color: Wheat;
+  font-weight: bold;
+}
+
+td.hover-related {
+  background-color: Wheat;
+}
+
+td.hover-equal {
+  background-color: Beige;
+  font-weight: bold;
 }
 
 .heading-ratio { background-color: var(--fill-red);    color: white; }

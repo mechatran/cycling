@@ -42,7 +42,7 @@ table.config td {
   height: 24pt; /* Large enough to fit all the editable widgets */
 }
 
-table.config td.invisible {
+table.config td.spacer {
   height: auto;
 }
 
