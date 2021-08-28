@@ -22,7 +22,7 @@ function formatNone (n, units=true) {
 }
 
 function formatCogTeeth (teeth, units=true) {
-  return __appendUnits(teeth, units, " T");
+  return __appendUnits(teeth, units, "T");
 }
 
 function formatRatio (ratio, units=true) {
@@ -63,6 +63,10 @@ function formatWeightLb (weight, units=true) {
 
 function formatWeightKg (weight, units=true) {
   return __appendUnits(__formatRoundedTo(weight, 0), units, " kg");
+}
+
+function formatWeightG (weight, units=true) {
+  return __appendUnits(__formatRoundedTo(weight, 0), units, " g");
 }
 
 function formatPercent (p, units=true) {
@@ -388,7 +392,7 @@ function formatCellGridsGroupsConditionally (dataGrids, predicateGrid) {
 // Table construction
 //////////////////////////////////////////////////////////////////////////////
 
-function addInterleavedRows (table, tdMajor, tdMinor, width, dataGrids, formatter) {
+function addInterleavedRows (table, tdMajor, tdMinor, width, dataGrids, formatters) {
   var tr;
   var td;
   var cellGrids = [];
@@ -424,7 +428,7 @@ function addInterleavedRows (table, tdMajor, tdMinor, width, dataGrids, formatte
       for (let j = 0; j < width; ++j) {
         let content = dataGrids[k] && dataGrids[k][i] && dataGrids[k][i][j];
         if (content) {
-          content = formatter[k](content);
+          content = formatters[k](content);
           td = gStock.tdData.cloneNode();
           td.appendChild(document.createTextNode(content));
         } else {

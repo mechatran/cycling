@@ -1,29 +1,33 @@
 var gStock = {
-  tableChainrings: document.createElement("table"),
+  tableCogs: document.createElement("table"),
   trPlain: document.createElement("tr"),
   trSpacer: document.createElement("tr"),
   tdPlain: document.createElement("td"),
   tdData: document.createElement("td"),
   tdHeading: document.createElement("td"),
   tdHeadingRatio: document.createElement("td"),
+  tdInfo: document.createElement("td"),
   tdSpacer: document.createElement("td"),
 }
-gStock.tableChainrings.className = "chainrings";
+gStock.tableCogs.className = "cogs";
 gStock.tdData.className = "data";
 gStock.tdHeading.className = "heading";
 gStock.tdHeadingRatio.className = "heading-ratio";
+gStock.tdInfo.className = "info";
 gStock.tdSpacer.className = "spacer";
 gStock.trSpacer.appendChild(gStock.tdSpacer.cloneNode());
 
-var gChainrings = new Map();
+var gCogsData = new Map();
 
-function calcChainrings (cogsDatabase) {
+function calcCogsData (cogsDatabase) {
   for (let group of cogsDatabase) {
     for (let info of group.infos) {
       let min = Math.min(...info.sprockets);
       let max = Math.max(...info.sprockets);
-      let data = [max - min];
-      gChainrings.set(info.sprockets, data);
+      let data = [];
+      data.push(formatCogInfoSize(info));
+      data.push(max - min);
+      gCogsData.set(info.sprockets, data);
     }
   }
 }
@@ -268,10 +272,10 @@ function applyCellGridMergedHorizontal (grid, qualifier, formatter) {
   }
 }
 
-function buildChainringsTable (cogsDatabase, formatCogsGroup) {
+function buildCogsTable (parentId, cogsDatabase, formatCogsGroup, includeRange, useIndexParityColor) {
   var table;
 
-  table = gStock.tableChainrings.cloneNode();
+  table = gStock.tableCogs.cloneNode();
 
   //////////////////////////////////////////////////////////////////////////////
 
@@ -285,25 +289,31 @@ function buildChainringsTable (cogsDatabase, formatCogsGroup) {
     trMinor.appendChild(gStock.tdHeading.cloneNode()).appendChild(document.createTextNode("Manufacturer"));
     trMinor.appendChild(gStock.tdHeading.cloneNode()).appendChild(document.createTextNode("Model"));
     if (groupIndex > 0) {
-      // TODO: range (e.g. 11-28T)
       trMinor.appendChild(gStock.tdSpacer.cloneNode());
+      if (includeRange) {
+        trMinor.appendChild(gStock.tdHeading.cloneNode()).appendChild(document.createTextNode("Range"));
+      }
       trMinor.appendChild(gStock.tdHeadingRatio.cloneNode()).innerHTML = "&Delta;";
-      // TODO: grams, url, note
     }
     trMinor.appendChild(gStock.tdSpacer.cloneNode());
+    let indexHeadings = [];
     for (let j = cogsDatabase[groupIndex].group; j > 0; --j) {
       let td = gStock.tdPlain.cloneNode();
-      if (j % 2 == 0) {
+      indexHeadings.push(td);
+      if (!useIndexParityColor || (j % 2 == 0)) {
         td.classList.add("index-even");
       } else {
         td.classList.add("index-odd");
       }
       trMinor.appendChild(td).appendChild(document.createTextNode(j));
     }
+    if (!useIndexParityColor) {
+      formatLabelCellsHorizontal(indexHeadings);
+    }
 
     table.appendChild(gStock.trSpacer.cloneNode(true));
 
-    let buildTdData = (j, x) => buildTdDataCell(formatCogTeeth(x));
+    let buildTdData = (j, x) => buildTdDataCell((typeof x == "string") ? x : formatCogTeeth(x));
     let buildTdHeadingGroup = (x) => buildTdDataCell(formatCogsGroup(x));
     let buildTdHeadingModel = (x) =>
         [
@@ -317,11 +327,12 @@ function buildChainringsTable (cogsDatabase, formatCogsGroup) {
         [
           (x) => [undefined,                    [x[groupIndex]]],
           (x) => [buildTdHeadingGroup(x.group), x.infos],
-          (x) => [buildTdHeadingModel(x),       [gChainrings.get(x.sprockets), x.sprockets].flat()],
+          (x) => [buildTdHeadingModel(x),       [gCogsData.get(x.sprockets), x.sprockets].flat()],
         ]);
 
     rowsData.forEach((x) => formatDataCellsHorizontal(x[0]));
-    rowsData.forEach((x) => formatDataCellsHorizontal(x.slice(1)));
+    rowsData.forEach((x) => formatDataCellsHorizontal(x[1]));
+    rowsData.forEach((x) => formatDataCellsHorizontal(x.slice(2)));
     applyCellGridMergedHorizontal(
       rowsHeadings,
       (x) => x.classList.contains("data"),
@@ -337,30 +348,62 @@ function buildChainringsTable (cogsDatabase, formatCogsGroup) {
     for (let i = 0; i < rowsData.length; ++i) {
       let tr = table.appendChild(gStock.trPlain.cloneNode());
       rowsHeadings[i].forEach((x) => tr.appendChild(x));
-      for (let j = 0; j < rowsData[i].length; ++j) {
-        if (j == 0) {
-          if (groupIndex > 0) {
-            tr.appendChild(gStock.tdSpacer.cloneNode());
-            tr.appendChild(rowsData[i][j]);
-          }
-          tr.appendChild(gStock.tdSpacer.cloneNode());
-        } else {
+      // Range and delta
+      if (groupIndex > 0) {
+        tr.appendChild(gStock.tdSpacer.cloneNode());
+        for (let j = (includeRange ? 0 : 1); (j < 2) && (j < rowsData[i].length); ++j) {
           tr.appendChild(rowsData[i][j]);
         }
       }
+      // Cog size
+      tr.appendChild(gStock.tdSpacer.cloneNode());
+      for (let j = 2; j < rowsData[i].length; ++j) {
+        tr.appendChild(rowsData[i][j]);
+      }
+      // Annotations
+      // TODO: Cog clocking
+      let td = gStock.tdInfo.cloneNode();
+      td.setAttribute("colspan", 15);
+      let info = cogsDatabase[groupIndex].infos[i];
+      if (info.grams) {
+        td.appendChild(document.createTextNode(formatWeightG(info.grams)));
+      }
+      if (info.note) {
+        if (td.childNodes.length > 0) {
+          td.appendChild(document.createTextNode(", "));
+        }
+        td.appendChild(document.createTextNode(info.note));
+      }
+      if (info.url) {
+        if (td.childNodes.length > 0) {
+          td.appendChild(document.createTextNode(", "));
+        }
+        let anchor = document.createElement("a");
+        anchor.href = info.url;
+        anchor.innerText = anchor.hostname;
+        td.appendChild(anchor);
+      }
+      tr.appendChild(td);
     }
   }
 
   //////////////////////////////////////////////////////////////////////////////
 
-  var chainringsDiv = document.getElementById("chainrings-div");
-  purgeChildren(chainringsDiv);
-  chainringsDiv.appendChild(table);
+  var parentElement = document.getElementById(parentId);
+  purgeChildren(parentElement);
+  parentElement.appendChild(table);
 }
 
 function buildChainrings() {
   let cogs = CHAINRINGS_INFO;
   let formatter = formatChainringsGroup;
-  calcChainrings(cogs);
-  buildChainringsTable(cogs, formatter);
+  calcCogsData(cogs);
+  buildCogsTable("chainrings-div", cogs, formatter, false, true);
+}
+
+function buildClusters() {
+  let cogs = CLUSTERS_INFO;
+  let formatter = formatClustersGroup;
+  calcCogsData(cogs);
+  buildCogsTable("clusters-div", cogs, formatter, true, false);
 }

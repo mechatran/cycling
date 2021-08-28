@@ -120,6 +120,8 @@ var CHAINRINGS_INFO = [
 
 //////////////////////////////////////////////////////////////////////////////
 
+// TODO: Merge bicycle-cassette-cogs.xls
+
 var CLUSTERS_INFO = [
   {
     group: 1,
@@ -266,7 +268,7 @@ function formatCogInfoBrand (brand) {
   return brand || "Unbranded";
 }
 
-function formatCogInfoEntry (info, isChainring) {
+function formatCogInfoSize (info, isChainring) {
   var range;
   if (isChainring) {
     range = info.sprockets[0] + "T";
@@ -280,13 +282,15 @@ function formatCogInfoEntry (info, isChainring) {
       range = info.sprockets[0] + "-" + info.sprockets[info.sprockets.length - 1] + "T";
     }
   }
+  return range;
+}
 
+function formatCogInfoEntry (info, isChainring) {
   var desc = formatCogInfoBrand(info.brand) + " ";
   if (info.model) {
     desc += info.model + " ";
   }
-  desc += range;
-
+  desc += formatCogInfoSize(info, isChainring);
   return desc;
 }
 

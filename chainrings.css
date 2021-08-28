@@ -1,12 +1,20 @@
 @import "common.css";
 
-table {
+table.cogs {
   text-align: center;
 }
 
 td.heading:nth-child(1) { width: 6em; }
 td.heading:nth-child(2) { width: 10em; }
 td.heading:nth-child(3) { width: 11em; }
+td.heading:nth-child(5) { width: 4em; }
+
+td.info {
+  text-align: left;
+  border: none;
+  padding-left: 10px; /* td.padding * 2 */
+  white-space: nowrap
+}
 
 td.data {
   width: 3em;
