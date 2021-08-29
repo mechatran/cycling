@@ -120,8 +120,6 @@ var CHAINRINGS_INFO = [
 
 //////////////////////////////////////////////////////////////////////////////
 
-// TODO: Merge bicycle-cassette-cogs.xls
-
 var CLUSTERS_INFO = [
   {
     group: 1,
@@ -246,7 +244,26 @@ var CLUSTERS_INFO = [
       { brand: "Shimano", model: "XTR CS-M9100-12", sprockets: [10, 12, 14, 16, 18, 21, 24, 28, 33, 39, 45, 51] },
     ]
   },
+  {
+    group: 13,
+    infos: []
+  },
 ];
+
+//////////////////////////////////////////////////////////////////////////////
+
+if (PETER_HEINLE_INFO) {
+  for (let src of PETER_HEINLE_INFO) {
+    for (let dst of CLUSTERS_INFO) {
+      if (src.group != dst.group) {
+        continue;
+      }
+      for (let srcInfo of src.infos) {
+        dst.infos.push(srcInfo);
+      }
+    }
+  }
+}
 
 //////////////////////////////////////////////////////////////////////////////
 
