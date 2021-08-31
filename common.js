@@ -159,6 +159,41 @@ function unzip (combined) {
   return [a, b];
 }
 
+function clumpRelatedCells (grid, qualifier) {
+  let related = [];
+  for (let row of grid) {
+    let rowRuns = [];
+    let run = [];
+    // Scan the row
+    for (let i = 0; i < row.length; ) {
+      if (qualifier(row[i], run)) {
+        // This cell is part of the current run
+        run.push(row[i]);
+        ++i;
+      } else if (run.length) {
+        // Finish this (non-empty) run
+        if (run.length) {
+          rowRuns.push(run);
+        }
+        // Start a new run (and process this cell again)
+        run = [];
+      } else {
+        // Ignore this non-qualifying cell
+        ++i;
+      }
+    }
+    // Finish the last (non-empty) run
+    if (run.length) {
+      rowRuns.push(run);
+    }
+    // Add only non-empty rows
+    if (rowRuns.length) {
+      related.push(rowRuns);
+    }
+  }
+  return related;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // HTML DOM
 //////////////////////////////////////////////////////////////////////////////
@@ -466,6 +501,8 @@ function addInterleavedRows (table, tdMajor, tdMinor, width, dataGrids, formatte
   return cellGrids;
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
 function addRow (table, tdMajor, tdMinor, data, formatter) {
   var tr;
   var td;
@@ -490,5 +527,187 @@ function addRow (table, tdMajor, tdMinor, data, formatter) {
   }
 
   return cells;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+function __mergeVertical (rows, width, column=0, rowStart=0, rowMax=rows.length) {
+  if (column >= width) {
+    return;
+  }
+
+  let start = rowStart;
+  while (start < rowMax) {
+    let end = start + 1;
+    while ((end < rowMax) &&
+      rows[start][column] &&
+      rows[end][column] &&
+      rows[start][column].isEqualNode(rows[end][column]))
+    {
+      ++end;
+    }
+    if (rows[start][column]) {
+      let height = rows[start][column].getAttribute("rowspan");
+      height = height ? parseInt(height) : 1;
+      rows[start][column].setAttribute("rowspan", height + (end - start - 1));
+      for (let i = start + 1; i < end; ++i) {
+        rows[i][column] = undefined;
+      }
+    }
+    __mergeVertical(rows, width, column + 1, start, end);
+    start = end;
+  }
+}
+
+// TODO: Update addInterleavedRows() to use __buildEvenCellGrid()?
+function __buildEvenCellGrid (node, buildDataCell, resolvers, depth) {
+  var rowsHeadings = [];
+  var rowsData = [];
+  var dataGrid = [];
+
+  var [headings, children] = resolvers[depth](node);
+  var widthHeadings;
+  if (headings instanceof Array) {
+    if (headings[0] instanceof Array) {
+      // Allow trailing headings to be ignored (i.e. empty cells for spacing)
+      [headings, widthHeadings] = headings;
+    } else {
+      widthHeadings = headings.length;
+    }
+  } else {
+    headings = [headings];
+    widthHeadings = 1;
+  }
+
+  if (depth == resolvers.length - 1) {
+    let row = [];
+
+    for (let i = 0; i < children.length; ++i) {
+      let td;
+      if (buildDataCell) {
+        td = buildDataCell(i, children[i]);
+      } else {
+        td = children[i];
+      }
+      row.push(td);
+    }
+
+    rowsHeadings = [headings];
+    rowsData = [row];
+    dataGrid = [children];
+  } else {
+    let widthHeadingsChildren;
+    for (let child of children) {
+      let [rowsHeadingsChild, widthHeadingsChild, rowsDataChild, dataGridChild] =
+        __buildEvenCellGrid(child, buildDataCell, resolvers, depth + 1);
+      widthHeadingsChildren = widthHeadingsChild;
+      rowsHeadings.push(...rowsHeadingsChild);
+      rowsData.push(...rowsDataChild);
+      dataGrid.push(...dataGridChild);
+    }
+    __mergeVertical(rowsHeadings, widthHeadingsChildren);
+
+    for (let heading of headings) {
+      if (heading instanceof HTMLElement) {
+        // TODO: For HTML, we can increase the cell height directly.  For
+        //       others (e.g. CSV), perhaps change this to invoke a callback
+        //       function to do this?
+        heading.setAttribute("rowspan", rowsHeadings.length);
+      }
+    }
+    rowsHeadings[0].unshift(...headings);
+    for (let i = 1; i < rowsHeadings.length; ++i) {
+      for (let heading of headings) {
+        rowsHeadings[i].unshift(undefined);
+      }
+    }
+  }
+
+  return [rowsHeadings, widthHeadings, rowsData, dataGrid];
+}
+
+function __correlateUnevenRowCells (grid, row) {
+  var cells = [];
+  for (let j = 0; j < grid[row].length; ++j) {
+    let cell;
+    for (let i = row; i >= 0; --i)  {
+      if (grid[i][j]) {
+        cell = grid[i][j];
+        break;
+      }
+    }
+    if (cell && !cell.classList.contains("empty")) {
+      cells.push(cell);
+    }
+  }
+  return cells;
+}
+
+function buildUnevenCellGrid (root, buildDataCell, resolvers) {
+  var [rowsHeadings, widthHeadings, rowsData, dataGrid] =
+    __buildEvenCellGrid(root, buildDataCell, resolvers, 0);
+
+  // DIY tr:hover for uneven cell grids
+  var rowsCohort = [];
+  for (let i = 0; i < rowsHeadings.length; ++i) {
+    rowsCohort.push(__correlateUnevenRowCells(rowsHeadings, i));
+  }
+
+  // Find related data rows indexes
+  var rowsRelated = [];
+  for (let i = 0; i < rowsCohort.length; ++i) {
+    let last = rowsCohort[i].length - 1;
+
+    let start;
+    for (start = i - 1; start >= 0; --start) {
+      if (!(rowsCohort[start][last] === rowsCohort[i][last])) {
+        break;
+      }
+    }
+    ++start;
+
+    let end;
+    for (end = i + 1; end < rowsCohort.length; ++end) {
+      if (!(rowsCohort[end][last] === rowsCohort[i][last])) {
+        break;
+      }
+    }
+    --end;
+
+    rowsRelated[i] = [];
+    for (let k = start; k <= end; ++k) {
+      if (k != i) {
+        rowsRelated[i].push(k);
+      }
+    }
+  }
+
+  // Find data rows with the same values
+  var rowsEqual = [];
+  for (let i = 0; i < rowsData.length; ++i) {
+    let reference = dataGrid[i].join();
+    rowsEqual[i] = [];
+    for (let k = 0; k < rowsData.length; ++k) {
+      if (i != k) {
+        if (reference == dataGrid[k].join()) {
+          rowsEqual[i].push(k);
+        }
+      }
+    }
+  }
+
+  // Remove empty grid positions
+  for (let i = 0; i < rowsHeadings.length; ++i) {
+    let j = 0;
+    while (j < rowsHeadings[i].length) {
+      if (rowsHeadings[i][j] == undefined) {
+        rowsHeadings[i].splice(j, 1);
+      } else {
+        ++j;
+      }
+    }
+  }
+
+  return [rowsHeadings, rowsData, rowsCohort, rowsRelated, rowsEqual];
 }
 

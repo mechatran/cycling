@@ -252,7 +252,7 @@ var CLUSTERS_INFO = [
 
 //////////////////////////////////////////////////////////////////////////////
 
-if (PETER_HEINLE_INFO) {
+if (typeof PETER_HEINLE_INFO !== "undefined") {
   for (let src of PETER_HEINLE_INFO) {
     for (let dst of CLUSTERS_INFO) {
       if (src.group != dst.group) {
