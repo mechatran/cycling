@@ -51,6 +51,19 @@ gStock.divTdPopoverSpeedFromGrade.classList.add("heading-speed-from-grade");
 
 //////////////////////////////////////////////////////////////////////////////
 
+function __formatCogInfo (infos, formatGroup, formatEntry) {
+  return infos.map(
+    (x) => [
+      formatGroup(x.group),
+      x.infos.map(formatEntry),
+    ]);
+}
+
+var CHAINRINGS = __formatCogInfo(CHAINRINGS_INFO, formatChainringsGroup, (x) => formatCogInfoEntry(x, true));
+var CLUSTERS =  __formatCogInfo(CLUSTERS_INFO, formatClustersGroup, (x) => formatCogInfoEntry(x, false));
+
+//////////////////////////////////////////////////////////////////////////////
+
 var gCogsCluster = [ 36, 32, 28, 25, 22, 19, 17, 15, 13, 12, 11 ];
 var gCogsChainring = [ 34, 50 ];
 

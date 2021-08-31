@@ -310,16 +310,3 @@ function formatCogInfoEntry (info, isChainring) {
   desc += formatCogInfoSize(info, isChainring);
   return desc;
 }
-
-//////////////////////////////////////////////////////////////////////////////
-
-function __formatCogInfo (infos, formatGroup, formatEntry) {
-  return infos.map(
-    (x) => [
-      formatGroup(x.group),
-      x.infos.map(formatEntry),
-    ]);
-}
-
-var CHAINRINGS = __formatCogInfo(CHAINRINGS_INFO, formatChainringsGroup, (x) => formatCogInfoEntry(x, true));
-var CLUSTERS =  __formatCogInfo(CLUSTERS_INFO, formatClustersGroup, (x) => formatCogInfoEntry(x, false));
