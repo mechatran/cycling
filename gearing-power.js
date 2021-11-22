@@ -90,7 +90,7 @@ var gLegForceByGrade = [];
 var gLegPowerByGrade = [];
 
 var gConfig = {
-  chainrings:    { value: "1,12",               order: 1,  choices: CHAINRINGS },
+  chainrings:    { value: "1,16",               order: 1,  choices: CHAINRINGS },
   cluster:       { value: "6,8",                order: 2,  choices: CLUSTERS },
   tireSize:      { value: 60,                   order: 3,  choices: TIRE_SIZES },
   tireCircMm:    { value: 2096,                            formatter: formatLengthMm },
