@@ -139,9 +139,10 @@ var gPowerBurst = {
 var gSwitches = {
   gearing_table:         { value: true,  label: "Show"      },
   gearing_indexes:       { value: true,  label: "Indexes"   },
+  gearing_speed:         { value: true,  label: "Speed"     },
   gearing_inches:        { value: false, label: "Inches"    },
   gearing_ratios:        { value: true,  label: "Ratios"    },
-  speedAtCadence_table:  { value: true,  label: "Show"      },
+  speedAtCadence_table:  { value: false, label: "Show"      },
   speedAtCadence_force:  { value: false, label: "Force"     },
   speedAtCadence_power:  { value: true,  label: "Power"     },
   cadenceAtSpeed_table:  { value: false, label: "Show"      },
@@ -782,6 +783,7 @@ function buildGearingTable () {
       "<h2>Available rows</h2>" +
       "<ul>" +
       "<li>Index" +
+      "<li>Speed (MPH)" +
       "<li>Gear Inches" +
       "<li>Ratio (Front &divide; Rear)" +
       "</ul>" +
@@ -790,15 +792,20 @@ function buildGearingTable () {
 
     let [grids, formatters, indexes] = buildGridsAndFormatters([
       [gSwitches.gearing_indexes.value, gGearIndexByChainring, formatNone, false],
+      [gSwitches.gearing_speed.value, gSpeedByChainring, formatSpeed, false],
       [gSwitches.gearing_inches.value, gGearInchesByChainring, formatGearInches, true],
       [gSwitches.gearing_ratios.value, gRatioByChainring, formatRatio, true]]);
-    let [nums, inches, ratios] = indexes;
+    let [nums, speeds, inches, ratios] = indexes;
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, gCogsCluster.length, grids, formatters);
 
     if (nums >= 0) {
       colorGridByGearIndex(cells[nums], gGearIndexByChainring, gGearIndexByChainring);
       formatGearIndexCells(cells[nums]);
+    }
+    if (speeds >= 0) {
+      colorRatioGridConditionally(cells[speeds], gGearIndexByChainring);
+      colorGridsByRatio([cells[speeds]], gRatioByChainring);
     }
     if (inches >= 0) {
       colorRatioGridConditionally(cells[inches], gGearIndexByChainring);
