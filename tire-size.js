@@ -85,4 +85,12 @@ var TIRE_SIZE_INFO = [
 
 //////////////////////////////////////////////////////////////////////////////
 
-var TIRE_SIZES = TIRE_SIZE_INFO.map((x) => x.nominal);
+function __formatTireSize (entry) {
+  var desc = entry.nominal;
+  if (entry.etrto) {
+    desc += "\t(ETRTO " + entry.etrto + ")";
+  }
+  return desc;
+}
+
+var TIRE_SIZES = TIRE_SIZE_INFO.map((x) => __formatTireSize(x));
