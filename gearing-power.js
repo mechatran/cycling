@@ -137,31 +137,30 @@ var gPowerBurst = {
 }
 
 var gSwitches = {
-  gearing_table:         { value: true,  label: "Show"      },
-  gearing_indexes:       { value: true,  label: "Indexes"   },
-  gearing_speed:         { value: true,  label: "Speed"     },
-  gearing_inches:        { value: false, label: "Inches"    },
-  gearing_ratios:        { value: true,  label: "Ratios"    },
-  speedAtCadence_table:  { value: false, label: "Show"      },
-  speedAtCadence_force:  { value: false, label: "Force"     },
-  speedAtCadence_power:  { value: true,  label: "Power"     },
-  cadenceAtSpeed_table:  { value: false, label: "Show"      },
-  torqueAtCadence_table: { value: false, label: "Show"      },
-  torqueAtCadence_force: { value: true,  label: "Force"     },
-  speedByCadence_table:  { value: true,  label: "Show"      },
-  speedByCadence_force:  { value: true,  label: "Force"     },
-  speedByCadence_power:  { value: true,  label: "Power"     },
-  cadenceBySpeed_table:  { value: false, label: "Show"      },
-  speedByGrade_table:    { value: true,  label: "Show"      },
-  speedByGrade_cadence:  { value: true,  label: "Cadence"   },
-  speedByGrade_force:    { value: true,  label: "Force"     },
-  speedByGrade_power:    { value: true,  label: "Power"     },
-  powerStripe:           { value: true,  label: "Power"     },
-  burstStripe:           { value: true,  label: "Burst"     },
-  cadenceStripe:         { value: true,  label: "Cadence"   },
-  blending:              { value: true,  label: "Blending"  },
-  primaryUnits:          { value: true,  label: "Primary"   },
-  secondaryUnits:        { value: true,  label: "Secondary" },
+  gearing_table:         { value: true,  label: "Show"             },
+  gearing_indexes:       { value: true,  label: "Index"            },
+  gearing_speed:         { value: true,  label: "Speed (MPH)"      },
+  gearing_inches:        { value: true,  label: "Gear Inches"      },
+  speedAtCadence_table:  { value: false, label: "Show"             },
+  speedAtCadence_force:  { value: true,  label: "Leg Force (lbf)"  },
+  speedAtCadence_power:  { value: true,  label: "Leg Power (Watt)" },
+  cadenceAtSpeed_table:  { value: false, label: "Show"             },
+  torqueAtCadence_table: { value: false, label: "Show"             },
+  torqueAtCadence_force: { value: true,  label: "Leg Force (lbf)"  },
+  speedByCadence_table:  { value: true,  label: "Show"             },
+  speedByCadence_force:  { value: true,  label: "Leg Force (lbf)"  },
+  speedByCadence_power:  { value: true,  label: "Leg Power (Watt)" },
+  cadenceBySpeed_table:  { value: false, label: "Show"             },
+  speedByGrade_table:    { value: true,  label: "Show"             },
+  speedByGrade_cadence:  { value: true,  label: "Cadence"          },
+  speedByGrade_force:    { value: true,  label: "Leg Force (lbf)"  },
+  speedByGrade_power:    { value: true,  label: "Leg Power (Watt)" },
+  powerStripe:           { value: true,  label: "Power"            },
+  burstStripe:           { value: true,  label: "Burst"            },
+  cadenceStripe:         { value: true,  label: "Cadence"          },
+  blending:              { value: true,  label: "Blending"         },
+  primaryUnits:          { value: true,  label: "Primary"          },
+  secondaryUnits:        { value: true,  label: "Secondary"        },
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -782,9 +781,9 @@ function buildGearingTable () {
       "What are the unique gear combinations?" +
       "<h2>Available rows</h2>" +
       "<ul>" +
-      "<li>Index" +
-      "<li>Speed (MPH)" +
-      "<li>Gear Inches" +
+      '<li><span id="gearing_indexes"></span>' +
+      '<li><span id="gearing_speed"></span>' +
+      '<li><span id="gearing_inches"></span>' +
       "<li>Ratio (Front &divide; Rear)" +
       "</ul>" +
       "</div>";
@@ -794,7 +793,7 @@ function buildGearingTable () {
       [gSwitches.gearing_indexes.value, gGearIndexByChainring, formatNone, false],
       [gSwitches.gearing_speed.value, gSpeedByChainring, formatSpeed, false],
       [gSwitches.gearing_inches.value, gGearInchesByChainring, formatGearInches, true],
-      [gSwitches.gearing_ratios.value, gRatioByChainring, formatRatio, true]]);
+      [true, gRatioByChainring, formatRatio, true]]);
     let [nums, speeds, inches, ratios] = indexes;
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, gCogsCluster.length, grids, formatters);
@@ -832,9 +831,9 @@ function buildGearingTable () {
       "How fast can I ride at my preferred cadence?" +
       "<h2>Available rows</h2>" +
       "<ul>" +
-      "<li>Leg Force (lbf)" +
-      "<li>Leg Power (Watt)" +
-      "<li>Speed (MPH)" +
+      '<li><span id="speedAtCadence_force"></span>' +
+      '<li><span id="speedAtCadence_power"></span>' +
+      '<li>Speed (MPH)' +
       "</ul>" +
       "<h2>Fixed at</h2>" +
       "<ul>" +
@@ -913,7 +912,7 @@ function buildGearingTable () {
       "How much of my torque is delivered to the ground?" +
       "<h2>Available rows</h2>" +
       "<ul>" +
-      "<li>Leg Force (lbf)" +
+      '<li><span id="torqueAtCadence_force"></span>' +
       "<li>Wheel Torque (lb-ft)" +
       "</ul>" +
       "<h2>Fixed at</h2>" +
@@ -1002,8 +1001,8 @@ function buildPowerTable () {
       "How fast can I ride over my range of preferred cadences?" +
       "<h2>Available rows</h2>" +
       "<ul>" +
-      "<li>Leg Force (lbf)" +
-      "<li>Leg Power (Watt)" +
+      '<li><span id="speedByCadence_force"></span>' +
+      '<li><span id="speedByCadence_power"></span>' +
       "<li>Speed (MPH)" +
       "</ul>" +
       "<h2>Swept over</h2>" +
@@ -1097,9 +1096,9 @@ function buildPowerTable () {
       "long steady road segments?)" +
       "<h2>Available rows</h2>" +
       "<ul>" +
-      "<li>Cadence (" + gConfig.cadenceRpmMin.value + " &ndash; " + gConfig.cadenceRpmMax.value + " RPM)" +
-      "<li>Leg Force (lbf)" +
-      "<li>Leg Power (Watt)" +
+      '<li><span id="speedByGrade_cadence"></span> (' + gConfig.cadenceRpmMin.value + " &ndash; " + gConfig.cadenceRpmMax.value + " RPM)" +
+      '<li><span id="speedByGrade_force"></span>' +
+      '<li><span id="speedByGrade_power"></span>' +
       "<li>Speed (MPH)" +
       "</ul>" +
       "<h2>Swept over</h2>" +
@@ -1330,7 +1329,9 @@ function pushCfg () {
     let value = gSwitches[k].value;
 
     let span = document.getElementById(k);
-    if (span.childNodes.length) {
+    if (span == null) {
+      // Parent (block) element may not have been created, so do nothing
+    } else if (span.childNodes.length) {
       // Do nothing.  These switches are user-controlled.
     } else {
       span.appendChild(buildCheckBox(label, value));
@@ -1376,7 +1377,7 @@ function pushCfg () {
 function refresh () {
   calcCfg();
   calcTables();
-  pushCfg();
   buildGearingTable();
   buildPowerTable();
+  pushCfg();
 }
