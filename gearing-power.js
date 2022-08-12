@@ -782,19 +782,21 @@ function buildGearingTable () {
       "<h2>Available rows</h2>" +
       "<ul>" +
       '<li><span id="gearing_indexes"></span>' +
-      '<li><span id="gearing_speed"></span>' +
-      '<li><span id="gearing_inches"></span>' +
       "<li>Ratio (Front &divide; Rear)" +
+      '<li><span id="gearing_inches"></span>' +
+      '<li><span id="gearing_speed"></span>' +
       "</ul>" +
       "</div>";
     addPopover(tdMajor, div);
 
-    let [grids, formatters, indexes] = buildGridsAndFormatters([
-      [gSwitches.gearing_indexes.value, gGearIndexByChainring, formatNone, false],
-      [gSwitches.gearing_speed.value, gSpeedByChainring, formatSpeed, false],
-      [gSwitches.gearing_inches.value, gGearInchesByChainring, formatGearInches, true],
-      [true, gRatioByChainring, formatRatio, true]]);
-    let [nums, speeds, inches, ratios] = indexes;
+    let [grids, formatters, indexes] =
+      buildGridsAndFormatters([
+          [gSwitches.gearing_indexes.value, gGearIndexByChainring, formatNone, false],
+          [true, gRatioByChainring, formatRatio, true],
+          [gSwitches.gearing_inches.value, gGearInchesByChainring, formatGearInches, true],
+          [gSwitches.gearing_speed.value, gSpeedByChainring, formatSpeed, false],
+        ]);
+    let [nums, ratios, inches, speeds] = indexes;
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, gCogsCluster.length, grids, formatters);
 
