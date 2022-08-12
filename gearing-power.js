@@ -103,7 +103,7 @@ var gConfig = {
   weightBike:    { value: 20,                   order: 6,  formatter: formatWeightLb },
   weightKit:     { value: 2,                    order: 7,  formatter: formatWeightLb },
   weightGear:    { value: 3,                    order: 8,  formatter: formatWeightLb },
-  weightTotal:   { value: 0,                               formatter: formatWeightKg }, // Calculated
+  weightTotal:   { value: 0,                               formatter: formatWeightLbAndKg }, // Calculated
   position:      { value: 1,                    order: 9,  choices: ["Tops", "Hoods", "Drops"] },
   gradePercent:  { value: 6,         step: 0.5, order: 10, formatter: formatPercent },
   cadenceRpm:    { value: 90,                   order: 11, formatter: formatCadence },

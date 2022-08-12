@@ -65,6 +65,10 @@ function formatWeightKg (weight, units=true) {
   return __appendUnits(__formatRoundedTo(weight, 0), units, " kg");
 }
 
+function formatWeightLbAndKg (weight, units=true) {
+  return formatWeightLb(convertKgToLb(weight), units) + " / " + formatWeightKg(weight, units)
+}
+
 function formatWeightG (weight, units=true) {
   return __appendUnits(__formatRoundedTo(weight, 0), units, " g");
 }
@@ -92,6 +96,10 @@ function roundTo (n, places) {
 
 function convertLbToKg (weight) {
   return weight / 2.2;
+}
+
+function convertKgToLb (weight) {
+  return weight * 2.2;
 }
 
 function convertMmToIn (length) {
