@@ -1,3 +1,4 @@
+// TODO: replace gStock with stockElement() function that takes type + class names
 var gStock = {
   tableGearing: document.createElement("table"),
   tablePower: document.createElement("table"),
@@ -773,6 +774,7 @@ function buildGearingTable () {
       "</div>";
     addPopover(tdMajor, div);
 
+    // TODO: 2D grid of { [array of TD elements (innerHtml = formatXXX())], index:, ratio:, gearInches:, speed: }
     let [grids, formatters, indexes] =
       buildGridsAndFormatters([
           [gSwitches.gearing_indexes.value, gGearIndexByChainringAndCluster, formatNone, false],
@@ -1135,6 +1137,7 @@ function buildPowerTable () {
 
 //////////////////////////////////////////////////////////////////////////////
 
+// TODO: Move all the data stuff to a separate file
 function calcCfg () {
   gPowerZone[2] = gConfig.powerZ2.value = gConfig.powerFtp.value * 0.56;
   gPowerZone[3] = gConfig.powerZ3.value = gConfig.powerFtp.value * 0.76;
@@ -1168,6 +1171,7 @@ function calcCfg () {
   gConfig.tireCircMm.value = TIRE_SIZE_INFO[gConfig.tireSize.value].circMm;
 }
 
+// TODO: Move all this HTML UI stuff to a separate file
 function wrapFocus () {
   document.getElementById("firstField").focus();
 }

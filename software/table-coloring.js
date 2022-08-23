@@ -117,6 +117,7 @@ function colorGradient (cellGrids, dataGrid, spillOver, limitsAndClassNames) {
     }
     for (let j = 0; j < cells[i].length; ++j) {
       cells[i][j].classList.add(colorClass);
+      // TODO: Don't use gSwitches
       if (gSwitches.blending.value) {
         if (colorEnd && colorStart) {
           cells[i][j].style.backgroundColor =
