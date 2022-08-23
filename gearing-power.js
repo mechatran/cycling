@@ -67,27 +67,27 @@ var CLUSTERS =  __formatCogInfo(CLUSTERS_INFO, formatClustersGroup, (x) => forma
 var gCogsCluster = [ 36, 32, 28, 25, 22, 19, 17, 15, 13, 12, 11 ];
 var gCogsChainring = [ 34, 50 ];
 
-var gRatioByChainring = [];
-var gGearIndexByChainring = [];
-var gGearInchesByChainring = [];
-var gLegPowerByChainring = [];
-var gLegForceByChainring = [];
-var gSpeedByChainring = [];
-var gCadenceByChainring = [];
-var gWheelTorqueByChainring = [];
+var gRatioByChainringAndCluster = [];
+var gGearIndexByChainringAndCluster = [];
+var gGearInchesByChainringAndCluster = [];
+var gLegPowerByChainringAndRatio = [];
+var gLegForceByChainringAndRatio = [];
+var gSpeedByChainringAndRatio = [];
+var gCadenceByChainringAndRatio = [];
+var gWheelTorqueByChainringAndRatio = [];
 
 var gRatioSchmoo = [];
 var gCadenceSchmoo = [];
 var gGradeSchmoo = [];
 var gSpeedSchmoo = [];
-var gLegForceByCadence = [];
-var gLegPowerByCadence = [];
-var gSpeedByCadence = [];
-var gCadenceBySpeed = [];
-var gCadenceByGrade = [];
-var gSpeedByGrade = [];
-var gLegForceByGrade = [];
-var gLegPowerByGrade = [];
+var gLegForceByCadenceAndRatio = [];
+var gLegPowerByCadenceAndRatio = [];
+var gSpeedByCadenceAndRatio = [];
+var gCadenceBySpeedAndRatio = [];
+var gCadenceByGradeAndRatio = [];
+var gSpeedByGradeAndRatio = [];
+var gLegForceByGradeAndRatio = [];
+var gLegPowerByGradeAndRatio = [];
 
 var gConfig = {
   chainrings:    { value: "1,16",               order: 1,  choices: CHAINRINGS },
@@ -182,32 +182,6 @@ function calcWheelTorque (power, wheelRpm, tireCircMm) {
 function calcGearInches (tireCircMm, front, rear) {
   var tireDiameterIn = convertMmToIn(convertCircToRadius(tireCircMm)) * 2;
   return tireDiameterIn * front / rear;
-}
-
-function calcRatioByChainring (cogsChainring, cogsCluster) {
-  var ratioByChainring = []
-  for (let i = 0; i < cogsChainring.length; ++i) {
-    ratioByChainring[i] = [];
-    for (let j = 0; j < cogsCluster.length; ++j) {
-      ratioByChainring[i][j] = cogsCluster[j] / cogsChainring[i];
-    }
-  }
-  return ratioByChainring;
-}
-
-function calcGearInchesByChainring (cogsChainring, cogsCluster) {
-  var gearInchesByChainring = [];
-  for (let i = 0; i < cogsChainring.length; ++i) {
-    gearInchesByChainring[i] = [];
-    for (let j = 0; j < cogsCluster.length; ++j) {
-      gearInchesByChainring[i][j] =
-        calcGearInches(
-          gConfig.tireCircMm.value,
-          cogsChainring[i],
-          cogsCluster[j]);
-    }
-  }
-  return gearInchesByChainring;
 }
 
 function calcGearIndexByChainring (ratioByChainring) {
@@ -311,223 +285,233 @@ function calcGearIndexByChainring (ratioByChainring) {
   return gearIndexByChainring;
 }
 
-function calcPowerFromSpeed (speeds, grades=undefined) {
-  var powerByChainring = [];
-  for (let i = 0; i < speeds.length; ++i) {
-    powerByChainring[i] = [];
-    for (let j = 0; j < speeds[i].length; ++j) {
-      powerByChainring[i][j] =
-        calcLegPowerFromRider(
-          speeds[i][j],
-          grades ? grades[i] : gConfig.gradePercent.value,
-          gConfig.weightTotal.value,
-          gConfig.position.choices[gConfig.position.value]);
-    }
-  }
-  return powerByChainring;
-}
-
-function calcForceByChainring (powerByChainring) {
-  var forceByChainring = [];
-  for (let i = 0; i < powerByChainring.length; ++i) {
-    forceByChainring[i] = [];
-    for (let j = 0; j < powerByChainring[i].length; ++j) {
-      forceByChainring[i][j] =
-        calcLegForceFromPower(
-          powerByChainring[i][j],
-          gConfig.cadenceRpm.value,
-          gConfig.crankLength.value);
-    }
-  }
-  return forceByChainring;
-}
-
-function calcCadenceByChainring (ratioByChainring) {
-  var cadenceByChainring = [];
-  for (let i = 0; i < ratioByChainring.length; ++i) {
-    cadenceByChainring[i] = [];
-    for (let j = 0; j < ratioByChainring[i].length; ++j) {
-      cadenceByChainring[i][j] =
-        calcCadence(
-          gConfig.speedMph.value,
-          ratioByChainring[i][j],
-          gConfig.tireCircMm.value);
-    }
-  }
-  return cadenceByChainring;
-}
-
-function calcSpeedByChainring (ratioByChainring) {
-  var speedByChainring = [];
-  for (let i = 0; i < ratioByChainring.length; ++i) {
-    speedByChainring[i] = [];
-    for (let j = 0; j < ratioByChainring[i].length; ++j) {
-      speedByChainring[i][j] =
-        calcSpeed(
-          gConfig.cadenceRpm.value,
-          ratioByChainring[i][j],
-          gConfig.tireCircMm.value);
-    }
-  }
-  return speedByChainring;
-}
-
-function calcWheelTorqueByChainring (powerByChainring, ratioByChainring) {
-  var wheelTorqueByChainring = []
-  for (let i = 0; i < powerByChainring.length; ++i) {
-    wheelTorqueByChainring[i] = [];
-    for (let j = 0; j < powerByChainring[i].length; ++j) {
-      wheelTorqueByChainring[i][j] =
-        calcWheelTorque(
-          powerByChainring[i][j],
-          gConfig.cadenceRpm.value / ratioByChainring[i][j],
-          gConfig.tireCircMm.value);
-    }
-  }
-  return wheelTorqueByChainring;
-}
-
-function calcCadenceSchmoo () {
-  var cadences = [];
-  for (let i = -3; i <= 3; ++i) {
-    cadences.push(gConfig.cadenceRpm.value + gConfig.stepRpm.value * i);
-  }
-  return cadences;
-}
-
-function calcRatioSchmoo (gearIndexByChainring, ratioByChainring) {
-  var ratios = [];
-  for (let i = 1; i <= ratioByChainring.length * ratioByChainring[0].length; ++i) {
-    let r = lookup(i, gearIndexByChainring, ratioByChainring);
-    if (!r) {
-      break;
-    }
-    ratios.push(r);
-  }
-  return ratios;
-}
-
-function calcSpeedSchmoo () {
-  var speeds = [];
-  for (let i = -3; i <= 3; ++i) {
-    speeds.push(gConfig.speedMph.value + 2.5 * i);
-  }
-  return speeds;
-}
-
-function calcGradeSchmoo () {
-  var grades = [];
-  for (let i = 0; i < 12; i += 2) {
-    grades.push(i);
-  }
-  for (let i = 12; i <= 20; i += 4) {
-    grades.push(i);
-  }
-  return grades;
-}
-
-function calcForceByCadence (cadences, powerByCadence) {
-  var isCadenceGrid = (cadences instanceof Array) && (cadences[0] instanceof Array);
-  var forceByCadence = [];
-  for (let i = 0; i < cadences.length; ++i) {
-    forceByCadence[i] = [];
-    for (let j = 0; j < powerByCadence[i].length; ++j) {
-      forceByCadence[i][j] =
-        calcLegForceFromPower(
-          powerByCadence[i][j],
-          isCadenceGrid ? cadences[i][j] : cadences[i],
-          gConfig.crankLength.value);
-    }
-  }
-  return forceByCadence;
-}
-
-function calcSpeedByCadence (cadences, ratios) {
-  var isCadenceGrid = (cadences instanceof Array) && (cadences[0] instanceof Array);
-  var speedByCadence = [];
-  for (let i = 0; i < cadences.length; ++i) {
-    speedByCadence[i] = [];
-    for (let j = 0; j < ratios.length; ++j) {
-      speedByCadence[i][j] =
-        calcSpeed(
-          isCadenceGrid ? cadences[i][j] : cadences[i],
-          ratios[j],
-          gConfig.tireCircMm.value);
-    }
-  }
-  return speedByCadence;
-}
-
-function calcCadenceBySpeed (speeds, ratios, min=0, max=0) {
-  var cadenceBySpeed = [];
-  for (let i = 0; i < speeds.length; ++i) {
-    cadenceBySpeed[i] = [];
-    for (let j = 0; j < ratios.length; ++j) {
-      let cadence =
-        calcCadence(
-          speeds[i],
-          ratios[j],
-          gConfig.tireCircMm.value);
-      if (min) {
-        cadence = Math.max(cadence, min);
-      }
-      if (max) {
-        cadence = Math.min(cadence, max);
-      }
-      cadenceBySpeed[i][j] = cadence;
-    }
-  }
-  return cadenceBySpeed;
-}
-
-function calcSpeedByGradeSchmoo (grades) {
-  var speedbyGrade = [];
-  for (let i = 0; i < grades.length; ++i) {
-    speedbyGrade[i] =
-      calcSpeedFromRider(
-        gConfig.powerFtp.value,
-        grades[i],
-        gConfig.weightTotal.value,
-        gConfig.position.choices[gConfig.position.value]);
-  }
-  return speedbyGrade;
-}
-
 function calcTables () {
   // NOTE: We need to control the calculation order to resolve dependencies
   //       between calculation steps.  Pass the global tables to each helper
   //       function as an argument to help make this clear.  Configuration
   //       parameters are accessed via gConfig because those values are fixed
   //       ahead of time.
+  
+  // Gear ratios
 
-  gRatioByChainring = calcRatioByChainring(gCogsChainring, gCogsCluster);
-  gGearInchesByChainring = calcGearInchesByChainring(gCogsChainring, gCogsCluster);
-  gGearIndexByChainring = calcGearIndexByChainring(gRatioByChainring);
+  gRatioByChainringAndCluster = 
+    calcGridFromRowAndColumnHeadings(
+      gCogsChainring,
+      gCogsCluster,
+      (chainringTeeth, clusterTeeth) => clusterTeeth / chainringTeeth
+    );
 
-  gSpeedByChainring = calcSpeedByChainring(gRatioByChainring);
-  gLegPowerByChainring = calcPowerFromSpeed(gSpeedByChainring);
-  gCadenceByChainring = calcCadenceByChainring(gRatioByChainring);
-  gLegForceByChainring = calcForceByChainring(gLegPowerByChainring);
-  gWheelTorqueByChainring = calcWheelTorqueByChainring(gLegPowerByChainring, gRatioByChainring);
+  gGearInchesByChainringAndCluster =
+    calcGridFromRowAndColumnHeadings(
+      gCogsChainring,
+      gCogsCluster,
+      (chainringTeeth, clusterTeeth) =>
+        calcGearInches(
+          gConfig.tireCircMm.value,
+          chainringTeeth,
+          clusterTeeth
+        )
+    );
 
-  gCadenceSchmoo = calcCadenceSchmoo();
-  gRatioSchmoo = calcRatioSchmoo(gGearIndexByChainring, gRatioByChainring);
+  gGearIndexByChainringAndCluster = calcGearIndexByChainring(gRatioByChainringAndCluster);
 
-  gSpeedByCadence = calcSpeedByCadence(gCadenceSchmoo, gRatioSchmoo);
-  gLegPowerByCadence = calcPowerFromSpeed(gSpeedByCadence);
-  gLegForceByCadence = calcForceByCadence(gCadenceSchmoo, gLegPowerByCadence);
+  // Schmoos
 
-  gSpeedSchmoo = calcSpeedSchmoo();
+  gCadenceSchmoo = 
+    createRangeArray(-3, 3).map(
+      (x) => gConfig.cadenceRpm.value + gConfig.stepRpm.value * x
+    );
 
-  gCadenceBySpeed = calcCadenceBySpeed(gSpeedSchmoo, gRatioSchmoo);
+  gRatioSchmoo = [];
+  calcGridFromGrids(
+    [gGearIndexByChainringAndCluster, gRatioByChainringAndCluster],
+    (index, ratio) =>
+      (index && ratio) ?
+        (gRatioSchmoo[index - 1] = ratio) :
+        undefined
+  );
 
-  gGradeSchmoo = calcGradeSchmoo();
+  gSpeedSchmoo =
+    createRangeArray(-3, 3).map(
+      (x) => gConfig.speedMph.value + 2.5 * x
+    );
 
-  let speedByGradeSchmoo = calcSpeedByGradeSchmoo(gGradeSchmoo);
-  gCadenceByGrade = calcCadenceBySpeed(speedByGradeSchmoo, gRatioSchmoo, gConfig.cadenceRpmMin.value, gConfig.cadenceRpmMax.value); // TOOD: gConfig
-  gSpeedByGrade = calcSpeedByCadence(gCadenceByGrade, gRatioSchmoo);
-  gLegPowerByGrade = calcPowerFromSpeed(gSpeedByGrade, gGradeSchmoo);
-  gLegForceByGrade = calcForceByCadence(gCadenceByGrade, gLegPowerByGrade);
+  gGradeSchmoo = createRangeArray(0, 11, 2).concat(createRangeArray(12, 20, 4));
+
+  var speedByGradeSchmoo = 
+    gGradeSchmoo.map(
+      (grade) =>
+        calcSpeedFromRider(
+          gConfig.powerFtp.value,
+          grade,
+          gConfig.weightTotal.value,
+          gConfig.position.choices[gConfig.position.value]
+        )
+    );
+
+  // Chainring-based grids
+
+  gSpeedByChainringAndRatio =
+    calcGridFromGrids(
+      [gRatioByChainringAndCluster],
+      (ratio) =>
+        calcSpeed(
+          gConfig.cadenceRpm.value,
+          ratio,
+          gConfig.tireCircMm.value
+        )
+    );
+
+  gLegPowerByChainringAndRatio =
+    calcGridFromGrids(
+      [gSpeedByChainringAndRatio],
+      (speed) =>
+        calcLegPowerFromRider(
+          speed,
+          gConfig.gradePercent.value,
+          gConfig.weightTotal.value,
+          gConfig.position.choices[gConfig.position.value]
+        )
+    );
+
+  gCadenceByChainringAndRatio =
+    calcGridFromGrids(
+      [gRatioByChainringAndCluster],
+      (ratio) =>
+        calcCadence(
+          gConfig.speedMph.value,
+          ratio,
+          gConfig.tireCircMm.value
+        )
+    );
+
+  gLegForceByChainringAndRatio =
+    calcGridFromGrids(
+      [gLegPowerByChainringAndRatio],
+      (power) =>
+        calcLegForceFromPower(
+          power,
+          gConfig.cadenceRpm.value,
+          gConfig.crankLength.value
+        )
+    );
+
+  gWheelTorqueByChainringAndRatio =
+    calcGridFromGrids(
+      [gLegPowerByChainringAndRatio, gRatioByChainringAndCluster],
+      (power, ratio) =>
+        calcWheelTorque(
+          power,
+          gConfig.cadenceRpm.value / ratio,
+          gConfig.tireCircMm.value
+        )
+    );
+
+  // Cadence-based grids
+
+  gSpeedByCadenceAndRatio =
+    calcGridFromRowAndColumnHeadings(
+      gCadenceSchmoo,
+      gRatioSchmoo,
+      (cadence, ratio) =>
+        calcSpeed(
+          cadence,
+          ratio,
+          gConfig.tireCircMm.value
+        )
+    );
+
+  gLegPowerByCadenceAndRatio =
+    calcGridFromGrids(
+      [gSpeedByCadenceAndRatio],
+      (speed) =>
+        calcLegPowerFromRider(
+          speed,
+          gConfig.gradePercent.value,
+          gConfig.weightTotal.value,
+          gConfig.position.choices[gConfig.position.value]
+        )
+    );
+
+  gLegForceByCadenceAndRatio =
+    calcGridFromRowHeadingsAndGrid(
+      gCadenceSchmoo,
+      gLegPowerByCadenceAndRatio,
+      (cadence, power) =>
+        calcLegForceFromPower(
+          power,
+          cadence,
+          gConfig.crankLength.value
+        )
+    );
+
+  // Speed-based grids
+
+  gCadenceBySpeedAndRatio =
+    calcGridFromRowAndColumnHeadings(
+      gSpeedSchmoo,
+      gRatioSchmoo,
+      (speed, ratio) =>
+        calcCadence(
+          speed,
+          ratio,
+          gConfig.tireCircMm.value
+        ),
+    );
+
+  // Grade-based grids
+
+  gCadenceByGradeAndRatio =
+    calcGridFromRowAndColumnHeadings(
+      speedByGradeSchmoo,
+      gRatioSchmoo,
+      (speed, ratio) =>
+        boundBy(
+          calcCadence(
+            speed,
+            ratio,
+            gConfig.tireCircMm.value
+          ),
+          gConfig.cadenceRpmMin.value,
+          gConfig.cadenceRpmMax.value
+        )
+    );
+
+  gSpeedByGradeAndRatio =
+    calcGridFromColumnHeadingsAndGrid(
+      gRatioSchmoo,
+      gCadenceByGradeAndRatio,
+      (ratio, cadence) =>
+        calcSpeed(
+          cadence,
+          ratio,
+          gConfig.tireCircMm.value
+        )
+    );
+
+  gLegPowerByGradeAndRatio =
+    calcGridFromRowHeadingsAndGrid(
+      gGradeSchmoo,
+      gSpeedByGradeAndRatio,
+      (grade, speed) =>
+        calcLegPowerFromRider(
+          speed,
+          grade,
+          gConfig.weightTotal.value,
+          gConfig.position.choices[gConfig.position.value]
+        )
+    );
+
+  gLegForceByGradeAndRatio =
+    calcGridFromGrids(
+      [gCadenceByGradeAndRatio, gLegPowerByGradeAndRatio],
+      (cadence, power) =>
+        calcLegForceFromPower(
+          power,
+          cadence,
+          gConfig.crankLength.value
+        )
+    );
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -791,32 +775,32 @@ function buildGearingTable () {
 
     let [grids, formatters, indexes] =
       buildGridsAndFormatters([
-          [gSwitches.gearing_indexes.value, gGearIndexByChainring, formatNone, false],
-          [true, gRatioByChainring, formatRatio, true],
-          [gSwitches.gearing_inches.value, gGearInchesByChainring, formatGearInches, true],
-          [gSwitches.gearing_speed.value, gSpeedByChainring, formatSpeed, false],
+          [gSwitches.gearing_indexes.value, gGearIndexByChainringAndCluster, formatNone, false],
+          [true, gRatioByChainringAndCluster, formatRatio, true],
+          [gSwitches.gearing_inches.value, gGearInchesByChainringAndCluster, formatGearInches, true],
+          [gSwitches.gearing_speed.value, gSpeedByChainringAndRatio, formatSpeed, false],
         ]);
     let [nums, ratios, inches, speeds] = indexes;
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, gCogsCluster.length, grids, formatters);
 
     if (nums >= 0) {
-      colorGridByGearIndex(cells[nums], gGearIndexByChainring, gGearIndexByChainring);
+      colorGridByGearIndex(cells[nums], gGearIndexByChainringAndCluster, gGearIndexByChainringAndCluster);
       formatGearIndexCells(cells[nums]);
     }
     if (speeds >= 0) {
-      colorRatioGridConditionally(cells[speeds], gGearIndexByChainring);
-      colorGridsByRatio([cells[speeds]], gRatioByChainring);
+      colorRatioGridConditionally(cells[speeds], gGearIndexByChainringAndCluster);
+      colorGridsByRatio([cells[speeds]], gRatioByChainringAndCluster);
     }
     if (inches >= 0) {
-      colorRatioGridConditionally(cells[inches], gGearIndexByChainring);
-      colorGridsByRatio([cells[inches]], gRatioByChainring);
+      colorRatioGridConditionally(cells[inches], gGearIndexByChainringAndCluster);
+      colorGridsByRatio([cells[inches]], gRatioByChainringAndCluster);
     }
     if (ratios >= 0) {
-      colorRatioGridConditionally(cells[ratios], gGearIndexByChainring);
-      colorGridsByRatio([cells[ratios]], gRatioByChainring);
+      colorRatioGridConditionally(cells[ratios], gGearIndexByChainringAndCluster);
+      colorGridsByRatio([cells[ratios]], gRatioByChainringAndCluster);
     }
-    formatCellGridsGroupsConditionally(cells, gGearIndexByChainring);
+    formatCellGridsGroupsConditionally(cells, gGearIndexByChainringAndCluster);
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -847,15 +831,15 @@ function buildGearingTable () {
     tdMinor = cloneNodeArray(tdMinor)
 
     let [grids, formatters, indexes] = buildGridsAndFormatters([
-      [gSwitches.speedAtCadence_force.value, gLegForceByChainring, formatForce, false],
-      [gSwitches.speedAtCadence_power.value, gLegPowerByChainring, formatPower, false],
-      [true, gSpeedByChainring, formatSpeed, true]]);
+      [gSwitches.speedAtCadence_force.value, gLegForceByChainringAndRatio, formatForce, false],
+      [gSwitches.speedAtCadence_power.value, gLegPowerByChainringAndRatio, formatPower, false],
+      [true, gSpeedByChainringAndRatio, formatSpeed, true]]);
     let [force, power] = indexes;
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, gCogsCluster.length, grids, formatters);
 
-    colorGridsBySpeed(cells, gSpeedByChainring);
-    colorGridsByPowerZone(cells, gLegPowerByChainring);
+    colorGridsBySpeed(cells, gSpeedByChainringAndRatio);
+    colorGridsByPowerZone(cells, gLegPowerByChainringAndRatio);
     if (force >= 0) {
       formatForceCells(cells[force]);
     }
@@ -891,12 +875,12 @@ function buildGearingTable () {
     tdMinor = cloneNodeArray(tdMinor)
 
     let [grids, formatters] = buildGridsAndFormatters([
-      [true, gCadenceByChainring, formatCadence, true]]);
+      [true, gCadenceByChainringAndRatio, formatCadence, true]]);
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, gCogsCluster.length, grids, formatters);
 
-    colorGridsByCadence(cells, gCadenceByChainring);
-    colorGridsByCadenceZone(cells, gCadenceByChainring);
+    colorGridsByCadence(cells, gCadenceByChainringAndRatio);
+    colorGridsByCadenceZone(cells, gCadenceByChainringAndRatio);
     formatCellGridGroups(cells);
   }
 
@@ -927,13 +911,13 @@ function buildGearingTable () {
     tdMinor = cloneNodeArray(tdMinor)
 
     let [grids, formatters, indexes] = buildGridsAndFormatters([
-      [gSwitches.torqueAtCadence_force.value, gLegForceByChainring, formatForce, false],
-      [true, gWheelTorqueByChainring, formatTorque, true]]);
+      [gSwitches.torqueAtCadence_force.value, gLegForceByChainringAndRatio, formatForce, false],
+      [true, gWheelTorqueByChainringAndRatio, formatTorque, true]]);
     let [force] = indexes;
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, gCogsCluster.length, grids, formatters);
 
-    colorGridsByWheelTorque(cells, gWheelTorqueByChainring);
+    colorGridsByWheelTorque(cells, gWheelTorqueByChainringAndRatio);
     if (force >= 0) {
       formatForceCells(cells[force]);
     }
@@ -973,7 +957,7 @@ function buildPowerTable () {
 
   cells = [];
   cells[0] = [addRow(table, tdMajor, tdMinor, gearNumbers, formatNone)];
-  colorGridByGearIndex(cells[0], [gearNumbers], gGearIndexByChainring);
+  colorGridByGearIndex(cells[0], [gearNumbers], gGearIndexByChainringAndCluster);
 
   //////////////////////////////////////////////////////////////////////////////
 
@@ -1023,15 +1007,15 @@ function buildPowerTable () {
     formatLabelCellsVertical(tdMinor);
 
     let [grids, formatters, indexes] = buildGridsAndFormatters([
-      [gSwitches.speedByCadence_force.value, gLegForceByCadence, formatForce, false],
-      [gSwitches.speedByCadence_power.value, gLegPowerByCadence, formatPower, false],
-      [true, gSpeedByCadence, formatSpeed, true]]);
+      [gSwitches.speedByCadence_force.value, gLegForceByCadenceAndRatio, formatForce, false],
+      [gSwitches.speedByCadence_power.value, gLegPowerByCadenceAndRatio, formatPower, false],
+      [true, gSpeedByCadenceAndRatio, formatSpeed, true]]);
     let [force, power] = indexes;
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, numGears, grids, formatters);
 
-    colorGridsBySpeed(cells, gSpeedByCadence);
-    colorGridsByPowerZone(cells, gLegPowerByCadence);
+    colorGridsBySpeed(cells, gSpeedByCadenceAndRatio);
+    colorGridsByPowerZone(cells, gLegPowerByCadenceAndRatio);
     if (force >= 0) {
       formatForceCells(cells[force]);
     }
@@ -1073,11 +1057,11 @@ function buildPowerTable () {
     formatLabelCellsVertical(tdMinor);
 
     let [grids, formatters] = buildGridsAndFormatters([
-      [true, gCadenceBySpeed, formatCadence, true]]);
+      [true, gCadenceBySpeedAndRatio, formatCadence, true]]);
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, numGears, grids, formatters)
-    colorGridsByCadence(cells, gCadenceBySpeed);
-    colorGridsByCadenceZone(cells, gCadenceBySpeed);
+    colorGridsByCadence(cells, gCadenceBySpeedAndRatio);
+    colorGridsByCadenceZone(cells, gCadenceBySpeedAndRatio);
     formatCellGridGroups(cells);
   }
 
@@ -1119,17 +1103,17 @@ function buildPowerTable () {
     formatLabelCellsVertical(tdMinor);
 
     let [grids, formatters, indexes] = buildGridsAndFormatters([
-      [gSwitches.speedByGrade_cadence.value, gCadenceByGrade, formatCadence, false],
-      [gSwitches.speedByGrade_force.value, gLegForceByGrade, formatForce, false],
-      [gSwitches.speedByGrade_power.value, gLegPowerByGrade, formatPower, false],
-      [true, gSpeedByGrade, formatSpeed, true]]);
+      [gSwitches.speedByGrade_cadence.value, gCadenceByGradeAndRatio, formatCadence, false],
+      [gSwitches.speedByGrade_force.value, gLegForceByGradeAndRatio, formatForce, false],
+      [gSwitches.speedByGrade_power.value, gLegPowerByGradeAndRatio, formatPower, false],
+      [true, gSpeedByGradeAndRatio, formatSpeed, true]]);
     let [cadence, force, power] = indexes;
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, numGears, grids, formatters);
 
-    colorGridsBySpeed(cells, gSpeedByGrade);
-    colorGridsByPowerZone(cells, gLegPowerByGrade);
-    colorGridsByCadenceZone(cells, gCadenceByGrade, false);
+    colorGridsBySpeed(cells, gSpeedByGradeAndRatio);
+    colorGridsByPowerZone(cells, gLegPowerByGradeAndRatio);
+    colorGridsByCadenceZone(cells, gCadenceByGradeAndRatio, false);
     if (cadence >= 0) {
       formatCadenceCells(cells[cadence]);
     }

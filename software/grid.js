@@ -2,17 +2,6 @@
 // Data grid utils
 //////////////////////////////////////////////////////////////////////////////
 
-function lookup (refValue, refTable, valueTable) {
-  for (let i = 0; i < refTable.length; ++i) {
-    for (let j = 0; j < refTable[i].length; ++j) {
-      // NOTE: Strict equality check
-      if (refTable[i][j] === refValue) {
-        return valueTable[i][j];
-      }
-    }
-  }
-}
-
 function squishDown (grids) {
   let combined = [];
   for (let k = 0; k < grids.length; ++k) {
@@ -84,4 +73,60 @@ function clumpRelatedCells (grid, qualifier) {
     }
   }
   return related;
+}
+
+function createRangeArray (start, end, step=1) {
+  var result = [];
+  for (let i = start; i <= end; i += step) {
+    result.push(i);
+  }
+  return result;
+}
+
+function calcGridFromRowAndColumnHeadings (rowHeadings, columnHeadings, callback) {
+  var result = [];
+  for (let rowIndex in rowHeadings) {
+    result[rowIndex] = [];
+    for (let columnIndex in columnHeadings) {
+      result[rowIndex][columnIndex] = callback(rowHeadings[rowIndex], columnHeadings[columnIndex]);
+    }
+  }
+  return result;
+}
+
+function calcGridFromRowHeadingsAndGrid (rowHeadings, grid, callback) {
+  var result = [];
+  for (let rowIndex in grid) {
+    result[rowIndex] = [];
+    for (let columnIndex in grid[rowIndex]) {
+      result[rowIndex][columnIndex] = callback(rowHeadings[rowIndex], grid[rowIndex][columnIndex]);
+    }
+  }
+  return result;
+}
+
+function calcGridFromColumnHeadingsAndGrid (columnHeadings, grid, callback) {
+  var result = [];
+  for (let rowIndex in grid) {
+    result[rowIndex] = [];
+    for (let columnIndex in grid[rowIndex]) {
+      result[rowIndex][columnIndex] = callback(columnHeadings[columnIndex], grid[rowIndex][columnIndex]);
+    }
+  }
+  return result;
+}
+
+function calcGridFromGrids (gridArray, callback) {
+  var result = [];
+  for (let rowIndex in gridArray[0]) {
+    result[rowIndex] = [];
+    for (let columnIndex in gridArray[0][rowIndex]) {
+      let v = [];
+      for (let gridIndex in gridArray) {
+        v[gridIndex] = gridArray[gridIndex][rowIndex][columnIndex];
+      }
+      result[rowIndex][columnIndex] = callback(...v);
+    }
+  }
+  return result;
 }
