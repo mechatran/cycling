@@ -2,17 +2,6 @@
 // Data grid utils
 //////////////////////////////////////////////////////////////////////////////
 
-function lookup (refValue, refTable, valueTable) {
-  for (let i = 0; i < refTable.length; ++i) {
-    for (let j = 0; j < refTable[i].length; ++j) {
-      // NOTE: Strict equality check
-      if (refTable[i][j] === refValue) {
-        return valueTable[i][j];
-      }
-    }
-  }
-}
-
 function squishDown (grids) {
   let combined = [];
   for (let k = 0; k < grids.length; ++k) {
@@ -84,4 +73,60 @@ function clumpRelatedCells (grid, qualifier) {
     }
   }
   return related;
+}
+
+function createRangeArray (start, end, step=1) {
+  var result = [];
+  for (let i = start; i <= end; i += step) {
+    result.push(i);
+  }
+  return result;
+}
+
+function calcGridFromRowAndColumnHeadings (rowHeadings, columnHeadings, callback) {
+  var result = [];
+  for (let rowIndex = 0; rowIndex < rowHeadings.length; ++rowIndex) {
+    result[rowIndex] = [];
+    for (let columnIndex = 0; columnIndex < columnHeadings.length; ++columnIndex) {
+      result[rowIndex][columnIndex] = callback(rowHeadings[rowIndex], columnHeadings[columnIndex], rowIndex, columnIndex);
+    }
+  }
+  return result;
+}
+
+function calcGridFromRowHeadingsAndGrid (rowHeadings, grid, callback) {
+  var result = [];
+  for (let rowIndex = 0; rowIndex < grid.length; ++rowIndex) {
+    result[rowIndex] = [];
+    for (let columnIndex = 0; columnIndex < grid[rowIndex].length; ++columnIndex) {
+      result[rowIndex][columnIndex] = callback(rowHeadings[rowIndex], grid[rowIndex][columnIndex], rowIndex, columnIndex);
+    }
+  }
+  return result;
+}
+
+function calcGridFromColumnHeadingsAndGrid (columnHeadings, grid, callback) {
+  var result = [];
+  for (let rowIndex = 0; rowIndex < grid.length; ++rowIndex) {
+    result[rowIndex] = [];
+    for (let columnIndex = 0; columnIndex < grid[rowIndex].length; ++columnIndex) {
+      result[rowIndex][columnIndex] = callback(columnHeadings[columnIndex], grid[rowIndex][columnIndex], rowIndex, columnIndex);
+    }
+  }
+  return result;
+}
+
+function calcGridFromGrids (gridArray, callback) {
+  var result = [];
+  for (let rowIndex = 0; rowIndex < gridArray[0].length; ++rowIndex) {
+    result[rowIndex] = [];
+    for (let columnIndex = 0; columnIndex < gridArray[0][rowIndex].length; ++columnIndex) {
+      let v = [];
+      for (let gridIndex = 0; gridIndex < gridArray.length; ++gridIndex) {
+        v[gridIndex] = gridArray[gridIndex][rowIndex][columnIndex];
+      }
+      result[rowIndex][columnIndex] = callback(...v, rowIndex, columnIndex);
+    }
+  }
+  return result;
 }
