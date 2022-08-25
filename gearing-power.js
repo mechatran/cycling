@@ -184,105 +184,108 @@ function calcGearInches (tireCircMm, front, rear) {
   return tireDiameterIn * front / rear;
 }
 
-function calcGearIndexByChainring (ratioByChainring) {
+function calcGearIndexByChainringAndCluster (ratioByChainringAndCluster) {
   function nominal (n) {
     return roundTo(n, 2);
   }
 
-  var numGears = 0;
-  var gearIndexByChainring = []
+  function calc1x (ratios) {
+    return DataGrid.fromArray([createRangeArray(1, ratios.width)]);
+  }
 
-  if (ratioByChainring.length == 1) {
-    // Number the gears sequentially
-    gearIndexByChainring[0] = [];
-    for (let j = 0; j < ratioByChainring[0].length; ++j) {
-      gearIndexByChainring[0][j] = ++numGears
-    }
-  } else if (ratioByChainring.length == 2) {
-    let i;
+  function calc2x (ratios) {
+    var gear = DataGrid.fromSimilarGrid(ratios);
+    var numGears = 0;
+
     let margin
     let cutoff;
 
-    i = 0;
-    if (ratioByChainring[i].length <= 1) {
+    if (ratios.width <= 1) {
       margin = 0;
-    } else if (ratioByChainring[i].length <= 8) {
+    } else if (ratios.width <= 8) {
       margin = 1;
-    } else if (ratioByChainring[i].length <= 10) {
+    } else if (ratios.width <= 10) {
       margin = 2;
     } else {
       margin = 4;
     }
 
     // Small chainring: uses the first half of the cluster
-    i = 0;
-    gearIndexByChainring[i] = [];
-    for (let j = 0; j < ratioByChainring[i].length - margin; ++j) {
-      gearIndexByChainring[i][j] = ++numGears;
+    for (let column = 0; column < ratios.width - margin; ++column) {
+      gear[0][column] = ++numGears;
     }
-    cutoff = nominal(ratioByChainring[i][numGears - 1]);
+    cutoff = nominal(ratios[0][numGears - 1]);
 
     // Big chainring: uses the remaining gear ratios
-    i = 1;
-    gearIndexByChainring[i] = [];
-    for (let j = 0; j < ratioByChainring[i].length; ++j) {
-      if (nominal(ratioByChainring[i][j]) < cutoff) {
-        gearIndexByChainring[i][j] = ++numGears;
+    for (let column = 0; column < ratios.width; ++column) {
+      if (nominal(ratios[1][column]) < cutoff) {
+        gear[1][column] = ++numGears;
       }
     }
-  } else if (ratioByChainring.length == 3) {
-    let i;
+
+    return gear;
+  }
+
+  function calc3x (ratios) {
+    var gear = DataGrid.fromSimilarGrid(ratios);
+    var numGears = 0;
+
     let margin;
     let cutoff, cutoff2;
 
     // Middle chainring won't use the ends of the cluster
-    i = 1;
-    if (ratioByChainring[i].length <= 1) {
+    if (ratios.width <= 1) {
       margin = 0;
-    } else if (ratioByChainring[i].length <= 8) {
+    } else if (ratios.width <= 8) {
       margin = 1;
     } else {
       margin = 2;
     }
-    cutoff = nominal(ratioByChainring[i][margin]);
-    cutoff2 = nominal(ratioByChainring[i][ratioByChainring[0].length - margin - 1]);
+    cutoff = nominal(ratios[1][margin]);
+    cutoff2 = nominal(ratios[1][ratios.width - margin - 1]);
 
     // Middle chainring: reserve the interior ratios
-    i = 1;
-    gearIndexByChainring[i] = [];
-    for (let j = margin; j < ratioByChainring[i].length - margin; ++j) {
-      gearIndexByChainring[i][j] = true;
+    for (let column = margin; column < ratios.width - margin; ++column) {
+      gear[1][column] = true;
     }
 
     // Small chainring: reserve the higher ratios
-    i = 0;
-    gearIndexByChainring[i] = [];
-    for (let j = 0; j < ratioByChainring[i].length; ++j) {
-      if (nominal(ratioByChainring[i][j]) > cutoff) {
-        gearIndexByChainring[i][j] = true;
+    for (let column = 0; column < ratios.width; ++column) {
+      if (nominal(ratios[0][column]) > cutoff) {
+        gear[0][column] = true;
       }
     }
 
     // Big chainring: reserve the lower ratios
-    i = 2;
-    gearIndexByChainring[i] = [];
-    for (let j = 0; j < ratioByChainring[i].length; ++j) {
-      if (nominal(ratioByChainring[i][j]) < cutoff2) {
-        gearIndexByChainring[i][j] = true;
+    for (let column = 0; column < ratios.width; ++column) {
+      if (nominal(ratios[2][column]) < cutoff2) {
+        gear[2][column] = true;
       }
     }
 
-    // Assign gear indexes as a separate step since we built the gear table out of sequence
-    for (let i = 0; i < ratioByChainring.length; ++i) {
-      for (let j = 0; j < ratioByChainring[i].length; ++j) {
-        if (gearIndexByChainring[i][j]) {
-          gearIndexByChainring[i][j] = ++numGears;
+    // Assign gear indexes to the reserved elements
+    // NOTE: This is a separate step since we did the reservations out of sequence
+    for (let row = 0; row < ratios.height; ++row) {
+      for (let column = 0; column < ratios.width; ++column) {
+        if (gear[row][column]) {
+          gear[row][column] = ++numGears;
         }
       }
     }
+
+    return gear;
   }
 
-  return gearIndexByChainring;
+  switch (ratioByChainringAndCluster.length) {
+    case 1:
+      return calc1x(ratioByChainringAndCluster);
+    case 2:
+      return calc2x(ratioByChainringAndCluster);
+    case 3:
+      return calc3x(ratioByChainringAndCluster);
+    default:
+      return;
+  }
 }
 
 function calcTables () {
@@ -313,7 +316,7 @@ function calcTables () {
         )
     );
 
-  gGearIndexByChainringAndCluster = calcGearIndexByChainring(gRatioByChainringAndCluster);
+  gGearIndexByChainringAndCluster = calcGearIndexByChainringAndCluster(gRatioByChainringAndCluster);
 
   // Schmoos
 

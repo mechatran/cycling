@@ -83,49 +83,68 @@ function createRangeArray (start, end, step=1) {
   return result;
 }
 
+class DataGrid extends Array {
+  constructor (height, width) {
+    super();
+    for (let row = 0; row < height; ++row) {
+      this[row] = [];
+    }
+    this.height = height;
+    this.width = width;
+  }
+
+  static fromArray(a) {
+    var newGrid = new DataGrid(a.length, a[0].length);
+    for (let row = 0; row < newGrid.height; ++row) {
+      newGrid[row] = Array.from(a[row]);
+    }
+    return newGrid;
+  }
+
+  static fromSimilarGrid (grid) {
+    return new DataGrid(grid.height, grid.width);
+  }
+}
+
 function calcGridFromRowAndColumnHeadings (rowHeadings, columnHeadings, callback) {
-  var result = [];
-  for (let rowIndex = 0; rowIndex < rowHeadings.length; ++rowIndex) {
-    result[rowIndex] = [];
-    for (let columnIndex = 0; columnIndex < columnHeadings.length; ++columnIndex) {
-      result[rowIndex][columnIndex] = callback(rowHeadings[rowIndex], columnHeadings[columnIndex], rowIndex, columnIndex);
+  var result = new DataGrid(rowHeadings.length, columnHeadings.length);
+  for (let row = 0; row < result.height; ++row) {
+    for (let column = 0; column < result.width; ++column) {
+      result[row][column] = callback(rowHeadings[row], columnHeadings[column], row, column);
     }
   }
   return result;
 }
 
 function calcGridFromRowHeadingsAndGrid (rowHeadings, grid, callback) {
-  var result = [];
-  for (let rowIndex = 0; rowIndex < grid.length; ++rowIndex) {
-    result[rowIndex] = [];
-    for (let columnIndex = 0; columnIndex < grid[rowIndex].length; ++columnIndex) {
-      result[rowIndex][columnIndex] = callback(rowHeadings[rowIndex], grid[rowIndex][columnIndex], rowIndex, columnIndex);
+  var result = new DataGrid(grid.height, grid.width);
+  for (let row = 0; row < result.height; ++row) {
+    for (let column = 0; column < result.width; ++column) {
+      result[row][column] = callback(rowHeadings[row], grid[row][column], row, column);
     }
   }
   return result;
 }
 
 function calcGridFromColumnHeadingsAndGrid (columnHeadings, grid, callback) {
-  var result = [];
-  for (let rowIndex = 0; rowIndex < grid.length; ++rowIndex) {
-    result[rowIndex] = [];
-    for (let columnIndex = 0; columnIndex < grid[rowIndex].length; ++columnIndex) {
-      result[rowIndex][columnIndex] = callback(columnHeadings[columnIndex], grid[rowIndex][columnIndex], rowIndex, columnIndex);
+  var result = new DataGrid(grid.height, grid.width);
+  for (let row = 0; row < result.height; ++row) {
+    for (let column = 0; column < result.width; ++column) {
+      result[row][column] = callback(columnHeadings[column], grid[row][column], row, column);
     }
   }
   return result;
 }
 
 function calcGridFromGrids (gridArray, callback) {
-  var result = [];
-  for (let rowIndex = 0; rowIndex < gridArray[0].length; ++rowIndex) {
-    result[rowIndex] = [];
-    for (let columnIndex = 0; columnIndex < gridArray[0][rowIndex].length; ++columnIndex) {
-      let v = [];
-      for (let gridIndex = 0; gridIndex < gridArray.length; ++gridIndex) {
-        v[gridIndex] = gridArray[gridIndex][rowIndex][columnIndex];
+  var result = new DataGrid(gridArray[0].height, gridArray[0].width);
+  for (let row = 0; row < result.height; ++row) {
+    for (let column = 0; column < result.width; ++column) {
+      let slice = [];
+      for (let layer = 0; layer < gridArray.length; ++layer) {
+        slice[layer] = gridArray[layer][row][column];
       }
-      result[rowIndex][columnIndex] = callback(...v, rowIndex, columnIndex);
+      result[row][column] = callback(...slice, row, column);
     }
   }
   return result;
