@@ -124,3 +124,10 @@ function calcSpeedFromRider (p_legs, gradePercent, weightKg, position) {
   //return coeff.a + " " + coeff.b + " " + coeff.c + " " + coeff.d;
   return __solveCubic(coeff.a, coeff.b, coeff.c, coeff.d) * PHYS.mps_to_mph;
 }
+
+// Torque at wheel after transmission
+function calcWheelTorqueFromPower (power, wheelRpm, tireCircMm) {
+  var tireRadiusMm = convertCircToRadius(tireCircMm);
+  var tireRadiusFt = tireRadiusMm / 25.4 / 12;
+  return calcLegForceFromPower(power, wheelRpm, tireRadiusMm) * tireRadiusFt;
+}

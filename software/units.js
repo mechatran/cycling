@@ -17,7 +17,3 @@ function convertMmToIn (length) {
 function convertMmToMi (length) {
   return convertMmToIn(length) / 12 / 5280;
 }
-
-function convertCircToRadius (length) {
-  return length / Math.PI / 2;
-}
