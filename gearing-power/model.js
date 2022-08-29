@@ -17,11 +17,11 @@ var gCogsChainring = [ 34, 50 ];
 var gRatioByChainringAndCluster = [];
 var gGearIndexByChainringAndCluster = [];
 var gGearInchesByChainringAndCluster = [];
-var gLegPowerByChainringAndRatio = [];
-var gLegForceByChainringAndRatio = [];
-var gSpeedByChainringAndRatio = [];
-var gCadenceByChainringAndRatio = [];
-var gWheelTorqueByChainringAndRatio = [];
+var gLegPowerByChainringAndCluster = [];
+var gLegForceByChainringAndCluster = [];
+var gSpeedByChainringAndCluster = [];
+var gCadenceByChainringAndCluster = [];
+var gWheelTorqueByChainringAndCluster = [];
 
 var gRatioSchmoo = [];
 var gCadenceSchmoo = [];
@@ -309,7 +309,7 @@ function calcTables () {
 
   // Chainring-based grids
 
-  gSpeedByChainringAndRatio =
+  gSpeedByChainringAndCluster =
     calcGridFromGrids(
       [gRatioByChainringAndCluster],
       (ratio) =>
@@ -320,9 +320,9 @@ function calcTables () {
         )
     );
 
-  gLegPowerByChainringAndRatio =
+  gLegPowerByChainringAndCluster =
     calcGridFromGrids(
-      [gSpeedByChainringAndRatio],
+      [gSpeedByChainringAndCluster],
       (speed) =>
         calcLegPowerFromRider(
           speed,
@@ -332,7 +332,7 @@ function calcTables () {
         )
     );
 
-  gCadenceByChainringAndRatio =
+  gCadenceByChainringAndCluster =
     calcGridFromGrids(
       [gRatioByChainringAndCluster],
       (ratio) =>
@@ -343,9 +343,9 @@ function calcTables () {
         )
     );
 
-  gLegForceByChainringAndRatio =
+  gLegForceByChainringAndCluster =
     calcGridFromGrids(
-      [gLegPowerByChainringAndRatio],
+      [gLegPowerByChainringAndCluster],
       (power) =>
         calcLegForceFromPower(
           power,
@@ -354,9 +354,9 @@ function calcTables () {
         )
     );
 
-  gWheelTorqueByChainringAndRatio =
+  gWheelTorqueByChainringAndCluster =
     calcGridFromGrids(
-      [gLegPowerByChainringAndRatio, gRatioByChainringAndCluster],
+      [gLegPowerByChainringAndCluster, gRatioByChainringAndCluster],
       (power, ratio) =>
         calcWheelTorque(
           power,
