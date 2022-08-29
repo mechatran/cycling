@@ -131,9 +131,10 @@ function pushCfg () {
 
 function refresh () {
   calcCfg();
-  let gearing = new GearingData();
-  calcTables(gearing);
-  buildGearingTable(gearing);
-  buildPowerTable(gearing);
+  let transmission = new GearingTransmission();
+  let effort = new GearingEffort(transmission);
+  calcTables(transmission);
+  buildGearingTable(transmission, effort);
+  buildPowerTable(transmission);
   pushCfg();
 }

@@ -252,7 +252,7 @@ function buildGridsAndFormatters (info) {
   return [grids, formatters, indexes];
 }
 
-function buildGearingTable (gearing) {
+function buildGearingTable (transmission, effort) {
   var table;
   var trHeading;
   var tdMajor, tdMinor;
@@ -310,32 +310,32 @@ function buildGearingTable (gearing) {
 
     let [grids, formatters, indexes] =
       buildGridsAndFormatters([
-          [gSwitches.gearing_indexes.value, gearing.gearIndexGridByChainringAndCluster, formatNone, false],
-          [true, gearing.ratioGridByChainringAndCluster, formatRatio, true],
-          [gSwitches.gearing_inches.value, gearing.gearInchesGridByChainringAndCluster, formatGearInches, true],
-          [gSwitches.gearing_speed.value, gearing.speedGridByChainringAndCluster, formatSpeed, false],
+          [gSwitches.gearing_indexes.value, transmission.gearIndexGridByChainringAndCluster, formatNone, false],
+          [true, transmission.ratioGridByChainringAndCluster, formatRatio, true],
+          [gSwitches.gearing_inches.value, transmission.gearInchesGridByChainringAndCluster, formatGearInches, true],
+          [gSwitches.gearing_speed.value, effort.speedGridByChainringAndCluster, formatSpeed, false],
         ]);
     let [nums, ratios, inches, speeds] = indexes;
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, gCogsCluster.length, grids, formatters);
 
     if (nums >= 0) {
-      colorGridByGearIndex(cells[nums], gearing.gearIndexGridByChainringAndCluster, gearing.gearIndexGridByChainringAndCluster);
+      colorGridByGearIndex(cells[nums], transmission.gearIndexGridByChainringAndCluster, transmission.gearIndexGridByChainringAndCluster);
       formatGearIndexCells(cells[nums]);
     }
     if (speeds >= 0) {
-      colorRatioGridConditionally(cells[speeds], gearing.gearIndexGridByChainringAndCluster);
-      colorGridsByRatio([cells[speeds]], gearing.ratioGridByChainringAndCluster);
+      colorRatioGridConditionally(cells[speeds], transmission.gearIndexGridByChainringAndCluster);
+      colorGridsByRatio([cells[speeds]], transmission.ratioGridByChainringAndCluster);
     }
     if (inches >= 0) {
-      colorRatioGridConditionally(cells[inches], gearing.gearIndexGridByChainringAndCluster);
-      colorGridsByRatio([cells[inches]], gearing.ratioGridByChainringAndCluster);
+      colorRatioGridConditionally(cells[inches], transmission.gearIndexGridByChainringAndCluster);
+      colorGridsByRatio([cells[inches]], transmission.ratioGridByChainringAndCluster);
     }
     if (ratios >= 0) {
-      colorRatioGridConditionally(cells[ratios], gearing.gearIndexGridByChainringAndCluster);
-      colorGridsByRatio([cells[ratios]], gearing.ratioGridByChainringAndCluster);
+      colorRatioGridConditionally(cells[ratios], transmission.gearIndexGridByChainringAndCluster);
+      colorGridsByRatio([cells[ratios]], transmission.ratioGridByChainringAndCluster);
     }
-    formatCellGridsGroupsConditionally(cells, gearing.gearIndexGridByChainringAndCluster);
+    formatCellGridsGroupsConditionally(cells, transmission.gearIndexGridByChainringAndCluster);
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -366,15 +366,15 @@ function buildGearingTable (gearing) {
     tdMinor = cloneNodeArray(tdMinor)
 
     let [grids, formatters, indexes] = buildGridsAndFormatters([
-      [gSwitches.speedAtCadence_force.value, gearing.legForceGridByChainringAndCluster, formatForce, false],
-      [gSwitches.speedAtCadence_power.value, gearing.legPowerGridByChainringAndCluster, formatPower, false],
-      [true, gearing.speedGridByChainringAndCluster, formatSpeed, true]]);
+      [gSwitches.speedAtCadence_force.value, effort.legForceGridByChainringAndCluster, formatForce, false],
+      [gSwitches.speedAtCadence_power.value, effort.legPowerGridByChainringAndCluster, formatPower, false],
+      [true, effort.speedGridByChainringAndCluster, formatSpeed, true]]);
     let [force, power] = indexes;
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, gCogsCluster.length, grids, formatters);
 
-    colorGridsBySpeed(cells, gearing.speedGridByChainringAndCluster);
-    colorGridsByPowerZone(cells, gearing.legPowerGridByChainringAndCluster);
+    colorGridsBySpeed(cells, effort.speedGridByChainringAndCluster);
+    colorGridsByPowerZone(cells, effort.legPowerGridByChainringAndCluster);
     if (force >= 0) {
       formatForceCells(cells[force]);
     }
@@ -410,12 +410,12 @@ function buildGearingTable (gearing) {
     tdMinor = cloneNodeArray(tdMinor)
 
     let [grids, formatters] = buildGridsAndFormatters([
-      [true, gearing.cadenceGridByChainringAndCluster, formatCadence, true]]);
+      [true, effort.cadenceGridByChainringAndCluster, formatCadence, true]]);
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, gCogsCluster.length, grids, formatters);
 
-    colorGridsByCadence(cells, gearing.cadenceGridByChainringAndCluster);
-    colorGridsByCadenceZone(cells, gearing.cadenceGridByChainringAndCluster);
+    colorGridsByCadence(cells, effort.cadenceGridByChainringAndCluster);
+    colorGridsByCadenceZone(cells, effort.cadenceGridByChainringAndCluster);
     formatCellGridGroups(cells);
   }
 
@@ -446,13 +446,13 @@ function buildGearingTable (gearing) {
     tdMinor = cloneNodeArray(tdMinor)
 
     let [grids, formatters, indexes] = buildGridsAndFormatters([
-      [gSwitches.torqueAtCadence_force.value, gearing.legForceGridByChainringAndCluster, formatForce, false],
-      [true, gearing.wheelTorqueGridByChainringAndCluster, formatTorque, true]]);
+      [gSwitches.torqueAtCadence_force.value, effort.legForceGridByChainringAndCluster, formatForce, false],
+      [true, effort.wheelTorqueGridByChainringAndCluster, formatTorque, true]]);
     let [force] = indexes;
 
     cells = addInterleavedRows(table, tdMajor, tdMinor, gCogsCluster.length, grids, formatters);
 
-    colorGridsByWheelTorque(cells, gearing.wheelTorqueGridByChainringAndCluster);
+    colorGridsByWheelTorque(cells, effort.wheelTorqueGridByChainringAndCluster);
     if (force >= 0) {
       formatForceCells(cells[force]);
     }
@@ -466,13 +466,13 @@ function buildGearingTable (gearing) {
   gearingDiv.appendChild(table);
 }
 
-function buildPowerTable (gearing) {
+function buildPowerTable (transmission) {
   var table;
   var trHeading, tdMajor, tdMinor;
   var span;
   var cells;
 
-  var numGears = gearing.ratioSchmoo.length;
+  var numGears = transmission.ratioSchmoo.length;
 
   //////////////////////////////////////////////////////////////////////////////
 
@@ -492,7 +492,7 @@ function buildPowerTable (gearing) {
 
   cells = [];
   cells[0] = [addRow(table, tdMajor, tdMinor, gearNumbers, formatNone)];
-  colorGridByGearIndex(cells[0], [gearNumbers], gearing.gearIndexGridByChainringAndCluster);
+  colorGridByGearIndex(cells[0], [gearNumbers], transmission.gearIndexGridByChainringAndCluster);
 
   //////////////////////////////////////////////////////////////////////////////
 
@@ -501,8 +501,8 @@ function buildPowerTable (gearing) {
   tdMinor = gStock.tdHeadingRatio.cloneNode();
   tdMinor.appendChild(document.createTextNode("Ratio"));
 
-  cells[1] = [addRow(table, tdMajor, tdMinor, gearing.ratioSchmoo, formatRatio)];
-  colorGridsByRatio([cells[1]], [gearing.ratioSchmoo]);
+  cells[1] = [addRow(table, tdMajor, tdMinor, transmission.ratioSchmoo, formatRatio)];
+  colorGridsByRatio([cells[1]], [transmission.ratioSchmoo]);
 
   //////////////////////////////////////////////////////////////////////////////
 

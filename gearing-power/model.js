@@ -110,8 +110,10 @@ function calcCfg () {
 
 //////////////////////////////////////////////////////////////////////////////
 
-class GearingData {
+class GearingTransmission {
   constructor () {
+    // Grids
+
     this.ratioGridByChainringAndCluster = 
       calcGridFromRowAndColumnHeadings(
         gCogsChainring,
@@ -133,6 +135,8 @@ class GearingData {
 
     this.gearIndexGridByChainringAndCluster = calcGearIndexFromChainringAndCluster(this.ratioGridByChainringAndCluster);
 
+    // Schmoos
+
     this.ratioSchmoo = [];
     calcGridFromGrids(
       [this.gearIndexGridByChainringAndCluster, this.ratioGridByChainringAndCluster],
@@ -141,10 +145,16 @@ class GearingData {
           (this.ratioSchmoo[index - 1] = ratio) :
           undefined
     );
+  }
+}
+
+class GearingEffort {
+  constructor (transmission) {
+    // Grids
 
     this.speedGridByChainringAndCluster =
       calcGridFromGrids(
-        [this.ratioGridByChainringAndCluster],
+        [transmission.ratioGridByChainringAndCluster],
         (ratio) =>
           calcSpeedFromCadence(
             gConfig.cadenceRpm.value,
@@ -167,7 +177,7 @@ class GearingData {
 
     this.cadenceGridByChainringAndCluster =
       calcGridFromGrids(
-        [this.ratioGridByChainringAndCluster],
+        [transmission.ratioGridByChainringAndCluster],
         (ratio) =>
           calcCadenceFromSpeed(
             gConfig.speedMph.value,
@@ -189,7 +199,7 @@ class GearingData {
 
     this.wheelTorqueGridByChainringAndCluster =
       calcGridFromGrids(
-        [this.legPowerGridByChainringAndCluster, this.ratioGridByChainringAndCluster],
+        [this.legPowerGridByChainringAndCluster, transmission.ratioGridByChainringAndCluster],
         (power, ratio) =>
           calcWheelTorqueFromPower(
             power,
@@ -200,7 +210,7 @@ class GearingData {
   }
 }
 
-function calcTables (gearing) {
+function calcTables (transmission) {
   // NOTE: We need to control the calculation order to resolve dependencies
   //       between calculation steps.  Pass the global tables to each helper
   //       function as an argument to help make this clear.  Configuration
@@ -239,7 +249,7 @@ function calcTables (gearing) {
   gSpeedByCadenceAndRatio =
     calcGridFromRowAndColumnHeadings(
       gCadenceSchmoo,
-      gearing.ratioSchmoo,
+      transmission.ratioSchmoo,
       (cadence, ratio) =>
         calcSpeedFromCadence(
           cadence,
@@ -277,7 +287,7 @@ function calcTables (gearing) {
   gCadenceBySpeedAndRatio =
     calcGridFromRowAndColumnHeadings(
       gSpeedSchmoo,
-      gearing.ratioSchmoo,
+      transmission.ratioSchmoo,
       (speed, ratio) =>
         calcCadenceFromSpeed(
           speed,
@@ -291,7 +301,7 @@ function calcTables (gearing) {
   gCadenceByGradeAndRatio =
     calcGridFromRowAndColumnHeadings(
       speedByGradeSchmoo,
-      gearing.ratioSchmoo,
+      transmission.ratioSchmoo,
       (speed, ratio) =>
         boundBy(
           calcCadenceFromSpeed(
@@ -306,7 +316,7 @@ function calcTables (gearing) {
 
   gSpeedByGradeAndRatio =
     calcGridFromColumnHeadingsAndGrid(
-      gearing.ratioSchmoo,
+      transmission.ratioSchmoo,
       gCadenceByGradeAndRatio,
       (ratio, cadence) =>
         calcSpeedFromCadence(
