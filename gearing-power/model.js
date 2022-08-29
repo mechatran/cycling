@@ -14,16 +14,6 @@ var CLUSTERS =  __formatCogInfo(CLUSTERS_INFO, formatClustersGroup, (x) => forma
 var gCogsCluster = [ 36, 32, 28, 25, 22, 19, 17, 15, 13, 12, 11 ];
 var gCogsChainring = [ 34, 50 ];
 
-var gRatioByChainringAndCluster = [];
-var gGearIndexByChainringAndCluster = [];
-var gGearInchesByChainringAndCluster = [];
-var gLegPowerByChainringAndCluster = [];
-var gLegForceByChainringAndCluster = [];
-var gSpeedByChainringAndCluster = [];
-var gCadenceByChainringAndCluster = [];
-var gWheelTorqueByChainringAndCluster = [];
-
-var gRatioSchmoo = [];
 var gCadenceSchmoo = [];
 var gGradeSchmoo = [];
 var gSpeedSchmoo = [];
@@ -243,35 +233,103 @@ function calcGearIndexByChainringAndCluster (ratioByChainringAndCluster) {
   }
 }
 
-function calcTables () {
+class GearingData {
+  constructor () {
+    this.ratioGridByChainringAndCluster = 
+      calcGridFromRowAndColumnHeadings(
+        gCogsChainring,
+        gCogsCluster,
+        (chainringTeeth, clusterTeeth) => clusterTeeth / chainringTeeth
+      );
+
+    this.gearInchesGridByChainringAndCluster =
+      calcGridFromRowAndColumnHeadings(
+        gCogsChainring,
+        gCogsCluster,
+        (chainringTeeth, clusterTeeth) =>
+          calcGearInches(
+            gConfig.tireCircMm.value,
+            chainringTeeth,
+            clusterTeeth
+          )
+      );
+
+    this.gearIndexGridByChainringAndCluster = calcGearIndexByChainringAndCluster(this.ratioGridByChainringAndCluster);
+
+    this.ratioSchmoo = [];
+    calcGridFromGrids(
+      [this.gearIndexGridByChainringAndCluster, this.ratioGridByChainringAndCluster],
+      (index, ratio) =>
+        (index && ratio) ?
+          (this.ratioSchmoo[index - 1] = ratio) :
+          undefined
+    );
+
+    this.speedGridByChainringAndCluster =
+      calcGridFromGrids(
+        [this.ratioGridByChainringAndCluster],
+        (ratio) =>
+          calcSpeed(
+            gConfig.cadenceRpm.value,
+            ratio,
+            gConfig.tireCircMm.value
+          )
+      );
+
+    this.legPowerGridByChainringAndCluster =
+      calcGridFromGrids(
+        [this.speedGridByChainringAndCluster],
+        (speed) =>
+          calcLegPowerFromRider(
+            speed,
+            gConfig.gradePercent.value,
+            gConfig.weightTotal.value,
+            gConfig.position.choices[gConfig.position.value]
+          )
+      );
+
+    this.cadenceGridByChainringAndCluster =
+      calcGridFromGrids(
+        [this.ratioGridByChainringAndCluster],
+        (ratio) =>
+          calcCadence(
+            gConfig.speedMph.value,
+            ratio,
+            gConfig.tireCircMm.value
+          )
+      );
+
+    this.legForceGridByChainringAndCluster =
+      calcGridFromGrids(
+        [this.legPowerGridByChainringAndCluster],
+        (power) =>
+          calcLegForceFromPower(
+            power,
+            gConfig.cadenceRpm.value,
+            gConfig.crankLength.value
+          )
+      );
+
+    this.wheelTorqueGridByChainringAndCluster =
+      calcGridFromGrids(
+        [this.legPowerGridByChainringAndCluster, this.ratioGridByChainringAndCluster],
+        (power, ratio) =>
+          calcWheelTorque(
+            power,
+            gConfig.cadenceRpm.value / ratio,
+            gConfig.tireCircMm.value
+          )
+      );
+  }
+}
+
+function calcTables (gearing) {
   // NOTE: We need to control the calculation order to resolve dependencies
   //       between calculation steps.  Pass the global tables to each helper
   //       function as an argument to help make this clear.  Configuration
   //       parameters are accessed via gConfig because those values are fixed
   //       ahead of time.
   
-  // Gear ratios
-
-  gRatioByChainringAndCluster = 
-    calcGridFromRowAndColumnHeadings(
-      gCogsChainring,
-      gCogsCluster,
-      (chainringTeeth, clusterTeeth) => clusterTeeth / chainringTeeth
-    );
-
-  gGearInchesByChainringAndCluster =
-    calcGridFromRowAndColumnHeadings(
-      gCogsChainring,
-      gCogsCluster,
-      (chainringTeeth, clusterTeeth) =>
-        calcGearInches(
-          gConfig.tireCircMm.value,
-          chainringTeeth,
-          clusterTeeth
-        )
-    );
-
-  gGearIndexByChainringAndCluster = calcGearIndexByChainringAndCluster(gRatioByChainringAndCluster);
 
   // Schmoos
 
@@ -280,14 +338,6 @@ function calcTables () {
       (x) => gConfig.cadenceRpm.value + gConfig.stepRpm.value * x
     );
 
-  gRatioSchmoo = [];
-  calcGridFromGrids(
-    [gGearIndexByChainringAndCluster, gRatioByChainringAndCluster],
-    (index, ratio) =>
-      (index && ratio) ?
-        (gRatioSchmoo[index - 1] = ratio) :
-        undefined
-  );
 
   gSpeedSchmoo =
     createRangeArray(-3, 3).map(
@@ -307,70 +357,12 @@ function calcTables () {
         )
     );
 
-  // Chainring-based grids
-
-  gSpeedByChainringAndCluster =
-    calcGridFromGrids(
-      [gRatioByChainringAndCluster],
-      (ratio) =>
-        calcSpeed(
-          gConfig.cadenceRpm.value,
-          ratio,
-          gConfig.tireCircMm.value
-        )
-    );
-
-  gLegPowerByChainringAndCluster =
-    calcGridFromGrids(
-      [gSpeedByChainringAndCluster],
-      (speed) =>
-        calcLegPowerFromRider(
-          speed,
-          gConfig.gradePercent.value,
-          gConfig.weightTotal.value,
-          gConfig.position.choices[gConfig.position.value]
-        )
-    );
-
-  gCadenceByChainringAndCluster =
-    calcGridFromGrids(
-      [gRatioByChainringAndCluster],
-      (ratio) =>
-        calcCadence(
-          gConfig.speedMph.value,
-          ratio,
-          gConfig.tireCircMm.value
-        )
-    );
-
-  gLegForceByChainringAndCluster =
-    calcGridFromGrids(
-      [gLegPowerByChainringAndCluster],
-      (power) =>
-        calcLegForceFromPower(
-          power,
-          gConfig.cadenceRpm.value,
-          gConfig.crankLength.value
-        )
-    );
-
-  gWheelTorqueByChainringAndCluster =
-    calcGridFromGrids(
-      [gLegPowerByChainringAndCluster, gRatioByChainringAndCluster],
-      (power, ratio) =>
-        calcWheelTorque(
-          power,
-          gConfig.cadenceRpm.value / ratio,
-          gConfig.tireCircMm.value
-        )
-    );
-
   // Cadence-based grids
 
   gSpeedByCadenceAndRatio =
     calcGridFromRowAndColumnHeadings(
       gCadenceSchmoo,
-      gRatioSchmoo,
+      gearing.ratioSchmoo,
       (cadence, ratio) =>
         calcSpeed(
           cadence,
@@ -408,7 +400,7 @@ function calcTables () {
   gCadenceBySpeedAndRatio =
     calcGridFromRowAndColumnHeadings(
       gSpeedSchmoo,
-      gRatioSchmoo,
+      gearing.ratioSchmoo,
       (speed, ratio) =>
         calcCadence(
           speed,
@@ -422,7 +414,7 @@ function calcTables () {
   gCadenceByGradeAndRatio =
     calcGridFromRowAndColumnHeadings(
       speedByGradeSchmoo,
-      gRatioSchmoo,
+      gearing.ratioSchmoo,
       (speed, ratio) =>
         boundBy(
           calcCadence(
@@ -437,7 +429,7 @@ function calcTables () {
 
   gSpeedByGradeAndRatio =
     calcGridFromColumnHeadingsAndGrid(
-      gRatioSchmoo,
+      gearing.ratioSchmoo,
       gCadenceByGradeAndRatio,
       (ratio, cadence) =>
         calcSpeed(
