@@ -27,7 +27,7 @@ var gSwitches = {
 
 //////////////////////////////////////////////////////////////////////////////
 
-function pushCfg () {
+function pushCfg (cadence) {
   var td;
 
   for (let k in gConfig) {
@@ -111,11 +111,11 @@ function pushCfg () {
   td = document.getElementById("stepRpm-range");
   purgeChildren(td);
   td.innerHTML =
-    formatCadence(Math.min(...gCadenceSchmoo)) +
+    formatCadence(Math.min(...cadence.cadenceSchmoo)) +
     " &rarr; " +
     formatCadence(gConfig.cadenceRpm.value) +
     " &rarr; " +
-    formatCadence(Math.max(...gCadenceSchmoo));
+    formatCadence(Math.max(...cadence.cadenceSchmoo));
 
   td = document.getElementById("toleranceRpm-range");
   purgeChildren(td);
@@ -131,10 +131,12 @@ function pushCfg () {
 
 function refresh () {
   calcCfg();
-  let transmission = new GearingTransmission();
-  let effort = new GearingEffort(transmission);
-  calcTables(transmission);
-  buildGearingTable(transmission, effort);
-  buildPowerTable(transmission);
-  pushCfg();
+  let driveTrain = new BikeDriveTrainGrids();
+  let gearingEffort = new BikeGearingEffortGrids(driveTrain);
+  let cadenceEffort = new BikeCadenceEffortGrids(driveTrain);
+  let speedEffort = new BikeSpeedEffortGrids(driveTrain);
+  let gradeEffort = new BikeGradeEffortGrids(driveTrain);
+  buildGearingTable(driveTrain, gearingEffort);
+  buildPowerTable(driveTrain, cadenceEffort, speedEffort, gradeEffort);
+  pushCfg(cadenceEffort);
 }

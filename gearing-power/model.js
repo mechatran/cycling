@@ -14,18 +14,6 @@ var CLUSTERS =  __formatCogInfo(CLUSTERS_INFO, formatClustersGroup, (x) => forma
 var gCogsCluster = [ 36, 32, 28, 25, 22, 19, 17, 15, 13, 12, 11 ];
 var gCogsChainring = [ 34, 50 ];
 
-var gCadenceSchmoo = [];
-var gGradeSchmoo = [];
-var gSpeedSchmoo = [];
-var gLegForceByCadenceAndRatio = [];
-var gLegPowerByCadenceAndRatio = [];
-var gSpeedByCadenceAndRatio = [];
-var gCadenceBySpeedAndRatio = [];
-var gCadenceByGradeAndRatio = [];
-var gSpeedByGradeAndRatio = [];
-var gLegForceByGradeAndRatio = [];
-var gLegPowerByGradeAndRatio = [];
-
 var gConfig = {
   chainrings:    { value: "1,16",               order: 1,  choices: CHAINRINGS },
   cluster:       { value: "6,8",                order: 2,  choices: CLUSTERS },
@@ -110,7 +98,7 @@ function calcCfg () {
 
 //////////////////////////////////////////////////////////////////////////////
 
-class GearingTransmission {
+class BikeDriveTrainGrids {
   constructor () {
     // Grids
 
@@ -148,7 +136,7 @@ class GearingTransmission {
   }
 }
 
-class GearingEffort {
+class BikeGearingEffortGrids {
   constructor (transmission) {
     // Grids
 
@@ -210,144 +198,150 @@ class GearingEffort {
   }
 }
 
-function calcTables (transmission) {
-  // NOTE: We need to control the calculation order to resolve dependencies
-  //       between calculation steps.  Pass the global tables to each helper
-  //       function as an argument to help make this clear.  Configuration
-  //       parameters are accessed via gConfig because those values are fixed
-  //       ahead of time.
-  
+class BikeCadenceEffortGrids {
+  constructor (transmission) {
+    // Schmoos
 
-  // Schmoos
+    this.cadenceSchmoo = 
+      createRangeArray(-3, 3).map(
+        (x) => gConfig.cadenceRpm.value + gConfig.stepRpm.value * x
+      );
 
-  gCadenceSchmoo = 
-    createRangeArray(-3, 3).map(
-      (x) => gConfig.cadenceRpm.value + gConfig.stepRpm.value * x
-    );
+    // Grids
 
+    this.speedGridByCadenceAndRatio =
+      calcGridFromRowAndColumnHeadings(
+        this.cadenceSchmoo,
+        transmission.ratioSchmoo,
+        (cadence, ratio) =>
+          calcSpeedFromCadence(
+            cadence,
+            ratio,
+            gConfig.tireCircMm.value
+          )
+      );
 
-  gSpeedSchmoo =
-    createRangeArray(-3, 3).map(
-      (x) => gConfig.speedMph.value + 2.5 * x
-    );
+    this.legPowerGridByCadenceAndRatio =
+      calcGridFromGrids(
+        [this.speedGridByCadenceAndRatio],
+        (speed) =>
+          calcLegPowerFromRider(
+            speed,
+            gConfig.gradePercent.value,
+            gConfig.weightTotal.value,
+            gConfig.position.choices[gConfig.position.value]
+          )
+      );
 
-  gGradeSchmoo = createRangeArray(0, 11, 2).concat(createRangeArray(12, 20, 4));
+    this.legForceGridByCadenceAndRatio =
+      calcGridFromRowHeadingsAndGrid(
+        this.cadenceSchmoo,
+        this.legPowerGridByCadenceAndRatio,
+        (cadence, power) =>
+          calcLegForceFromPower(
+            power,
+            cadence,
+            gConfig.crankLength.value
+          )
+      );
+  }
+}
 
-  var speedByGradeSchmoo = 
-    gGradeSchmoo.map(
-      (grade) =>
-        calcSpeedFromRider(
-          gConfig.powerFtp.value,
-          grade,
-          gConfig.weightTotal.value,
-          gConfig.position.choices[gConfig.position.value]
-        )
-    );
+class BikeSpeedEffortGrids {
+  constructor (transmission) {
+    // Schmoos
 
-  // Cadence-based grids
+    this.speedSchmoo =
+      createRangeArray(-3, 3).map(
+        (x) => gConfig.speedMph.value + 2.5 * x
+      );
 
-  gSpeedByCadenceAndRatio =
-    calcGridFromRowAndColumnHeadings(
-      gCadenceSchmoo,
-      transmission.ratioSchmoo,
-      (cadence, ratio) =>
-        calcSpeedFromCadence(
-          cadence,
-          ratio,
-          gConfig.tireCircMm.value
-        )
-    );
+    // Grids
 
-  gLegPowerByCadenceAndRatio =
-    calcGridFromGrids(
-      [gSpeedByCadenceAndRatio],
-      (speed) =>
-        calcLegPowerFromRider(
-          speed,
-          gConfig.gradePercent.value,
-          gConfig.weightTotal.value,
-          gConfig.position.choices[gConfig.position.value]
-        )
-    );
-
-  gLegForceByCadenceAndRatio =
-    calcGridFromRowHeadingsAndGrid(
-      gCadenceSchmoo,
-      gLegPowerByCadenceAndRatio,
-      (cadence, power) =>
-        calcLegForceFromPower(
-          power,
-          cadence,
-          gConfig.crankLength.value
-        )
-    );
-
-  // Speed-based grids
-
-  gCadenceBySpeedAndRatio =
-    calcGridFromRowAndColumnHeadings(
-      gSpeedSchmoo,
-      transmission.ratioSchmoo,
-      (speed, ratio) =>
-        calcCadenceFromSpeed(
-          speed,
-          ratio,
-          gConfig.tireCircMm.value
-        ),
-    );
-
-  // Grade-based grids
-
-  gCadenceByGradeAndRatio =
-    calcGridFromRowAndColumnHeadings(
-      speedByGradeSchmoo,
-      transmission.ratioSchmoo,
-      (speed, ratio) =>
-        boundBy(
+    this.cadenceGridBySpeedAndRatio =
+      calcGridFromRowAndColumnHeadings(
+        this.speedSchmoo,
+        transmission.ratioSchmoo,
+        (speed, ratio) =>
           calcCadenceFromSpeed(
             speed,
             ratio,
             gConfig.tireCircMm.value
           ),
-          gConfig.cadenceRpmMin.value,
-          gConfig.cadenceRpmMax.value
-        )
-    );
-
-  gSpeedByGradeAndRatio =
-    calcGridFromColumnHeadingsAndGrid(
-      transmission.ratioSchmoo,
-      gCadenceByGradeAndRatio,
-      (ratio, cadence) =>
-        calcSpeedFromCadence(
-          cadence,
-          ratio,
-          gConfig.tireCircMm.value
-        )
-    );
-
-  gLegPowerByGradeAndRatio =
-    calcGridFromRowHeadingsAndGrid(
-      gGradeSchmoo,
-      gSpeedByGradeAndRatio,
-      (grade, speed) =>
-        calcLegPowerFromRider(
-          speed,
-          grade,
-          gConfig.weightTotal.value,
-          gConfig.position.choices[gConfig.position.value]
-        )
-    );
-
-  gLegForceByGradeAndRatio =
-    calcGridFromGrids(
-      [gCadenceByGradeAndRatio, gLegPowerByGradeAndRatio],
-      (cadence, power) =>
-        calcLegForceFromPower(
-          power,
-          cadence,
-          gConfig.crankLength.value
-        )
-    );
+      );
+  }
 }
 
+class BikeGradeEffortGrids {
+  constructor (transmission) {
+    // Schmoos
+
+    this.gradeSchmoo = createRangeArray(0, 11, 2).concat(createRangeArray(12, 20, 4));
+
+    let speedAtGradeSchmoo = 
+      this.gradeSchmoo.map(
+        (grade) =>
+          calcSpeedFromRider(
+            gConfig.powerFtp.value,
+            grade,
+            gConfig.weightTotal.value,
+            gConfig.position.choices[gConfig.position.value]
+          )
+      );
+
+
+    // Grids
+
+    this.cadenceGridByGradeAndRatio =
+      calcGridFromRowAndColumnHeadings(
+        speedAtGradeSchmoo,
+        transmission.ratioSchmoo,
+        (speed, ratio) =>
+          boundBy(
+            calcCadenceFromSpeed(
+              speed,
+              ratio,
+              gConfig.tireCircMm.value
+            ),
+            gConfig.cadenceRpmMin.value,
+            gConfig.cadenceRpmMax.value
+          )
+      );
+
+    this.speedGridByGradeAndRatio =
+      calcGridFromColumnHeadingsAndGrid(
+        transmission.ratioSchmoo,
+        this.cadenceGridByGradeAndRatio,
+        (ratio, cadence) =>
+          calcSpeedFromCadence(
+            cadence,
+            ratio,
+            gConfig.tireCircMm.value
+          )
+      );
+
+    this.legPowerGridByGradeAndRatio =
+      calcGridFromRowHeadingsAndGrid(
+        this.gradeSchmoo,
+        this.speedGridByGradeAndRatio,
+        (grade, speed) =>
+          calcLegPowerFromRider(
+            speed,
+            grade,
+            gConfig.weightTotal.value,
+            gConfig.position.choices[gConfig.position.value]
+          )
+      );
+
+    this.legForceGridByGradeAndRatio =
+      calcGridFromGrids(
+        [this.cadenceGridByGradeAndRatio, this.legPowerGridByGradeAndRatio],
+        (cadence, power) =>
+          calcLegForceFromPower(
+            power,
+            cadence,
+            gConfig.crankLength.value
+          )
+      );
+  }
+}
