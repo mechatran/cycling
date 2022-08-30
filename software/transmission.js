@@ -15,7 +15,7 @@ function calcGearInches (tireCircMm, front, rear) {
   return tireDiameterIn * front / rear;
 }
 
-function calcGearIndexFromChainringAndCluster (ratioByChainringAndCluster) {
+function calcGearIndexGridFromChainringAndCluster (ratioGridByChainringAndCluster) {
   function nominal (n) {
     return roundTo(n, 2);
   }
@@ -107,13 +107,13 @@ function calcGearIndexFromChainringAndCluster (ratioByChainringAndCluster) {
     return gear;
   }
 
-  switch (ratioByChainringAndCluster.length) {
+  switch (ratioGridByChainringAndCluster.length) {
     case 1:
-      return calc1x(ratioByChainringAndCluster);
+      return calc1x(ratioGridByChainringAndCluster);
     case 2:
-      return calc2x(ratioByChainringAndCluster);
+      return calc2x(ratioGridByChainringAndCluster);
     case 3:
-      return calc3x(ratioByChainringAndCluster);
+      return calc3x(ratioGridByChainringAndCluster);
     default:
       return;
   }

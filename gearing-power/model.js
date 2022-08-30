@@ -133,7 +133,7 @@ class GearingTransmission {
           )
       );
 
-    this.gearIndexGridByChainringAndCluster = calcGearIndexFromChainringAndCluster(this.ratioGridByChainringAndCluster);
+    this.gearIndexGridByChainringAndCluster = calcGearIndexGridFromChainringAndCluster(this.ratioGridByChainringAndCluster);
 
     // Schmoos
 
