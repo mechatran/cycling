@@ -19,7 +19,7 @@ var gSwitches = {
   speedByGrade_power:    { value: true,  label: "Leg Power (Watt)" },
   powerStripe:           { value: true,  label: "Power"            },
   burstStripe:           { value: true,  label: "Burst"            },
-  cadenceStripe:         { value: true,  label: "Cadence"          },
+  cadenceStripe:         { value: true,  label: "C.Pref"           },
   blending:              { value: true,  label: "Blending"         },
   primaryUnits:          { value: true,  label: "Primary"          },
   secondaryUnits:        { value: true,  label: "Secondary"        },
@@ -117,7 +117,7 @@ function pushCfg (cadence) {
   td = document.getElementById("toleranceRpm-range");
   purgeChildren(td);
   td.innerHTML =
-    "Pref: " +
+    "C.Pref: " +
     formatCadence(gConfig.cadenceRpm.value - gConfig.toleranceRpm.value) +
     " &ndash; " +
     formatCadence(gConfig.cadenceRpm.value + gConfig.toleranceRpm.value);
