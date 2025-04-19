@@ -58,7 +58,6 @@ div.config {
 .heading-torque-from-cadence { background-color: var(--fill-blue);             color: white;  }
 .heading-speed-from-grade    { background-color: var(--fill-tangerine);        color: white;  }
 .heading-index               { background-color: var(--fill-purple);           color: white;  }
-.heading-ftp                 { background-color: var(--grad3-blue3);           color: yellow; }
 .heading-cadence             { background-color: var(--fill-lavender-darker);  color: white;  }
 
 .heading-ratio a { color: white; }

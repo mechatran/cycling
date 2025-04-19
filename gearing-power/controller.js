@@ -93,37 +93,31 @@ function pushCfg (cadence) {
     }
   }
 
-  td = document.getElementById("power-grads");
-  purgeChildren(td);
-  td.innerHTML =
-    formatPower(gPowerZone[2]) + " &mdash; [" +
-    formatPower(gPowerZone[3]) + " &rarr; " +
-    formatPower(gPowerZone[5]) + "] &mdash; " +
-    formatPower(gPowerZone[7]);
+  var powerFields = [
+    { id: "powerZ6-end", value: gPowerZone[7] },
+    { id: "burstLow", value: gPowerBurst.low },
+    { id: "burstHigh", value: gPowerBurst.high },
+    { id: "burstDead", value: gPowerBurst.dead },
+  ]
 
-  td = document.getElementById("burst-grads");
-  purgeChildren(td);
-  td.innerHTML = "[" +
-    formatPower(gPowerBurst.low) + " &rarr; " +
-    formatPower(gPowerBurst.high) + "] &mdash; " +
-    formatPower(gPowerBurst.dead);
+  for (let field of powerFields) {
+    td = document.getElementById(field.id);
+    purgeChildren(td);
+    td.innerHTML = formatPower(field.value);
+  }
 
   td = document.getElementById("stepRpm-range");
   purgeChildren(td);
   td.innerHTML =
     formatCadence(Math.min(...cadence.cadenceSchmoo)) +
-    " &rarr; " +
-    formatCadence(gConfig.cadenceRpm.value) +
-    " &rarr; " +
+    " &ndash; " +
     formatCadence(Math.max(...cadence.cadenceSchmoo));
 
   td = document.getElementById("toleranceRpm-range");
   purgeChildren(td);
   td.innerHTML =
     formatCadence(gConfig.cadenceRpm.value - gConfig.toleranceRpm.value) +
-    " &larr; " +
-    formatCadence(gConfig.cadenceRpm.value) +
-    " &rarr; " +
+    " &ndash; " +
     formatCadence(gConfig.cadenceRpm.value + gConfig.toleranceRpm.value);
 }
 
