@@ -103,10 +103,11 @@ function colorGridsBySpeed (cellGrids, dataGrid) {
 
 function colorGridsByCadence (cellGrids, dataGrid) {
   colorGradient(cellGrids, dataGrid, true, [
-      [0, "grad-neg-low"],
-      [90, "grad-neg-middle"],
-      [120, "grad-neg-high"],
-      [200, "grad-neg-dead"],
+      [0, "grad-rpm-high"],
+      [50, "grad-rpm-middle"],
+      [90, "grad-rpm-low"],
+      [130, "grad-rpm-middle"],
+      [170, "grad-rpm-high"],
     ]);
 }
 

@@ -77,6 +77,10 @@ div.config {
 .grad-neg-high   { background-color: var(--grad1-red);      }
 .grad-neg-dead   { background-color: var(--grad1-cinnamon); }
 
+.grad-rpm-low    { background-color: var(--grad5-light-banana); }
+.grad-rpm-middle { background-color: var(--grad5-light-cantaloupe); }
+.grad-rpm-high   { background-color: var(--grad5-dark-tangerine); }
+
 .grad-burst-low  { background-color: var(--grad2-ruby);    }
 .grad-burst-high { background-color: var(--grad2-crimson); }
 .grad-burst-dead { background-color: var(--grad2-blood);   }
