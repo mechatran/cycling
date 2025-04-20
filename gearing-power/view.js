@@ -97,6 +97,7 @@ function colorGridsBySpeed (cellGrids, dataGrid) {
       [5, "grad-neg-low"],
       [13, "grad-neg-middle"],
       [30, "grad-neg-high"],
+      [40, "grad-neg-dead"],
     ]);
 }
 
