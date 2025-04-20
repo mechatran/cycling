@@ -150,7 +150,7 @@ function colorGridsByPowerZone (cellGrids, dataGrid) {
 function formatCadenceCells (cells) {
   for (let i = 0; i < cells.length; ++i) {
     for (let j = 0; j < cells[i].length; ++j) {
-      cells[i][j].classList.add("cadence");
+      cells[i][j].classList.add("cadence-note");
     }
   }
 }
@@ -158,7 +158,7 @@ function formatCadenceCells (cells) {
 function formatPowerCells (cells) {
   for (let i = 0; i < cells.length; ++i) {
     for (let j = 0; j < cells[i].length; ++j) {
-      cells[i][j].classList.add("power");
+      cells[i][j].classList.add("power-note");
     }
   }
 }
@@ -166,7 +166,7 @@ function formatPowerCells (cells) {
 function formatForceCells (cells) {
   for (let i = 0; i < cells.length; ++i) {
     for (let j = 0; j < cells[i].length; ++j) {
-      cells[i][j].classList.add("force");
+      cells[i][j].classList.add("force-note");
     }
   }
 }
@@ -174,7 +174,7 @@ function formatForceCells (cells) {
 function formatGearIndexCells (cells) {
   for (let i = 0; i < cells.length; ++i) {
     for (let j = 0; j < cells[i].length; ++j) {
-      cells[i][j].classList.add("index");
+      cells[i][j].classList.add("index-note");
     }
   }
 }

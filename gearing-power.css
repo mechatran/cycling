@@ -15,13 +15,14 @@ span.emoji {
   text-shadow: 1pt 1pt 0pt black;
 }
 
-td.index, td.cadence, td.power, td.force  {
+td.index-note, td.cadence-note, td.power-note, td.force-note  {
   font-size: 80%;
   padding: 2px;
 }
 
-td.cadence, td.power, td.force {
-  text-decoration: underline;
+td.cadence-note, td.power-note, td.force-note {
+  /*text-decoration: underline;*/
+  font-style: italic;
 }
 
 td.heading-ratio,
