@@ -94,10 +94,10 @@ function colorGridsByRatio (cellGrids, dataGrid) {
 
 function colorGridsBySpeed (cellGrids, dataGrid) {
   colorGradient(cellGrids, dataGrid, true, [
-      [5, "grad-neg-low"],
-      [13, "grad-neg-middle"],
-      [30, "grad-neg-high"],
-      [40, "grad-neg-dead"],
+      [5, "grad-speed-low"],
+      [13, "grad-speed-middle"],
+      [30, "grad-speed-high"],
+      [40, "grad-speed-dead"],
     ]);
 }
 
@@ -121,7 +121,11 @@ function colorGridsByCadenceZone (cellGrids, dataGrid) {
 }
 
 function colorGridsByWheelTorque (cellGrids, dataGrid) {
-  colorGradient50Percentile(cellGrids, dataGrid, ["grad-neg-low", "grad-neg-middle", "grad-neg-high"]);
+  colorGradient50Percentile(cellGrids, dataGrid, [
+    "grad-torque-low",
+    "grad-torque-middle",
+    "grad-torque-high",
+  ]);
 }
 
 function colorGridsByPowerZone (cellGrids, dataGrid) {

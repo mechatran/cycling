@@ -72,10 +72,14 @@ div.config {
 .grad-pos-middle { background-color: var(--grad1-yellow); }
 .grad-pos-high   { background-color: var(--grad1-green);  }
 
-.grad-neg-low    { background-color: var(--grad1-green);    }
-.grad-neg-middle { background-color: var(--grad1-yellow);   }
-.grad-neg-high   { background-color: var(--grad1-red);      }
-.grad-neg-dead   { background-color: var(--grad1-cinnamon); }
+.grad-speed-low    { background-color: var(--grad1-green);    }
+.grad-speed-middle { background-color: var(--grad1-yellow);   }
+.grad-speed-high   { background-color: var(--grad1-red);      }
+.grad-speed-dead   { background-color: var(--grad1-cinnamon); }
+
+.grad-torque-low    { background-color: var(--grad6-gray1);    }
+.grad-torque-middle { background-color: var(--grad6-gray2);   }
+.grad-torque-high   { background-color: var(--grad6-gray3);      }
 
 .grad-rpm-low    { background-color: var(--grad5-light-banana); }
 .grad-rpm-middle { background-color: var(--grad5-light-cantaloupe); }
