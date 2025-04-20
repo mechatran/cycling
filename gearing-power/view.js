@@ -364,7 +364,9 @@ function buildGearingTable (driveTrain, gearingEffort) {
       "</ul>" +
       "<h2>Fixed at</h2>" +
       "<ul>" +
-      "<li>" + gConfig.cadenceRpm.value + " RPM" +
+      "<li>" + formatCadence(gConfig.cadenceRpm.value) +
+      "<li>" + formatWeightLbAndKg(gConfig.weightTotal.value) +
+      "<li>" + formatPercent(gConfig.gradePercent.value) + " grade" +
       "</ul>" +
       "<div>";
     addPopover(tdMajor, div);
@@ -408,7 +410,7 @@ function buildGearingTable (driveTrain, gearingEffort) {
       "</ul>" +
       "<h2>Fixed at</h2>" +
       "<ul>" +
-      "<li>" + gConfig.speedMph.value + " MPH" +
+      "<li>" + formatSpeed(gConfig.speedMph.value) +
       "</ul>" +
       "<div>";
     addPopover(tdMajor, div);
@@ -444,7 +446,9 @@ function buildGearingTable (driveTrain, gearingEffort) {
       "</ul>" +
       "<h2>Fixed at</h2>" +
       "<ul>" +
-      "<li>" + gConfig.cadenceRpm.value + " RPM" +
+      "<li>" + formatCadence(gConfig.cadenceRpm.value) +
+      "<li>" + formatWeightLbAndKg(gConfig.weightTotal.value) +
+      "<li>" + formatPercent(gConfig.gradePercent.value) + " grade" +
       "</ul>" +
       "</div>";
     addPopover(tdMajor, div);
@@ -535,6 +539,11 @@ function buildPowerTable (driveTrain, cadenceEffort, speedEffort, gradeEffort) {
       "<h2>Swept over</h2>" +
       "<ul>" +
       "<li>Cadence (RPM)" +
+      "</ul>" +
+      "<h2>Fixed at</h2>" +
+      "<ul>" +
+      "<li>" + formatWeightLbAndKg(gConfig.weightTotal.value) +
+      "<li>" + gConfig.gradePercent.value + "% grade" +
       "</ul>" +
       "</div>";
     addPopover(tdMajor, div);
@@ -631,6 +640,10 @@ function buildPowerTable (driveTrain, cadenceEffort, speedEffort, gradeEffort) {
       "<h2>Swept over</h2>" +
       "<ul>" +
       "<li>Grade (%)" +
+      "</ul>" +
+      "<h2>Fixed at</h2>" +
+      "<ul>" +
+      "<li>" + formatWeightLbAndKg(gConfig.weightTotal.value) +
       "</ul>" +
       "</div>";
     addPopover(tdMajor, div);
