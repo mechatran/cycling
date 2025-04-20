@@ -30,7 +30,7 @@
 
       <table class="config">
         <tr>
-          <th colspan=6>Options</th>
+          <th colspan=6>Display Options</th>
         </tr>
         <tr>
           <td class="heading-ratio">Gearing</td>
@@ -94,7 +94,14 @@
 
       <table class="config">
         <tr>
-          <th colspan=4>Transmission</th>
+          <th colspan=4>Bike Profile</th>
+        </tr>
+        <tr>
+          <td class="heading-ratio">Tire</td>
+          <td id="tireSize" class="editable"></td>
+
+          <td class="heading">Circumference</td>
+          <td id="tireCircMm"></td>
         </tr>
         <tr>
           <td class="heading-ratio"><a href="chainrings.html">Chainrings</a></td>
@@ -111,30 +118,14 @@
           <td id="capacityRear"></td>
         </tr>
         <tr>
-          <td class="spacer" colspan=2></td>
-
-          <td class="heading">Min Capacity</td>
-          <td id="capacityTotal"></td>
-        </tr>
-        <tr>
-          <td class="spacer"></td>
-        </tr>
-        <tr>
-          <th colspan=4>Wheels / Tires / Cranks</th>
-        </tr>
-        <tr>
-          <td class="heading-ratio">Tire</td>
-          <td id="tireSize" class="editable"></td>
-
-          <td class="heading">Circumference</td>
-          <td id="tireCircMm"></td>
-        </tr>
-        <tr>
           <td class="heading-torque-from-cadence">Crank Arm</td>
           <td id="crankLength" class="editable"></td>
 
-          <td class="heading">Units</td>
-          <td id="speedUnits"></td>
+          <td class="heading">Rear Capacity</td>
+          <td id="capacityTotal"></td>
+        </tr>
+        <tr>
+
         </tr>
       </table>
 
@@ -143,37 +134,39 @@
           <th colspan=4>Simulation Profile</th>
         </tr>
         <tr>
-          <td class="heading">Rider</td>
+          <td class="grad-ftp-zone4">Rider</td>
           <td id="weightRider" class="editable"></td>
 
-          <td class="heading">Position</td>
+          <td class="grad-ftp-zone4">Position</td>
           <td id="position" class="editable"></td>
         </tr>
         <tr>
-          <td class="heading">Bike</td>
+          <td class="grad-ftp-zone4">Bike</td>
           <td id="weightBike" class="editable"></td>
 
           <td class="grad-ftp-zone4">Grade</td>
           <td id="gradePercent" class="editable"></td>
         </tr>
         <tr>
-          <td class="heading">Kit</td>
+          <td class="grad-ftp-zone4">Kit</td>
           <td id="weightKit" class="editable"></td>
 
           <td class="heading-speed-from-cadence">Cadence</td>
           <td id="cadenceRpm" class="editable"></td>
         </tr>
         <tr>
-          <td class="heading">Gear</td>
+          <td class="grad-ftp-zone4">Gear</td>
           <td id="weightGear" class="editable"></td>
 
           <td class="heading-cadence-from-speed">Speed</td>
           <td id="speedMph" class="editable"></td>
         </tr>
         <tr>
-          <td class="grad-ftp-zone4">Total</td>
+          <td class="heading">Weight</td>
           <td id="weightTotal"></td>
 
+          <td class="heading">Units</td>
+          <td id="speedUnits"></td>
         </tr>
         <tr>
           <td class="spacer"></td>
@@ -184,12 +177,14 @@
         <tr>
           <td class="heading-speed-from-cadence">Step</td>
           <td id="stepRpm" class="editable"></td>
-          <td id="stepRpm-range" colspan=2></td>
+          <td class="heading">Range</td>
+          <td id="stepRpm-range"></td>
         </tr>
         <tr>
           <td class="heading-cadence">Tolerance</td>
           <td id="toleranceRpm" class="editable"></td>
-          <td id="toleranceRpm-range" colspan=2></td>
+          <td class="heading">C.Pref</td>
+          <td id="toleranceRpm-range"></td>
         </tr>
         <tr>
           <td class="heading-speed-from-grade">Min</td>
@@ -205,35 +200,35 @@
           <th colspan=4>Power Profile</th>
         </tr>
         <tr>
-          <td class="heading">FTP</td>
+          <td class="grad-ftp-zone4">FTP</td>
           <td id="powerFtp" class="editable"></td>
 
           <td class="heading">Fitness</td>
           <td id="fitnessRatio"></td>
         </tr>
         <tr>
-          <td class="grad-ftp-zone2">Z2 Endurance</td>
-          <td id="powerZ2"></td>
+          <td class="heading">Z2 Endurance</td>
+          <td class="grad-ftp-zone2" id="powerZ2"></td>
           <td colspan=2>55% &#65372; 2.5 hr &ndash; 14 days</td>
         </tr>
         <tr>
-          <td class="grad-ftp-zone3">Z3 Tempo</td>
-          <td id="powerZ3"></td>
+          <td class="heading">Z3 Tempo</td>
+          <td class="grad-ftp-zone3" id="powerZ3"></td>
           <td colspan=2>75% &#65372; 2.5 hr &ndash; 8 hr</td>
         </tr>
         <tr>
-          <td class="grad-ftp-zone4">Z4 Threshold</td>
-          <td id="powerZ4"></td>
+          <td class="heading">Z4 Threshold</td>
+          <td class="grad-ftp-zone4" id="powerZ4"></td>
           <td colspan=2>90% &#65372; 10 min &ndash; 60 min</td>
         </tr>
         <tr>
-          <td class="grad-ftp-zone5">Z5 VO2max</td>
-          <td id="powerZ5"></td>
+          <td class="heading">Z5 VO2max</td>
+          <td class="grad-ftp-zone5" id="powerZ5"></td>
           <td colspan=2>105% &#65372; 3 min &ndash; 8 min</td>
         </tr>
         <tr>
-          <td class="grad-ftp-high">Z6 Anaerobic</td>
-          <td id="powerZ6"></td>
+          <td class="heading">Z6 Anaerobic</td>
+          <td class="grad-ftp-high" id="powerZ6"></td>
           <td colspan=2>120% &#65372; 0.5 min &ndash; 2 min</td>
         </tr>
         <tr>
@@ -242,13 +237,13 @@
           <td colspan=2>150%</td>
         </tr>
         <tr>
-          <td class="grad-burst-low">Burst Low</td>
-          <td id="burstLow"></td>
+          <td class="heading">Burst Low</td>
+          <td class="grad-burst-low" id="burstLow"></td>
           <td colspan=2>Fixed</td>
         </tr>
         <tr>
-          <td class="grad-burst-high">Burst High</td>
-          <td id="burstHigh"></td>
+          <td class="heading">Burst High</td>
+          <td class="grad-burst-high" id="burstHigh"></td>
           <td colspan=2>Fixed</td>
         </tr>
         <tr>

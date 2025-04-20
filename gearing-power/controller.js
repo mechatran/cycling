@@ -109,16 +109,14 @@ function pushCfg (cadence) {
   td = document.getElementById("stepRpm-range");
   purgeChildren(td);
   td.innerHTML =
-    "Range: " +
-    formatCadence(Math.min(...cadence.cadenceSchmoo)) +
+    Math.min(...cadence.cadenceSchmoo) +
     " &ndash; " +
     formatCadence(Math.max(...cadence.cadenceSchmoo));
 
   td = document.getElementById("toleranceRpm-range");
   purgeChildren(td);
   td.innerHTML =
-    "C.Pref: " +
-    formatCadence(gConfig.cadenceRpm.value - gConfig.toleranceRpm.value) +
+    (gConfig.cadenceRpm.value - gConfig.toleranceRpm.value) +
     " &ndash; " +
     formatCadence(gConfig.cadenceRpm.value + gConfig.toleranceRpm.value);
 }
