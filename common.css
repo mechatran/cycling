@@ -30,6 +30,19 @@
   --grad3-blue3: #80aaee;
   --grad3-blue4: #6e9eec;
   --grad3-blue5: #4a86e8;
+
+  --grad4-banana: #FFFC79;
+  --grad4-cantaloupe: #FFD479;
+  --grad4-tangerine-brighter: #FF9300;
+
+  --grad5-light-banana: #FFFED0;
+  --grad5-light-cantaloupe: #F8E6BB;
+  --grad5-dark-tangerine: #B16A1B;
+
+  --grad6-gray1: #FFFFFF;
+  --grad6-gray2: #D6D6D6;
+  --grad6-gray3: #919191;
+  --grad6-gray4: #5E5E5E;
 }
 
 hr {
