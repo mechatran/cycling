@@ -17,7 +17,7 @@ var gSwitches = {
   speedByGrade_cadence:  { value: true,  label: "Cadence"          },
   speedByGrade_force:    { value: true,  label: "Leg Force (lbf)"  },
   speedByGrade_power:    { value: true,  label: "Leg Power (Watt)" },
-  powerStripe:           { value: true,  label: "Power"            },
+  powerStripe:           { value: true,  label: "Power Zones"      },
   burstStripe:           { value: true,  label: "Burst"            },
   cadenceStripe:         { value: true,  label: "C.Pref"           },
   blending:              { value: true,  label: "Blending"         },
@@ -119,6 +119,13 @@ function pushCfg (cadence) {
     (gConfig.cadenceRpm.value - gConfig.toleranceRpm.value) +
     " &ndash; " +
     formatCadence(gConfig.cadenceRpm.value + gConfig.toleranceRpm.value);
+
+  td = document.getElementById("cadenceRpm-range");
+  purgeChildren(td);
+  td.innerHTML =
+    gConfig.cadenceRpmMin.value +
+    " &ndash; " +
+    formatCadence(gConfig.cadenceRpmMax.value);
 }
 
 //////////////////////////////////////////////////////////////////////////////
