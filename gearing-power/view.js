@@ -142,6 +142,7 @@ function colorGridsByPowerZone (cellGrids, dataGrid) {
         [gPowerZone[3], "grad-ftp-zone3"],
         [gPowerZone[4], "grad-ftp-zone4"],
         [gPowerZone[5], "grad-ftp-zone5"],
+        [gPowerZone[6], "grad-ftp-zone6"],
         [gPowerZone[7], "grad-ftp-high"],
       ]);
   }

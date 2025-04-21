@@ -98,5 +98,6 @@ div.config {
 .grad-ftp-zone3  { background-color: var(--grad3-blue2); color: white;  }
 .grad-ftp-zone4  { background-color: var(--grad3-blue3); color: yellow; }
 .grad-ftp-zone5  { background-color: var(--grad3-blue4); color: black;  }
-.grad-ftp-high   { background-color: var(--grad3-blue5); color: black;  }
+.grad-ftp-zone6  { background-color: var(--grad3-blue5); color: black;  }
+.grad-ftp-high   { background-color: var(--grad3-blue6); color: black;  }
 
