@@ -46,14 +46,14 @@ var gConfig = {
   fitnessRatio:  { value: 0,                               formatter: formatFitness }, // Calculated
 }
 var gPowerZone = [
-  0,        // Placeholder
-  0,        // Zone 1
-  0 * 0.56, // Zone 2
-  0 * 0.76, // Zone 3
-  0 * 0.91, // Zone 4
-  0 * 1.06, // Zone 5
-  0 * 1.21, // Zone 6
-  0 * 1.50, // End of power zones
+  0, // Not used
+  0, // Zone 1
+  0, // Zone 2
+  0, // Zone 3
+  0, // Zone 4
+  0, // Zone 5
+  0, // Zone 6
+  0, // End of power zones
 ]
 var gPowerBurst = {
   low: 745,

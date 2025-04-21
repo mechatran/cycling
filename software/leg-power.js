@@ -41,7 +41,12 @@ function calcLegPowerFromRider (speedMph, gradePercent, weightKg, position) {
   if (isNaN(p_legs) || (p_legs < 0)) {
     return 0;
   } else {
-    return p_legs;
+    // NOTE: We immediately round to the nearest integer to simplify
+    //       conditional formatting, particularly when rounding at display time
+    //       makes numbers cross conditional thresholds.  Since a watt is a
+    //       relatively small unit, the loss of precision should be minimal to
+    //       most chains of calculation.
+    return Math.round(p_legs);
   }
 }
 
