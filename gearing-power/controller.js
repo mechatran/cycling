@@ -1,3 +1,11 @@
+var gPanelSwitches = {
+  tableSelection_table:  { value: true, target: "tableSelection-panel", label: "Table Selection"    },
+  displayOptions_table:  { value: true, target: "displayOptions-panel", label: "Display Options"    },
+  bikeProfile_table:     { value: true, target: "bikeProfile-panel",    label: "Bike Profile"       },
+  simProfile_table:      { value: true, target: "simProfile-panel",     label: "Simulation Profile" },
+  cadenceProfile_table:  { value: true, target: "cadenceProfile-panel", label: "Cadence Profile"    },
+  powerProfile_table:    { value: true, target: "powerProfile-panel",   label: "Power Profile"      },
+}
 var gSwitches = {
   gearing_table:         { value: true,  label: "Show"             },
   gearing_indexes:       { value: true,  label: "Index"            },
@@ -79,17 +87,17 @@ function pushCfg (cadence) {
     }
   }
 
-  for (let k in gSwitches) {
-    let label = gSwitches[k].label;
-    let value = gSwitches[k].value;
-
+  for (let k in gPanelSwitches) {
     let span = document.getElementById(k);
-    if (span == null) {
-      // Parent (block) element may not have been created, so do nothing
-    } else if (span.childNodes.length) {
-      // Do nothing.  These switches are user-controlled.
-    } else {
-      span.appendChild(buildCheckBox(label, value));
+    if (span && span.childNodes.length == 0) {
+      span.appendChild(buildCheckBox(gPanelSwitches[k].label, gPanelSwitches[k].value, handlePanelCheckBox));
+    }
+  }
+
+  for (let k in gSwitches) {
+    let span = document.getElementById(k);
+    if (span && span.childNodes.length == 0) {
+      span.appendChild(buildCheckBox(gSwitches[k].label, gSwitches[k].value, handleCheckBox));
     }
   }
 

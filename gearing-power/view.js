@@ -766,17 +766,33 @@ function buildDropdownList (choices, order, value) {
 
 function handleCheckBox (eventInfo) {
   let converted = eventInfo.currentTarget.checked;
-  gSwitches[eventInfo.currentTarget.parentNode.parentNode.id].value = converted;
+  let id = eventInfo.currentTarget.parentNode.parentNode.id;
+  gSwitches[id].value = converted;
   refresh();
 }
 
-function buildCheckBox (name, value) {
+function handlePanelCheckBox (eventInfo) {
+  let converted = eventInfo.currentTarget.checked;
+  let id = eventInfo.currentTarget.parentNode.parentNode.id;
+  gPanelSwitches[id].value = converted;
+  let panelId = gPanelSwitches[id].target;
+  let panel = document.getElementById(panelId);
+  if (panel) {
+    if (converted) {
+      panel.style.display = "";
+    } else {
+      panel.style.display = "none";
+    }
+  }
+}
+
+function buildCheckBox (name, value, callback) {
   var label = document.createElement("label");
   var box = label.appendChild(document.createElement("input"));
   label.appendChild(document.createTextNode(name));
   box.type = "checkbox";
   box.checked = value;
-  box.addEventListener("change", handleCheckBox);
+  box.addEventListener("change", callback);
   return label;
 }
 
