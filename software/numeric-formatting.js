@@ -26,7 +26,7 @@ function formatCogTeeth (teeth, units=true) {
 }
 
 function formatRatio (ratio, units=true) {
-  return __formatRoundedTo(ratio, 2);
+  return __appendUnits(__formatRoundedTo(ratio, 2), units, ":1");
 }
 
 function formatGearInches (inches, units=true) {
