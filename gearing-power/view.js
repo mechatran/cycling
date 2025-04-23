@@ -474,7 +474,9 @@ function buildGearingTable (driveTrain, gearingEffort) {
 
   var gearingDiv = document.getElementById("gearing-div")
   purgeChildren(gearingDiv);
-  gearingDiv.appendChild(table);
+  if (table.rows.length > 1) {
+    gearingDiv.appendChild(table);
+  }
 }
 
 function buildPowerTable (driveTrain, cadenceEffort, speedEffort, gradeEffort) {
@@ -685,7 +687,9 @@ function buildPowerTable (driveTrain, cadenceEffort, speedEffort, gradeEffort) {
 
   var powerDiv = document.getElementById("power-div")
   purgeChildren(powerDiv);
-  powerDiv.appendChild(table);
+  if (table.rows.length > 2) {
+    powerDiv.appendChild(table);
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////
