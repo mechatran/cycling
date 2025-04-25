@@ -2,6 +2,8 @@
 
 table.gearing, table.power {
   text-align: center;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 table.gearing td, table.power td {
   width: 5em;
