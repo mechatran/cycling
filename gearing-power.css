@@ -55,6 +55,23 @@ div.config {
   flex-flow: row wrap;
 }
 
+div.input-div-horizontal {
+  float: left;
+  width: 32em;
+  overflow: auto;
+}
+
+div.input-div-vertical {
+  border-bottom: 1px solid black;
+}
+
+div.output-div-horizontal {
+  margin-left: 33em;
+}
+
+div.output-div-vertical {
+}
+
 .heading-ratio               { background-color: var(--fill-red);              color: white;  }
 .heading-speed-from-cadence  { background-color: var(--fill-orange);           color: white;  }
 .heading-cadence-from-speed  { background-color: var(--fill-green);            color: white;  }
