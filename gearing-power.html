@@ -318,6 +318,43 @@
 
     <hr>
 
+    <p>This is a tool for evaluating bicycle transmissions with respect to
+    gearing choices, road grade, and physical performance.  Different
+    dimensions of the problem are displayed on separate tables, with color
+    coding by speed, cadence, and power.
+
+    <p>By default, three tables are shown.
+
+    <p>The <span class="heading-ratio" style="padding: 1pt">Gearing</span>
+    table shows all gear combinations.  Redundant combinations are grayed out,
+    and the rest are sequentially numbered.  Like automotive transmissions,
+    harder gears are assigned higher numbers.  Additionally, gear ratios are
+    shown in automotive format as well, with a decimal antecedent (number of
+    front teeth divided by rear teeth) and a common consequent of 1.  Gear
+    inches are shown, as well, to account for wheel size.
+
+    <p>The <span class="heading-speed-from-cadence" style="padding: 1pt">Speed
+    &times; Cadence</span> table shows the speeds resulting from applying
+    cadence to the available transmission gears.  Additionally, table cells
+    show the required power to maintain those speeds, taking into account
+    system weight, aerodynamics, and road grade.  Cells are colored according
+    to speed.  When power levels are within Z2-Z6 or above 1 HP, the power
+    colors take precedence.
+
+    <p>The <span class="heading-speed-from-grade" style="padding: 1pt">Speed
+    &times; Grade</span> table mimics how a rider might behave across
+    combinations of road grade and transmission gear.  The simulation picks the
+    fastest feasible cadence that results in power within the rider's profile.
+    Gearing that's too easy for the given grade will cap cadence at the rider's
+    maximum.  Likewise, gearing that's too hard will cap cadence at the rider's
+    minimum.  Cells are colored by speed, with overlays highlighting the
+    rider's power zones and preferred cadence.  By following the overlays, it's
+    possible to evaluate whether the transmission adequately matches the
+    rider's capabilities to the terrain or climbs on the route of their
+    choosing.
+
+    <hr>
+
     <p>Links:
     <a href="index.html">Home</a>
     &mdash;
