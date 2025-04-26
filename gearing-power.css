@@ -55,9 +55,16 @@ div.config {
   flex-flow: row wrap;
 }
 
+div.bfc-root {
+  /* Block formatting context             */
+  /* https://stackoverflow.com/a/32301823 */
+  overflow: hidden;
+}
+
 div.input-div-horizontal {
   float: left;
   width: 32em;
+  border-right: 1px solid black;
   overflow: auto;
 }
 
@@ -66,7 +73,8 @@ div.input-div-vertical {
 }
 
 div.output-div-horizontal {
-  margin-left: 33em;
+  margin-left: 32em;
+  padding-left: 0.5em;
 }
 
 div.output-div-vertical {
