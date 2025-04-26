@@ -790,6 +790,25 @@ function handlePanelCheckBox (eventInfo) {
   }
 }
 
+function handleOrientationCheckbox (eventInfo) {
+  let converted = eventInfo.currentTarget.checked;
+  let id = eventInfo.currentTarget.parentNode.parentNode.id;
+  gSwitches[id].value = converted;
+  let inputDiv = document.getElementById("input-div");
+  let outputDiv = document.getElementById("output-div");
+  if (converted) {
+    inputDiv.classList.remove("input-div-horizontal");
+    outputDiv.classList.remove("output-div-horizontal");
+    inputDiv.classList.add("input-div-vertical");
+    outputDiv.classList.add("output-div-vertical");
+  } else {
+    inputDiv.classList.remove("input-div-vertical");
+    outputDiv.classList.remove("output-div-vertical");
+    inputDiv.classList.add("input-div-horizontal");
+    outputDiv.classList.add("output-div-horizontal");
+  }
+}
+
 function buildCheckBox (name, value, callback) {
   var label = document.createElement("label");
   var box = label.appendChild(document.createElement("input"));

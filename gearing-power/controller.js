@@ -5,6 +5,7 @@ var gSwitches = {
   simProfile_table:      { value: true,  label: "Simulation Profile", handler: handlePanelCheckBox, target: "simProfile-panel",     },
   cadenceProfile_table:  { value: true,  label: "Cadence Profile",    handler: handlePanelCheckBox, target: "cadenceProfile-panel", },
   powerProfile_table:    { value: true,  label: "Power Profile",      handler: handlePanelCheckBox, target: "powerProfile-panel",   },
+  orientationVertical:   { value: true,  label: "Vertical",           handler: handleOrientationCheckbox },
   gearing_table:         { value: true,  label: "Show",               handler: handleCheckBox },
   gearing_indexes:       { value: true,  label: "Index",              handler: handleCheckBox },
   gearing_speed:         { value: true,  label: "Speed (MPH)",        handler: handleCheckBox },
