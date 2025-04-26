@@ -778,8 +778,8 @@ function handleCheckBox (eventInfo) {
 function handlePanelCheckBox (eventInfo) {
   let converted = eventInfo.currentTarget.checked;
   let id = eventInfo.currentTarget.parentNode.parentNode.id;
-  gPanelSwitches[id].value = converted;
-  let panelId = gPanelSwitches[id].target;
+  gSwitches[id].value = converted;
+  let panelId = gSwitches[id].target;
   let panel = document.getElementById(panelId);
   if (panel) {
     if (converted) {

@@ -1,36 +1,34 @@
-var gPanelSwitches = {
-  tableSelection_table:  { value: true, target: "tableSelection-panel", label: "Table Selection"    },
-  displayOptions_table:  { value: true, target: "displayOptions-panel", label: "Display Options"    },
-  bikeProfile_table:     { value: true, target: "bikeProfile-panel",    label: "Bike Profile"       },
-  simProfile_table:      { value: true, target: "simProfile-panel",     label: "Simulation Profile" },
-  cadenceProfile_table:  { value: true, target: "cadenceProfile-panel", label: "Cadence Profile"    },
-  powerProfile_table:    { value: true, target: "powerProfile-panel",   label: "Power Profile"      },
-}
 var gSwitches = {
-  gearing_table:         { value: true,  label: "Show"             },
-  gearing_indexes:       { value: true,  label: "Index"            },
-  gearing_speed:         { value: true,  label: "Speed (MPH)"      },
-  gearing_inches:        { value: true,  label: "Gear Inches"      },
-  speedAtCadence_table:  { value: false, label: "Show"             },
-  speedAtCadence_force:  { value: true,  label: "Leg Force (lbf)"  },
-  speedAtCadence_power:  { value: true,  label: "Leg Power (Watt)" },
-  cadenceAtSpeed_table:  { value: false, label: "Show"             },
-  torqueAtCadence_table: { value: false, label: "Show"             },
-  torqueAtCadence_force: { value: true,  label: "Leg Force (lbf)"  },
-  speedByCadence_table:  { value: true,  label: "Show"             },
-  speedByCadence_force:  { value: true,  label: "Leg Force (lbf)"  },
-  speedByCadence_power:  { value: true,  label: "Leg Power (Watt)" },
-  cadenceBySpeed_table:  { value: false, label: "Show"             },
-  speedByGrade_table:    { value: true,  label: "Show"             },
-  speedByGrade_cadence:  { value: true,  label: "Cadence"          },
-  speedByGrade_force:    { value: true,  label: "Leg Force (lbf)"  },
-  speedByGrade_power:    { value: true,  label: "Leg Power (Watt)" },
-  powerStripe:           { value: true,  label: "Power Zones"      },
-  burstStripe:           { value: true,  label: "Burst"            },
-  cadenceStripe:         { value: true,  label: "C.Pref"           },
-  blending:              { value: true,  label: "Blending"         },
-  primaryUnits:          { value: true,  label: "Primary"          },
-  secondaryUnits:        { value: true,  label: "Secondary"        },
+  tableSelection_table:  { value: true,  label: "Table Selection",    handler: handlePanelCheckBox, target: "tableSelection-panel", },
+  displayOptions_table:  { value: true,  label: "Display Options",    handler: handlePanelCheckBox, target: "displayOptions-panel", },
+  bikeProfile_table:     { value: true,  label: "Bike Profile",       handler: handlePanelCheckBox, target: "bikeProfile-panel",    },
+  simProfile_table:      { value: true,  label: "Simulation Profile", handler: handlePanelCheckBox, target: "simProfile-panel",     },
+  cadenceProfile_table:  { value: true,  label: "Cadence Profile",    handler: handlePanelCheckBox, target: "cadenceProfile-panel", },
+  powerProfile_table:    { value: true,  label: "Power Profile",      handler: handlePanelCheckBox, target: "powerProfile-panel",   },
+  gearing_table:         { value: true,  label: "Show",               handler: handleCheckBox },
+  gearing_indexes:       { value: true,  label: "Index",              handler: handleCheckBox },
+  gearing_speed:         { value: true,  label: "Speed (MPH)",        handler: handleCheckBox },
+  gearing_inches:        { value: true,  label: "Gear Inches",        handler: handleCheckBox },
+  speedAtCadence_table:  { value: false, label: "Show",               handler: handleCheckBox },
+  speedAtCadence_force:  { value: true,  label: "Leg Force (lbf)",    handler: handleCheckBox },
+  speedAtCadence_power:  { value: true,  label: "Leg Power (Watt)",   handler: handleCheckBox },
+  cadenceAtSpeed_table:  { value: false, label: "Show",               handler: handleCheckBox },
+  torqueAtCadence_table: { value: false, label: "Show",               handler: handleCheckBox },
+  torqueAtCadence_force: { value: true,  label: "Leg Force (lbf)",    handler: handleCheckBox },
+  speedByCadence_table:  { value: true,  label: "Show",               handler: handleCheckBox },
+  speedByCadence_force:  { value: true,  label: "Leg Force (lbf)",    handler: handleCheckBox },
+  speedByCadence_power:  { value: true,  label: "Leg Power (Watt)",   handler: handleCheckBox },
+  cadenceBySpeed_table:  { value: false, label: "Show",               handler: handleCheckBox },
+  speedByGrade_table:    { value: true,  label: "Show",               handler: handleCheckBox },
+  speedByGrade_cadence:  { value: true,  label: "Cadence",            handler: handleCheckBox },
+  speedByGrade_force:    { value: true,  label: "Leg Force (lbf)",    handler: handleCheckBox },
+  speedByGrade_power:    { value: true,  label: "Leg Power (Watt)",   handler: handleCheckBox },
+  powerStripe:           { value: true,  label: "Power Zones",        handler: handleCheckBox },
+  burstStripe:           { value: true,  label: "Burst",              handler: handleCheckBox },
+  cadenceStripe:         { value: true,  label: "C.Pref",             handler: handleCheckBox },
+  blending:              { value: true,  label: "Blending",           handler: handleCheckBox },
+  primaryUnits:          { value: true,  label: "Primary",            handler: handleCheckBox },
+  secondaryUnits:        { value: true,  label: "Secondary",          handler: handleCheckBox },
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -87,17 +85,10 @@ function pushCfg (cadence) {
     }
   }
 
-  for (let k in gPanelSwitches) {
-    let span = document.getElementById(k);
-    if (span && span.childNodes.length == 0) {
-      span.appendChild(buildCheckBox(gPanelSwitches[k].label, gPanelSwitches[k].value, handlePanelCheckBox));
-    }
-  }
-
   for (let k in gSwitches) {
     let span = document.getElementById(k);
     if (span && span.childNodes.length == 0) {
-      span.appendChild(buildCheckBox(gSwitches[k].label, gSwitches[k].value, handleCheckBox));
+      span.appendChild(buildCheckBox(gSwitches[k].label, gSwitches[k].value, gSwitches[k].handler));
     }
   }
 
