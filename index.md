@@ -6,3 +6,5 @@ Analytical Cycling
 [Chainrings](chainrings.html)
 
 [Clusters (Cassettes)](clusters.html)
+
+[Chain Length Calculator](chain-length.html)

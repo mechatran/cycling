@@ -1,0 +1,162 @@
+<html>
+
+  <head>
+    <title>Chain Length Calculator</title>
+    <link rel="shortcut icon" type="image/png" href="bicycle.png">
+    <link rel="stylesheet" href="gearing-power.css">
+    <script language="javascript">
+function refresh () {
+  var transmissionType = document.getElementById("transmissionType");
+  var chainstayType = document.getElementById("chainstayType");
+  var chainstayLength = document.getElementById("chainstayLength");
+  var chainringSize = document.getElementById("chainringSize");
+  var cogSize = document.getElementById("cogSize");
+  var rawLength = document.getElementById("rawLength");
+  var roundedLength = document.getElementById("roundedLength");
+
+  var adjustmentLut = {
+    single: 0,
+    one: 2,
+    two: 1,
+  }
+  var adjustment = 0;
+  if (adjustmentLut[transmissionType.value]) {
+    adjustment = adjustmentLut[transmissionType.value];
+  }
+
+  var F = parseInt(chainringSize.value);
+  var R = parseInt(cogSize.value);
+  var CSL = parseInt(chainstayLength.value) / 25.4;
+  var baseLength = 0.25 * (F + R) + 2 * Math.sqrt(Math.pow(CSL, 2) + Math.pow(0.0796 * (F - R), 2))
+
+  var idealLength = baseLength + adjustment;
+  var practicalLength;
+  if (chainstayType.value == "fixed") {
+    practicalLength = Math.ceil(idealLength);
+  } else {
+    practicalLength = Math.round(idealLength);
+  }
+
+  rawLength.innerHTML = idealLength;
+  roundedLength.innerHTML = practicalLength;
+}
+    </script>
+  </head>
+
+  <body onLoad="refresh()">
+
+    <div class="config">
+
+      <table class="config">
+        <tr>
+          <td class="heading">Transmission Type</td>
+          <td></td>
+          <td>
+            <select id="transmissionType" onchange="refresh()">
+              <option value="two">2x/3x</option>
+              <option value="one">1x</option>
+              <option value="single">Single speed</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="heading">Chainstay Type</td>
+          <td></td>
+          <td>
+            <select id="chainstayType" onchange="refresh()">
+              <option value="fixed">Fixed chainstay length</option>
+              <option value="sliding">Sliding dropouts</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="heading">Chainstay Length (mm)</td>
+          <td>C</td>
+          <td>
+            <input type="number" id="chainstayLength" value=425 onchange="refresh()">
+          </td>
+        </tr>
+        <tr>
+          <td class="heading">Largest Front Chainring</td>
+          <td>F</td>
+          <td>
+            <input type="number" id="chainringSize" value=50 onchange="refresh()">
+          </td>
+        </tr>
+        <tr>
+          <td class="heading">Largest Rear Cog</td>
+          <td>R</td>
+          <td>
+            <input type="number" id="cogSize" value=32 onchange="refresh()">
+          </td>
+        </tr>
+        <tr>
+          <td class="heading">Calculated Length (inches)</td>
+          <td></td>
+          <td><span id="rawLength"></span></td>
+        </tr>
+        <tr>
+          <td class="heading">Rounded Length (inches)</td>
+          <td></td>
+          <td><span id="roundedLength"></span></td>
+        </tr>
+      </table>
+
+    </div>
+
+    <p>The base formula for the minimum chain length is given below.  This
+    minimum length is increased by 1" for 2x and 3x transmissions; 2" for 1x.
+
+    <p><math display="block" class="tml-display" style="display:block math;">
+      <mrow>
+        <mfrac>
+          <mn>1</mn>
+          <mn>4</mn>
+        </mfrac>
+        <mo>&times;</mo>
+        <mo form="prefix" stretchy="false">(</mo>
+        <mi>F</mi>
+        <mo>+</mo>
+        <mi>R</mi>
+        <mo form="postfix" stretchy="false">)</mo>
+        <mo>+</mo>
+        <mn>2</mn>
+        <mo>&times;</mo>
+        <msqrt>
+          <mrow>
+            <msup>
+              <mi>C</mi>
+              <mn>2</mn>
+            </msup>
+            <mo>+</mo>
+            <mo form="prefix" stretchy="false">(</mo>
+            <mn>0.0796</mn>
+            <mo>&times;</mo>
+            <mo form="prefix" stretchy="false">(</mo>
+            <mi>F</mi>
+            <mo>-</mo>
+            <mi>R</mi>
+            <mo form="postfix" stretchy="false">)</mo>
+            <msup>
+              <mo form="postfix" stretchy="false">)</mo>
+              <mn>2</mn>
+            </msup>
+          </mrow>
+        </msqrt>
+      </mrow>
+    </math>
+
+    <p>The minimum value is rounded to the nearest integer for sliding dropouts
+    (e.g. track ends).  The value is rounded up for fixed chainstays (e.g.
+    vertical dropouts).
+
+    <hr>
+
+    <p>Links:
+    <a href="index.html">Home</a>
+    &mdash;
+    <a href="http://www.machinehead-software.co.uk/bike/chain_length/chainlengthcalc.html">Javascript Bicycle Chain Length Calculator</a>
+
+  </body>
+
+</html>
