@@ -81,6 +81,11 @@ var CHAINRINGS_INFO = [
       { sprockets: [40] },
       { sprockets: [50] },
       { sprockets: [52] },
+      { sprockets: [54] },
+      { sprockets: [56] },
+      { sprockets: [58] },
+      { sprockets: [60] },
+      { sprockets: [62] },
     ]
   },
   {
