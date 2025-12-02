@@ -58,6 +58,7 @@ var CHAINRINGS_INFO = [
     group: 1,
     infos: [
       { brand: "FSA",       model: "Gossamer Pro",        sprockets: [54] },
+      { brand: "IRD",       model: "Polaris (1x)",        sprockets: [38] },
       { brand: "Race Face",                               sprockets: [24] },
       { brand: "Race Face",                               sprockets: [26] },
       { brand: "Race Face",                               sprockets: [28] },
@@ -101,6 +102,7 @@ var CHAINRINGS_INFO = [
       { brand: "FSA",            model: "SL-K Modular",         sprockets: [48, 32], note: "Adventure" },
       { brand: "FSA",            model: "SL-K Modular",         sprockets: [50, 34] },
       { brand: "FSA",            model: "SL-K Modular",         sprockets: [52, 36] },
+      { brand: "IRD",            model: "Polaris (2x)",         sprockets: [42, 26] },
       { brand: "Rotor",                                         sprockets: [46, 30] },
       { brand: "Rotor",                                         sprockets: [48, 32] },
       { brand: "Shimano (Road)", model: "Claris",               sprockets: [50, 34] },
