@@ -4,7 +4,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-var TIRE_SIZE_INFO = [
+var CATEYE_TIRE_SIZE_INFO = [
   { etrto: "47-203", nominal: "12x1.75",             circMm: 935 },
   { etrto: "54-203", nominal: "12x1.95",             circMm: 940,  aka: "12" },
   { etrto: "40-254", nominal: "14x1.50",             circMm: 1020, aka: "14" },
@@ -82,6 +82,56 @@ var TIRE_SIZE_INFO = [
   { etrto: "56-622", nominal: "29x2.2",              circMm: 2298 },
   { etrto: "60-622", nominal: "29x2.3",              circMm: 2326 },
 ];
+
+//////////////////////////////////////////////////////////////////////////////
+
+var TIRE_SIZE_INFO = CATEYE_TIRE_SIZE_INFO
+
+function __parseETRTO (etrto) {
+  let spec = etrto.split("-");
+  return {
+    width: spec[0],
+    bsd: spec[1],
+  }
+}
+
+function __compareETRTO (a, b) {
+  if (("etrto" in a) && ("etrto" in b)) {
+    a_spec = __parseETRTO(a.etrto);
+    b_spec = __parseETRTO(b.etrto);
+    if (a_spec.bsd != b_spec.bsd) {
+      // Sort by ascending BSD
+      return parseInt(a_spec.bsd) - parseInt(b_spec.bsd);
+    } else {
+      // Sort by ascending width
+      return parseInt(a_spec.width) - parseInt(b_spec.width);
+    }
+  } else if ("etrto" in a) {
+    // Place a after b
+    return 1;
+  } else if ("etrto" in b) {
+    // Place b after a
+    return -1;
+  } else {
+    // String compare
+    return a.nominal.localeCompare(b.nominal);
+  }
+}
+
+function __compareTireSize (a, b) {
+  return (a.etrto == b.etrto) && (a.nominal == b.nominal);
+}
+
+if (typeof WAHOO_TIRE_SIZE_INFO !== "undefined") {
+  let sorted = CATEYE_TIRE_SIZE_INFO.concat(WAHOO_TIRE_SIZE_INFO).sort(__compareETRTO);
+  let uniqued = [sorted[0]];
+  for (let i = 1; i < sorted.length; i++) {
+    if (!__compareTireSize(sorted[i - 1], sorted[i])) {
+      uniqued.push(sorted[i]);
+    }
+  }
+  TIRE_SIZE_INFO = uniqued
+}
 
 //////////////////////////////////////////////////////////////////////////////
 

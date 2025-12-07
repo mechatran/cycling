@@ -17,7 +17,7 @@ var gCogsChainring = [ 34, 50 ];
 var gConfig = {
   chainrings:    { value: "1,16",               order: 1,  choices: CHAINRINGS },
   cluster:       { value: "6,8",                order: 2,  choices: CLUSTERS },
-  tireSize:      { value: 60,                   order: 3,  choices: TIRE_SIZES },
+  tireSize:      { value: 74,                   order: 3,  choices: TIRE_SIZES },
   tireCircMm:    { value: 2096,                            formatter: formatLengthMm },
   capacityFront: { value: 0,                               formatter: formatCogTeeth }, // Calculated
   capacityRear:  { value: 0,                               formatter: formatCogTeeth }, // Calculated
