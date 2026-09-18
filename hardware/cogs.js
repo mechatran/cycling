@@ -160,15 +160,17 @@ var CLUSTERS_INFO = [
   {
     group: 7,
     infos: [
-      { brand: "Epoch",                                sprockets: [11, 13, 15, 18, 21, 24, 28] },
-      { brand: "Epoch",                                sprockets: [14, 16, 18, 20, 22, 24, 32] },
-      { brand: "Shimano", model: "CS-HG90",            sprockets: [12, 14, 16, 18, 21, 24, 28] },
-      { brand: "Shimano", model: "CS-HG200-7 (11-28)", sprockets: [12, 14, 16, 18, 21, 24, 28] },
-      { brand: "Shimano", model: "CS-HG200-7 (11-32)", sprockets: [12, 14, 16, 18, 21, 26, 32] },
-      { brand: "Shimano", model: "MF-HG37",            sprockets: [13, 15, 17, 19, 21, 24, 28] },
-      { brand: "Shimano", model: "MF-TZ2",             sprockets: [14, 15, 17, 19, 21, 24, 28] },
-      { brand: "Shimano", model: "MF-TZ500-7",         sprockets: [14, 16, 18, 20, 22, 24, 34] },
-      { brand: "SunRace",                              sprockets: [13, 15, 17, 19, 21, 24, 28] },
+      { brand: "Epoch",                                   sprockets: [11, 13, 15, 18, 21, 24, 28] },
+      { brand: "Epoch",                                   sprockets: [14, 16, 18, 20, 22, 24, 32] },
+      { brand: "MicroShift", model: "H07",                sprockets: [12, 15, 18, 22, 28, 34, 40] },
+      { brand: "Shimano",    model: "CS-HG90",            sprockets: [12, 14, 16, 18, 21, 24, 28] },
+      { brand: "Shimano",    model: "CS-HG200-7 (11-28)", sprockets: [12, 14, 16, 18, 21, 24, 28] },
+      { brand: "Shimano",    model: "CS-HG200-7 (11-32)", sprockets: [12, 14, 16, 18, 21, 26, 32] },
+      { brand: "Shimano",    model: "MF-HG37",            sprockets: [13, 15, 17, 19, 21, 24, 28] },
+      { brand: "Shimano",    model: "MF-TZ2",             sprockets: [14, 15, 17, 19, 21, 24, 28] },
+      { brand: "Shimano",    model: "MF-TZ500-7",         sprockets: [14, 16, 18, 20, 22, 24, 34] },
+      { brand: "SunRace",                                 sprockets: [13, 15, 17, 19, 21, 24, 28] },
+      { brand: "S-Ride",     model: "CS-E500",            sprockets: [13, 16, 20, 24, 30, 36, 42] },
     ]
   },
   {
