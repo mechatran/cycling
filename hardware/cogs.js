@@ -130,11 +130,12 @@ var CHAINRINGS_INFO = [
   {
     group: 3,
     infos: [
-      { brand: "Shimano (Road)", model: "Claris",         sprockets: [50, 39, 30] },
-      { brand: "Shimano (Road)", model: "Tiagra",         sprockets: [50, 39, 30] },
-      { brand: "Shimano (MTB)",  model: "Acera FC-M361",  sprockets: [42, 32, 22] },
-      { brand: "Shimano (MTB)",  model: "Deore XT M8000", sprockets: [40, 30, 22] },
-      { brand: "Suntour",                                 sprockets: [48, 38, 28] },
+      { brand: "Shimano (Road)", model: "Claris",          sprockets: [50, 39, 30] },
+      { brand: "Shimano (Road)", model: "Tiagra",          sprockets: [50, 39, 30] },
+      { brand: "Shimano (MTB)",  model: "Deore LX (SG-X)", sprockets: [46, 36, 26] },
+      { brand: "Shimano (MTB)",  model: "Acera FC-M361",   sprockets: [42, 32, 22] },
+      { brand: "Shimano (MTB)",  model: "Deore XT M8000",  sprockets: [40, 30, 22] },
+      { brand: "Suntour",                                  sprockets: [48, 38, 28] },
       { sprockets: [48, 38, 28] },
     ]
   },
@@ -159,12 +160,15 @@ var CLUSTERS_INFO = [
   {
     group: 7,
     infos: [
-      { brand: "Epoch",                        sprockets: [11, 13, 15, 18, 21, 24, 28] },
-      { brand: "Epoch",                        sprockets: [14, 16, 18, 20, 22, 24, 32] },
-      { brand: "Shimano", model: "MF-HG37",    sprockets: [13, 15, 17, 19, 21, 24, 28] },
-      { brand: "Shimano", model: "MF-TZ2",     sprockets: [14, 15, 17, 19, 21, 24, 28] },
-      { brand: "Shimano", model: "MF-TZ500-7", sprockets: [14, 16, 18, 20, 22, 24, 34] },
-      { brand: "SunRace",                      sprockets: [13, 15, 17, 19, 21, 24, 28] },
+      { brand: "Epoch",                                sprockets: [11, 13, 15, 18, 21, 24, 28] },
+      { brand: "Epoch",                                sprockets: [14, 16, 18, 20, 22, 24, 32] },
+      { brand: "Shimano", model: "CS-HG90",            sprockets: [12, 14, 16, 18, 21, 24, 28] },
+      { brand: "Shimano", model: "CS-HG200-7 (11-28)", sprockets: [12, 14, 16, 18, 21, 24, 28] },
+      { brand: "Shimano", model: "CS-HG200-7 (11-32)", sprockets: [12, 14, 16, 18, 21, 26, 32] },
+      { brand: "Shimano", model: "MF-HG37",            sprockets: [13, 15, 17, 19, 21, 24, 28] },
+      { brand: "Shimano", model: "MF-TZ2",             sprockets: [14, 15, 17, 19, 21, 24, 28] },
+      { brand: "Shimano", model: "MF-TZ500-7",         sprockets: [14, 16, 18, 20, 22, 24, 34] },
+      { brand: "SunRace",                              sprockets: [13, 15, 17, 19, 21, 24, 28] },
     ]
   },
   {
