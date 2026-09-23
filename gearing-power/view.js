@@ -180,7 +180,7 @@ function formatGearIndexCells (cells) {
   }
 }
 
-function handlePopoverEnter (eventInfo) {
+function handlePopoverOpen (eventInfo) {
   var target = eventInfo.currentTarget;
   var child = target.lastChild;
 
@@ -201,7 +201,7 @@ function handlePopoverEnter (eventInfo) {
   }
 }
 
-function handlePopoverLeave (eventInfo) {
+function handlePopoverClose (eventInfo) {
   // Once this node is hidden, it can trigger the underlying node, which might
   // unhide this node!  So stop the event propogation now.
   eventInfo.stopPropagation();
@@ -212,12 +212,13 @@ function handlePopoverLeave (eventInfo) {
 function addPopover (parentNode, popoverNode) {
   parentNode.appendChild(gStock.divDogEar.cloneNode());
   parentNode.appendChild(popoverNode);
-  parentNode.addEventListener("mouseover", handlePopoverEnter);
+  parentNode.addEventListener("click", handlePopoverOpen);
 
   popoverNode.style.display = "none";
-  popoverNode.addEventListener("mouseout", handlePopoverLeave);
-  // Handle click event for touch-based devices
-  popoverNode.addEventListener("click", handlePopoverLeave);
+  // NOTE: Regardless of what we do for mouse-based browsers, touch-based
+  //       browsers definitely require a "click" handler since "mouseout"
+  //       events don't work there
+  popoverNode.addEventListener("click", handlePopoverClose);
 }
 
 function addEmoji (node, kind) {
