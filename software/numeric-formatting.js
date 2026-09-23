@@ -18,7 +18,7 @@ function __appendUnits (n, enabled, units) {
 }
 
 function formatNone (n, units=true) {
-  return n;
+  return n || "";
 }
 
 function formatCogTeeth (teeth, units=true) {

@@ -49,6 +49,10 @@ table.config td.spacer {
   height: auto;
 }
 
+#note {
+  min-width: 25em;
+}
+
 div.config {
   display: flex;
   align-items: flex-start;

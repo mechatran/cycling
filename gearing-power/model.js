@@ -15,35 +15,36 @@ var gCogsCluster = [ 36, 32, 28, 25, 22, 19, 17, 15, 13, 12, 11 ];
 var gCogsChainring = [ 34, 50 ];
 
 var gConfig = {
-  chainrings:    { value: "1,16",               order: 1,  choices: CHAINRINGS },
-  cluster:       { value: "6,8",                order: 2,  choices: CLUSTERS },
-  tireSize:      { value: 74,                   order: 3,  choices: TIRE_SIZES },
+  chainrings:    { value: "1,16",               order: 3,  choices: CHAINRINGS },
+  cluster:       { value: "6,8",                order: 4,  choices: CLUSTERS },
+  tireSize:      { value: 74,                   order: 2,  choices: TIRE_SIZES },
   tireCircMm:    { value: 2096,                            formatter: formatLengthMm },
   capacityFront: { value: 0,                               formatter: formatCogTeeth }, // Calculated
   capacityRear:  { value: 0,                               formatter: formatCogTeeth }, // Calculated
   capacityTotal: { value: 0,                               formatter: formatCogTeeth }, // Calculated
   speedUnits:    { value: "MPH" },
-  speedMph:      { value: 15,                   order: 12, formatter: formatSpeed },
-  weightRider:   { value: 150,                  order: 5,  formatter: formatWeightLb },
-  weightBike:    { value: 20,                   order: 6,  formatter: formatWeightLb },
-  weightKit:     { value: 2,                    order: 7,  formatter: formatWeightLb },
-  weightGear:    { value: 3,                    order: 8,  formatter: formatWeightLb },
+  speedMph:      { value: 15,                   order: 13, formatter: formatSpeed },
+  weightRider:   { value: 150,                  order: 6,  formatter: formatWeightLb },
+  weightBike:    { value: 20,                   order: 7,  formatter: formatWeightLb },
+  weightKit:     { value: 2,                    order: 8,  formatter: formatWeightLb },
+  weightGear:    { value: 3,                    order: 9,  formatter: formatWeightLb },
   weightTotal:   { value: 0,                               formatter: formatWeightLbAndKg }, // Calculated
-  position:      { value: 1,                    order: 9,  choices: ["Tops", "Hoods", "Drops"] },
-  gradePercent:  { value: 6,         step: 0.5, order: 10, formatter: formatPercent },
-  cadenceRpm:    { value: 90,                   order: 11, formatter: formatCadence },
-  toleranceRpm:  { value: 15,                   order: 14, formatter: formatCadence },
-  stepRpm:       { value: 10,                   order: 13, formatter: formatCadence },
-  cadenceRpmMin: { value: 50,                   order: 15, formatter: formatCadence },
-  cadenceRpmMax: { value: 110,                  order: 16, formatter: formatCadence },
-  crankLength:   { value: 170,                  order: 4,  formatter: formatLengthMm },
-  powerFtp:      { value: 200,                  order: 17, formatter: formatPower },
+  position:      { value: 1,                    order: 10, choices: ["Tops", "Hoods", "Drops"] },
+  gradePercent:  { value: 6,         step: 0.5, order: 11, formatter: formatPercent },
+  cadenceRpm:    { value: 90,                   order: 12, formatter: formatCadence },
+  toleranceRpm:  { value: 15,                   order: 15, formatter: formatCadence },
+  stepRpm:       { value: 10,                   order: 14, formatter: formatCadence },
+  cadenceRpmMin: { value: 50,                   order: 16, formatter: formatCadence },
+  cadenceRpmMax: { value: 110,                  order: 17, formatter: formatCadence },
+  crankLength:   { value: 170,                  order: 5,  formatter: formatLengthMm },
+  powerFtp:      { value: 200,                  order: 18, formatter: formatPower },
   powerZ2:       { value: 0,                               formatter: formatPower }, // Calculated
   powerZ3:       { value: 0,                               formatter: formatPower }, // Calculated
   powerZ4:       { value: 0,                               formatter: formatPower }, // Calculated
   powerZ5:       { value: 0,                               formatter: formatPower }, // Calculated
   powerZ6:       { value: 0,                               formatter: formatPower }, // Calculated
   fitnessRatio:  { value: 0,                               formatter: formatFitness }, // Calculated
+  note:          { value: "",                   order: 1,  formatter: formatNone },
 }
 var gPowerZone = [
   0, // Not used
@@ -99,6 +100,7 @@ function calcCfg () {
 //////////////////////////////////////////////////////////////////////////////
 
 var URL_CONFIG_KEYS = [
+  "note",
   "powerFtp",
   "weightRider",
   "weightBike",

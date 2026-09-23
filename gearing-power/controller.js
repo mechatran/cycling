@@ -45,6 +45,9 @@ function pushCfg (cadence) {
     let choices = gConfig[k].choices;
 
     let td = document.getElementById(k);
+    if (!td) {
+      continue;
+    }
     if (td.classList.contains("editable")) {
       if (td.childNodes.length) {
         // Update current widgets
@@ -59,7 +62,7 @@ function pushCfg (cadence) {
         let fieldNode;
         // Create new widgets
         if (formatter) {
-          // Numeric input box
+          // number/string input box
           fieldNode = buildInputBox(content, order, step);
           td.appendChild(fieldNode);
           td.appendChild(document.createTextNode(formatter()));

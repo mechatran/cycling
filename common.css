@@ -84,6 +84,10 @@ td.editable input[type="number"] {
   width: 4em;
 }
 
+td.editable input[type="string"] {
+  width: 100%;
+}
+
 td.editable select {
   margin: 0px;
 }

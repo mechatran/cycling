@@ -712,10 +712,18 @@ function buildFocusWrap (node) {
 function handleInputBox (eventInfo) {
   var isChange = (eventInfo.type == "change");
   var isEnter = (eventInfo.type == "keypress" && eventInfo.key == "Enter");
-  if (isChange || isEnter) {
-    let converted = Number(eventInfo.currentTarget.value);
-    if (!isNaN(converted)) {
-      gConfig[eventInfo.currentTarget.parentNode.id].value = converted;
+  var type = typeof gConfig[eventInfo.currentTarget.parentNode.id].value
+  if (type === "number") {
+    if (isChange || isEnter) {
+      let converted = Number(eventInfo.currentTarget.value);
+      if (!isNaN(converted)) {
+        gConfig[eventInfo.currentTarget.parentNode.id].value = converted;
+        refresh();
+      }
+    }
+  } else if (type === "string") {
+    if (isEnter) {
+      gConfig[eventInfo.currentTarget.parentNode.id].value = eventInfo.currentTarget.value;
       refresh();
     }
   }
@@ -723,7 +731,7 @@ function handleInputBox (eventInfo) {
 
 function buildInputBox (content, order, step) {
   var box = document.createElement("input");
-  box.type = "number";
+  box.type = typeof content;
   box.value = content;
   box.step = step;
   box.addEventListener("keypress", handleInputBox);
