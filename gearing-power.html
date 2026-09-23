@@ -25,7 +25,7 @@
     <script src="gearing-power/controller.js"></script>
   </head>
 
-  <body onLoad="refresh()">
+  <body onLoad="applyConfigFromUrl(window.location.search); refresh()">
 
     <div class="bfc-root">
 
@@ -358,6 +358,8 @@
 
     <p>Links:
     <a href="index.html">Home</a>
+    &mdash;
+    <a href="gearing-power.html">Reload Defaults</a>
     &mdash;
     <a href="https://www.gribble.org/cycling/power_v_speed.html">Steve Gribble: Cycling Power and Speed</a>
     &mdash;

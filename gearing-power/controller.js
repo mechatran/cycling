@@ -140,4 +140,5 @@ function refresh () {
   buildGearingTable(driveTrain, gearingEffort);
   buildPowerTable(driveTrain, cadenceEffort, speedEffort, gradeEffort);
   pushCfg(cadenceEffort);
+  updateUrlFromConfig(window.location.search);
 }

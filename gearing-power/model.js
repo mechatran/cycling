@@ -98,6 +98,48 @@ function calcCfg () {
 
 //////////////////////////////////////////////////////////////////////////////
 
+var URL_CONFIG_KEYS = [
+  "powerFtp",
+  "weightRider",
+  "weightBike",
+  "weightKit",
+  "weightGear",
+  "tireSize",
+  "gradePercent",
+  "crankLength",
+  "position",
+  "chainrings",
+  "cluster",
+];
+
+function applyConfigFromUrl (url) {
+  var params = new URLSearchParams(url);
+  for (let key of URL_CONFIG_KEYS) {
+    if (params.has(key)) {
+      let raw = params.get(key);
+      if (typeof gConfig[key].value === "number") {
+        let converted = Number(raw);
+        if (!isNaN(converted)) {
+          gConfig[key].value = converted;
+        }
+      } else {
+        gConfig[key].value = raw;
+      }
+    }
+  }
+}
+
+function updateUrlFromConfig (url) {
+  var params = new URLSearchParams(url);
+  for (let key of URL_CONFIG_KEYS) {
+    params.set(key, gConfig[key].value);
+  }
+  var newUrl = window.location.pathname + "?" + params.toString() + window.location.hash;
+  history.replaceState(null, "", newUrl);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 class BikeDriveTrainGrids {
   constructor () {
     // Grids
