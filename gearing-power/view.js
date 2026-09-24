@@ -756,13 +756,14 @@ function buildDropdownList (choices, order, value) {
 
   if ((choices instanceof Array) && (choices[0] instanceof Array)) {
     for (let i = 0; i < choices.length; ++i) {
-      let [groupName, subchoices] = choices[i];
+      let [groupName, groupId, subchoices] = choices[i];
       let optgroup = select.appendChild(document.createElement("optgroup"));
       optgroup.label = groupName;
       for (let j = 0; j < subchoices.length; ++j) {
+        let [entryLabel, entryId] = subchoices[j];
         let option = optgroup.appendChild(document.createElement("option"));
-        option.value = [i, j];
-        option.appendChild(document.createTextNode(subchoices[j]));
+        option.value = [groupId, entryId];
+        option.appendChild(document.createTextNode(entryLabel));
       }
     }
   } else {

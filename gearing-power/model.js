@@ -2,7 +2,8 @@ function __formatCogInfo (infos, formatGroup, formatEntry) {
   return infos.map(
     (x) => [
       formatGroup(x.group),
-      x.infos.map(formatEntry),
+      x.group,
+      x.infos.map((entry) => [formatEntry(entry), entry.id]),
     ]);
 }
 
@@ -15,8 +16,8 @@ var gCogsCluster = [ 36, 32, 28, 25, 22, 19, 17, 15, 13, 12, 11 ];
 var gCogsChainring = [ 34, 50 ];
 
 var gConfig = {
-  chainrings:    { value: "1,16",               order: 3,  choices: CHAINRINGS },
-  cluster:       { value: "6,8",                order: 4,  choices: CLUSTERS },
+  chainrings:    { value: "2,15",               order: 3,  choices: CHAINRINGS },
+  cluster:       { value: "11,9",               order: 4,  choices: CLUSTERS },
   tireSize:      { value: 74,                   order: 2,  choices: TIRE_SIZES },
   tireCircMm:    { value: 2096,                            formatter: formatLengthMm },
   capacityFront: { value: 0,                               formatter: formatCogTeeth }, // Calculated
@@ -81,13 +82,17 @@ function calcCfg () {
   gConfig.fitnessRatio.value = gConfig.powerFtp.value / convertLbToKg(gConfig.weightRider.value);
 
   // Chainrings, in ascending order of number of cogs
-  let [chainringGroup, chainringIndex] = gConfig.chainrings.value.split(",").map(Number);
-  gCogsChainring = Array.from(CHAINRINGS_INFO[chainringGroup].infos[chainringIndex].sprockets);
+  let [chainringGroup, chainringId] = gConfig.chainrings.value.split(",").map(Number);
+  let chainringGroupInfo = CHAINRINGS_INFO.find((g) => g.group === chainringGroup);
+  let chainringInfo = chainringGroupInfo.infos.find((e) => e.id === chainringId);
+  gCogsChainring = Array.from(chainringInfo.sprockets);
   gCogsChainring.sort((a, b) => a - b);
 
   // Cluster sprockets, in descending order of number of cogs
-  let [clusterGroup, clusterIndex] = gConfig.cluster.value.split(",").map(Number);
-  gCogsCluster = Array.from(CLUSTERS_INFO[clusterGroup].infos[clusterIndex].sprockets);
+  let [clusterGroup, clusterId] = gConfig.cluster.value.split(",").map(Number);
+  let clusterGroupInfo = CLUSTERS_INFO.find((g) => g.group === clusterGroup);
+  let clusterInfo = clusterGroupInfo.infos.find((e) => e.id === clusterId);
+  gCogsCluster = Array.from(clusterInfo.sprockets);
   gCogsCluster.sort((a, b) => b - a);
 
   gConfig.capacityFront.value = gCogsChainring[gCogsChainring.length - 1] - gCogsChainring[0];
