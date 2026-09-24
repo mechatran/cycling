@@ -89,6 +89,12 @@ function pushCfg (cadence) {
     }
   }
 
+  var newTitle = document.title.split(":")[0];
+  if (gConfig.note.value) {
+    newTitle += ": " + gConfig.note.value;
+  }
+  document.title = newTitle;
+
   for (let k in gSwitches) {
     let span = document.getElementById(k);
     if (span && span.childNodes.length == 0) {
