@@ -762,7 +762,7 @@ function buildDropdownList (choices, order, value) {
       for (let j = 0; j < subchoices.length; ++j) {
         let [entryLabel, entryId] = subchoices[j];
         let option = optgroup.appendChild(document.createElement("option"));
-        option.value = [groupId, entryId];
+        option.value = `${groupId}-${entryId}`;
         option.appendChild(document.createTextNode(entryLabel));
       }
     }
